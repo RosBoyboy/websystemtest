@@ -35,7 +35,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('customer_token');
+    const token = localStorage.getItem('customer_token') || localStorage.getItem('seller_token');
     if (to.meta.auth && !token) {
         next({ name: 'login', query: { redirect: to.fullPath } });
     } else {

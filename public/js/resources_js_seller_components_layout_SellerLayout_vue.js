@@ -100,9 +100,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _context.n = 1;
               return _this.$store.dispatch('auth/logout');
             case 1:
-              _this.$router.push({
-                name: 'seller.login'
-              });
+              window.location.href = '/login';
             case 2:
               return _context.a(2);
           }
@@ -261,7 +259,28 @@ var render = function render() {
     }, [_vm._v(_vm._s(item.label))]) : _vm._e()]);
   }), 1), _vm._v(" "), _c("div", {
     staticClass: "px-2 py-4 border-t border-slate-800"
-  }, [_c("button", {
+  }, [_c("a", {
+    staticClass: "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors mb-2",
+    attrs: {
+      href: "/"
+    }
+  }, [_c("svg", {
+    staticClass: "w-5 h-5 flex-shrink-0",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("path", {
+    attrs: {
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-width": "2",
+      d: "M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1V9.75z"
+    }
+  })]), _vm._v(" "), !_vm.collapsed ? _c("span", {
+    staticClass: "text-sm font-medium"
+  }, [_vm._v("Go to Shop")]) : _vm._e()]), _vm._v(" "), _c("button", {
     staticClass: "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-400 hover:bg-red-900/40 hover:text-red-400 transition-colors",
     on: {
       click: _vm.logout

@@ -3,8 +3,8 @@
     <div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-black text-stone-900">Create Account</h1>
-          <p class="text-stone-500 mt-1">Join NurbanNxt and start shopping</p>
+          <h1 class="text-3xl font-black text-white">Create Account</h1>
+          <p class="text-slate-400 mt-1">Join NurbanNxt and start shopping</p>
         </div>
 
         <div class="bg-white rounded-2xl border border-stone-100 p-8 shadow-sm">

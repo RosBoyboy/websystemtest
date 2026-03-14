@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const state = {
-    user:   JSON.parse(localStorage.getItem('seller_user')  || 'null'),
+    user:   JSON.parse(localStorage.getItem('seller_user')  || localStorage.getItem('customer_user') || 'null'),
     seller: JSON.parse(localStorage.getItem('seller_store') || 'null'),
-    token:  localStorage.getItem('seller_token') || null,
+    token:  localStorage.getItem('seller_token') || localStorage.getItem('customer_token') || null,
 };
 
 const getters = {
@@ -20,6 +20,8 @@ const mutations = {
         localStorage.setItem('seller_token',  token);
         localStorage.setItem('seller_user',   JSON.stringify(user));
         localStorage.setItem('seller_store',  JSON.stringify(seller));
+        localStorage.setItem('customer_token', token);
+        localStorage.setItem('customer_user', JSON.stringify(user));
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     },
     CLEAR_AUTH(state) {
@@ -29,6 +31,8 @@ const mutations = {
         localStorage.removeItem('seller_token');
         localStorage.removeItem('seller_user');
         localStorage.removeItem('seller_store');
+        localStorage.removeItem('customer_token');
+        localStorage.removeItem('customer_user');
         delete axios.defaults.headers.common['Authorization'];
     },
     UPDATE_SELLER(state, seller) {
@@ -46,7 +50,7 @@ const actions = {
     async login({ commit }, credentials) {
         const { data } = await axios.post('/login', credentials);
 
-        if (data.user.role !== 'seller') {
+        if (!['seller', 'both'].includes(data.user.role)) {
             throw new Error('Access denied. Seller account required.');
         }
 

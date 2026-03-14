@@ -162,7 +162,7 @@ var render = function render() {
   }, [_c("a", {
     staticClass: "flex flex-col items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-orange-500/50 rounded-lg py-3 px-2 transition-all group",
     attrs: {
-      href: "/seller/app#/login"
+      href: "/seller"
     }
   }, [_c("svg", {
     staticClass: "w-5 h-5 text-orange-400 group-hover:text-orange-300",
@@ -183,7 +183,7 @@ var render = function render() {
   }, [_vm._v("Seller Sign In")])]), _vm._v(" "), _c("a", {
     staticClass: "flex flex-col items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-orange-500/50 rounded-lg py-3 px-2 transition-all group",
     attrs: {
-      href: "/shop#/login"
+      href: "/login"
     }
   }, [_c("svg", {
     staticClass: "w-5 h-5 text-orange-400 group-hover:text-orange-300",

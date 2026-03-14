@@ -30,7 +30,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'user'  => $user,
+            'user'  => $user->load('seller'),
             'token' => $token,
             'role'  => $user->role,
         ]);
@@ -65,7 +65,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return response()->json($request->user()->load('seller'));
     }
 
     /**
@@ -81,11 +81,18 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        // Only customers can upgrade to seller role
-        if ($user->role !== 'customer') {
+        if ($user->role === 'admin') {
             return response()->json([
-                'message' => 'Only customers can upgrade to seller role.',
+                'message' => 'Admin account cannot become seller.',
             ], 403);
+        }
+
+        if (in_array($user->role, ['seller', 'both'], true)) {
+            return response()->json([
+                'message' => 'Seller mode is already active on this account.',
+                'user'    => $user->load('seller'),
+                'role'    => $user->role,
+            ]);
         }
 
         $user->update([
@@ -106,7 +113,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Successfully upgraded to seller!',
-            'user'    => $user,
+            'user'    => $user->load('seller'),
             'role'    => $user->role,
         ]);
     }

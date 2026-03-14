@@ -9,7 +9,7 @@ axios.defaults.baseURL = '/api';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept'] = 'application/json';
 
-const token = localStorage.getItem('customer_token');
+const token = localStorage.getItem('customer_token') || localStorage.getItem('seller_token');
 if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
@@ -20,6 +20,9 @@ axios.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('customer_token');
       localStorage.removeItem('customer_user');
+      localStorage.removeItem('seller_token');
+      localStorage.removeItem('seller_user');
+      localStorage.removeItem('seller_store');
       window.location.href = '/login';
     }
     return Promise.reject(error);

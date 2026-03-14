@@ -3,8 +3,8 @@
     <div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
       <div class="w-full max-w-md">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-black text-stone-900">Welcome Back</h1>
-          <p class="text-stone-500 mt-1">Sign in to your NurbanNxt account</p>
+          <h1 class="text-3xl font-black text-white">Welcome Back</h1>
+          <p class="text-slate-400 mt-1">Sign in to your NurbanNxt account</p>
         </div>
 
         <div class="bg-white rounded-2xl border border-stone-100 p-8 shadow-sm">
@@ -31,8 +31,7 @@
           </p>
 
           <p class="text-center text-xs text-stone-400 mt-3">
-            Are you a seller?
-            <a href="/seller/app#/login" class="text-stone-600 hover:text-stone-900">Seller Sign In →</a>
+            Seller mode is available after login in your account dashboard.
           </p>
         </div>
       </div>
@@ -60,7 +59,11 @@ export default {
       try {
         await this.$store.dispatch('auth/login', this.form);
         const redirect = this.$route.query.redirect || '/account';
-        this.$router.push(redirect);
+        if (redirect.includes('/seller') || redirect.includes('/admin')) {
+          window.location.href = redirect;
+        } else {
+          this.$router.push(redirect);
+        }
       } catch (e) {
         const resp = e.response && e.response.data;
         this.error = (resp && resp.message) ? resp.message : (e.message || 'Login failed.');

@@ -43,7 +43,7 @@
                 Sign in with your approved seller account to manage products, view orders, track earnings, and grow your store on NurbanNxt.
             </p>
 
-            <a href="/seller/app#/login"
+            <a href="{{ url('/seller/app#/login') }}"
                class="inline-flex items-center justify-center gap-2 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-lg shadow-orange-500/20">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -54,7 +54,7 @@
 
             <p class="text-slate-600 text-xs mt-4">
                 Not a seller yet?
-                <a href="/" class="text-orange-500 hover:text-orange-400 transition-colors">Visit the store →</a>
+                <a href="{{ url('/') }}" class="text-orange-500 hover:text-orange-400 transition-colors">Visit the store â†’</a>
             </p>
         </div>
     </div>

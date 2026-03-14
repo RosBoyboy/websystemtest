@@ -38,6 +38,16 @@
 
     <!-- Logout -->
     <div class="px-2 py-4 border-t border-slate-800">
+      <a
+        href="/"
+        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors mb-2"
+      >
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1V9.75z"/>
+        </svg>
+        <span v-if="!collapsed" class="text-sm font-medium">Go to Shop</span>
+      </a>
+
       <button
         @click="logout"
         class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-400 hover:bg-red-900/40 hover:text-red-400 transition-colors"
@@ -94,7 +104,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('auth/logout');
-      this.$router.push({ name: 'seller.login' });
+      window.location.href = '/login';
     },
   },
 };

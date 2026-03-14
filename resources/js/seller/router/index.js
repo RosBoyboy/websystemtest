@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 const SellerLayout    = () => import('../components/layout/SellerLayout.vue');
-const SellerLogin     = () => import('../components/auth/SellerLogin.vue');
 const Dashboard       = () => import('../components/dashboard/Dashboard.vue');
 const ProductList     = () => import('../components/products/ProductList.vue');
 const ProductForm     = () => import('../components/products/ProductForm.vue');
@@ -16,12 +15,6 @@ const SellerProfile   = () => import('../components/profile/SellerProfile.vue');
 const SellerChat      = () => import('../components/chat/SellerChat.vue');
 
 const routes = [
-    {
-        path: '/login',
-        name: 'seller.login',
-        component: SellerLogin,
-        meta: { guest: true },
-    },
     {
         path: '/',
         component: SellerLayout,
@@ -49,14 +42,18 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('seller_token');
+    const token = localStorage.getItem('seller_token') || localStorage.getItem('customer_token');
+    const user = JSON.parse(localStorage.getItem('seller_user') || localStorage.getItem('customer_user') || 'null');
+
     if (to.meta.requiresAuth && !token) {
-        next({ name: 'seller.login' });
-    } else if (to.meta.guest && token) {
-        next({ name: 'seller.dashboard' });
-    } else {
-        next();
+        window.location.href = '/login?redirect=/seller/app#/';
+        return;
+    } else if (to.meta.requiresAuth && user && !['seller', 'both'].includes(user.role)) {
+        window.location.href = '/';
+        return;
     }
+
+    next();
 });
 
 export default router;

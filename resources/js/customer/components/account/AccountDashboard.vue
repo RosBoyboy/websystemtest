@@ -106,6 +106,43 @@
             </div>
           </div>
 
+          <!-- Seller tab -->
+          <div v-if="activeTab === 'seller'" class="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+            <h2 class="text-lg font-bold text-white mb-2">Seller Center</h2>
+            <p class="text-sm text-slate-400 mb-5">Use the same account for shopping and selling.</p>
+
+            <div v-if="sellerSuccess" class="mb-4 p-3 bg-green-900/50 border border-green-800 rounded-lg text-green-300 text-sm">{{ sellerSuccess }}</div>
+            <div v-if="sellerError" class="mb-4 p-3 bg-red-900/50 border border-red-800 rounded-lg text-red-300 text-sm">{{ sellerError }}</div>
+
+            <div v-if="isSellerMode" class="space-y-4">
+              <div class="p-4 rounded-xl border border-slate-700 bg-slate-900">
+                <p class="text-slate-300 text-sm">Seller mode is active on this account.</p>
+                <p class="text-xs mt-1" :class="sellerStatus === 'approved' ? 'text-green-400' : 'text-yellow-400'">
+                  Verification status: {{ sellerStatus }}
+                </p>
+              </div>
+              <a href="/seller/app#/" class="inline-flex items-center px-4 py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors">
+                Open Seller Dashboard
+              </a>
+            </div>
+
+            <form v-else @submit.prevent="activateSeller" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Shop Name</label>
+                <input v-model="sellerForm.shop_name" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors" placeholder="Your Shop Name" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Shop Description</label>
+                <textarea v-model="sellerForm.shop_description" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors resize-none" placeholder="Tell customers about your shop"></textarea>
+              </div>
+              <button type="submit" :disabled="activatingSeller" class="btn-primary py-2.5 px-6 disabled:opacity-50">
+                <span v-if="activatingSeller">Activating…</span>
+                <span v-else>Yes, I want to be a seller</span>
+              </button>
+              <p class="text-xs text-slate-500">Seller access may require admin approval before all tools are enabled.</p>
+            </form>
+          </div>
+
           <!-- Overview tab -->
           <div v-if="activeTab === 'overview'" class="space-y-4">
             <!-- Welcome card -->
@@ -149,6 +186,7 @@ export default {
       tabs: [
         { key: 'overview', label: 'Overview', icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' },
         { key: 'orders',   label: 'My Orders', icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>' },
+        { key: 'seller',   label: 'Seller Center', icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 17l9 4 9-4"/><path d="M3 12l9 4 9-4"/></svg>' },
         { key: 'profile',  label: 'Profile',   icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
         { key: 'messages', label: 'Messages',  icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>' },
       ],
@@ -158,11 +196,23 @@ export default {
       savingProfile:  false,
       profileSuccess: null,
       profileError:   null,
+      sellerForm:     { shop_name: '', shop_description: '' },
+      activatingSeller: false,
+      sellerSuccess:  null,
+      sellerError:    null,
     };
   },
   computed: {
     currentUser() { return this.$store.getters['auth/currentUser']; },
     cartCount()   { return this.$store.getters['cart/itemCount']; },
+    isSellerMode() {
+      return this.currentUser && ['seller', 'both'].includes(this.currentUser.role);
+    },
+    sellerStatus() {
+      return this.currentUser && this.currentUser.seller && this.currentUser.seller.status
+        ? this.currentUser.seller.status
+        : 'pending';
+    },
   },
   created() {
     this.loadProfile();
@@ -209,6 +259,20 @@ export default {
     async logout() {
       await this.$store.dispatch('auth/logout');
       this.$router.push({ name: 'home' });
+    },
+    async activateSeller() {
+      this.sellerError = null;
+      this.sellerSuccess = null;
+      this.activatingSeller = true;
+      try {
+        const data = await this.$store.dispatch('auth/becomeSeller', this.sellerForm);
+        this.sellerSuccess = data.message || 'Seller mode activated.';
+      } catch (e) {
+        const resp = e.response && e.response.data;
+        this.sellerError = (resp && resp.message) ? resp.message : 'Failed to activate seller mode.';
+      } finally {
+        this.activatingSeller = false;
+      }
     },
     formatDate(d) {
       if (!d) return '';

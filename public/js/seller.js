@@ -60,9 +60,6 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_router__WEBPACK_IMPORTED_MOD
 var SellerLayout = function SellerLayout() {
   return __webpack_require__.e(/*! import() */ "resources_js_seller_components_layout_SellerLayout_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/layout/SellerLayout.vue */ "./resources/js/seller/components/layout/SellerLayout.vue"));
 };
-var SellerLogin = function SellerLogin() {
-  return __webpack_require__.e(/*! import() */ "resources_js_seller_components_auth_SellerLogin_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/auth/SellerLogin.vue */ "./resources/js/seller/components/auth/SellerLogin.vue"));
-};
 var Dashboard = function Dashboard() {
   return __webpack_require__.e(/*! import() */ "resources_js_seller_components_dashboard_Dashboard_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/dashboard/Dashboard.vue */ "./resources/js/seller/components/dashboard/Dashboard.vue"));
 };
@@ -91,13 +88,6 @@ var SellerChat = function SellerChat() {
   return __webpack_require__.e(/*! import() */ "resources_js_seller_components_chat_SellerChat_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/chat/SellerChat.vue */ "./resources/js/seller/components/chat/SellerChat.vue"));
 };
 var routes = [{
-  path: '/login',
-  name: 'seller.login',
-  component: SellerLogin,
-  meta: {
-    guest: true
-  }
-}, {
   path: '/',
   component: SellerLayout,
   meta: {
@@ -154,18 +144,16 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: routes
 });
 router.beforeEach(function (to, from, next) {
-  var token = localStorage.getItem('seller_token');
+  var token = localStorage.getItem('seller_token') || localStorage.getItem('customer_token');
+  var user = JSON.parse(localStorage.getItem('seller_user') || localStorage.getItem('customer_user') || 'null');
   if (to.meta.requiresAuth && !token) {
-    next({
-      name: 'seller.login'
-    });
-  } else if (to.meta.guest && token) {
-    next({
-      name: 'seller.dashboard'
-    });
-  } else {
-    next();
+    window.location.href = '/login?redirect=/seller/app#/';
+    return;
+  } else if (to.meta.requiresAuth && user && !['seller', 'both'].includes(user.role)) {
+    window.location.href = '/';
+    return;
   }
+  next();
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
@@ -219,9 +207,9 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 var state = {
-  user: JSON.parse(localStorage.getItem('seller_user') || 'null'),
+  user: JSON.parse(localStorage.getItem('seller_user') || localStorage.getItem('customer_user') || 'null'),
   seller: JSON.parse(localStorage.getItem('seller_store') || 'null'),
-  token: localStorage.getItem('seller_token') || null
+  token: localStorage.getItem('seller_token') || localStorage.getItem('customer_token') || null
 };
 var getters = {
   isAuthenticated: function isAuthenticated(s) {
@@ -245,6 +233,8 @@ var mutations = {
     localStorage.setItem('seller_token', token);
     localStorage.setItem('seller_user', JSON.stringify(user));
     localStorage.setItem('seller_store', JSON.stringify(seller));
+    localStorage.setItem('customer_token', token);
+    localStorage.setItem('customer_user', JSON.stringify(user));
     axios__WEBPACK_IMPORTED_MODULE_0__["default"].defaults.headers.common['Authorization'] = "Bearer ".concat(token);
   },
   CLEAR_AUTH: function CLEAR_AUTH(state) {
@@ -254,6 +244,8 @@ var mutations = {
     localStorage.removeItem('seller_token');
     localStorage.removeItem('seller_user');
     localStorage.removeItem('seller_store');
+    localStorage.removeItem('customer_token');
+    localStorage.removeItem('customer_user');
     delete axios__WEBPACK_IMPORTED_MODULE_0__["default"].defaults.headers.common['Authorization'];
   },
   UPDATE_SELLER: function UPDATE_SELLER(state, seller) {
@@ -290,7 +282,7 @@ var actions = {
           case 1:
             _yield$axios$post2 = _context2.v;
             data = _yield$axios$post2.data;
-            if (!(data.user.role !== 'seller')) {
+            if (['seller', 'both'].includes(data.user.role)) {
               _context2.n = 2;
               break;
             }
@@ -24714,7 +24706,7 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_seller_components_layout_SellerLayout_vue":1,"resources_js_seller_components_auth_SellerLogin_vue":1,"resources_js_seller_components_dashboard_Dashboard_vue":1,"resources_js_seller_components_products_ProductList_vue":1,"resources_js_seller_components_products_ProductForm_vue":1,"resources_js_seller_components_orders_OrderList_vue":1,"resources_js_seller_components_orders_OrderDetail_vue":1,"resources_js_seller_components_inventory_InventoryManager_vue":1,"resources_js_seller_components_earnings_EarningsAnalytics_vue":1,"resources_js_seller_components_profile_SellerProfile_vue":1,"resources_js_seller_components_chat_SellerChat_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_seller_components_layout_SellerLayout_vue":1,"resources_js_seller_components_dashboard_Dashboard_vue":1,"resources_js_seller_components_products_ProductList_vue":1,"resources_js_seller_components_products_ProductForm_vue":1,"resources_js_seller_components_orders_OrderList_vue":1,"resources_js_seller_components_orders_OrderDetail_vue":1,"resources_js_seller_components_inventory_InventoryManager_vue":1,"resources_js_seller_components_earnings_EarningsAnalytics_vue":1,"resources_js_seller_components_profile_SellerProfile_vue":1,"resources_js_seller_components_chat_SellerChat_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
@@ -24918,7 +24910,7 @@ __webpack_require__.r(__webpack_exports__);
 
 axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.baseURL = '/api';
 axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-var token = localStorage.getItem('seller_token');
+var token = localStorage.getItem('seller_token') || localStorage.getItem('customer_token');
 if (token) {
   axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.common['Authorization'] = "Bearer ".concat(token);
 }
@@ -24929,7 +24921,9 @@ axios__WEBPACK_IMPORTED_MODULE_4__["default"].interceptors.response.use(function
     localStorage.removeItem('seller_token');
     localStorage.removeItem('seller_user');
     localStorage.removeItem('seller_store');
-    window.location.href = '/seller/app#/login';
+    localStorage.removeItem('customer_token');
+    localStorage.removeItem('customer_user');
+    window.location.href = '/login';
   }
   return Promise.reject(error);
 });

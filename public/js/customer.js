@@ -57,6 +57,10 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         label: 'My Orders',
         icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>'
       }, {
+        key: 'seller',
+        label: 'Seller Center',
+        icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 17l9 4 9-4"/><path d="M3 12l9 4 9-4"/></svg>'
+      }, {
         key: 'profile',
         label: 'Profile',
         icon: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
@@ -76,7 +80,14 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       },
       savingProfile: false,
       profileSuccess: null,
-      profileError: null
+      profileError: null,
+      sellerForm: {
+        shop_name: '',
+        shop_description: ''
+      },
+      activatingSeller: false,
+      sellerSuccess: null,
+      sellerError: null
     };
   },
   computed: {
@@ -85,6 +96,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     },
     cartCount: function cartCount() {
       return this.$store.getters['cart/itemCount'];
+    },
+    isSellerMode: function isSellerMode() {
+      return this.currentUser && ['seller', 'both'].includes(this.currentUser.role);
+    },
+    sellerStatus: function sellerStatus() {
+      return this.currentUser && this.currentUser.seller && this.currentUser.seller.status ? this.currentUser.seller.status : 'pending';
     }
   },
   created: function created() {
@@ -194,6 +211,39 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         }, _callee3);
       }))();
     },
+    activateSeller: function activateSeller() {
+      var _this4 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+        var data, resp, _t3;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _this4.sellerError = null;
+              _this4.sellerSuccess = null;
+              _this4.activatingSeller = true;
+              _context4.p = 1;
+              _context4.n = 2;
+              return _this4.$store.dispatch('auth/becomeSeller', _this4.sellerForm);
+            case 2:
+              data = _context4.v;
+              _this4.sellerSuccess = data.message || 'Seller mode activated.';
+              _context4.n = 4;
+              break;
+            case 3:
+              _context4.p = 3;
+              _t3 = _context4.v;
+              resp = _t3.response && _t3.response.data;
+              _this4.sellerError = resp && resp.message ? resp.message : 'Failed to activate seller mode.';
+            case 4:
+              _context4.p = 4;
+              _this4.activatingSeller = false;
+              return _context4.f(4);
+            case 5:
+              return _context4.a(2);
+          }
+        }, _callee4, null, [[1, 3, 4, 5]]);
+      }))();
+    },
     formatDate: function formatDate(d) {
       if (!d) return '';
       return new Date(d).toLocaleDateString('en-US', {
@@ -264,7 +314,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               return _this.$store.dispatch('auth/login', _this.form);
             case 2:
               redirect = _this.$route.query.redirect || '/account';
-              _this.$router.push(redirect);
+              if (redirect.includes('/seller') || redirect.includes('/admin')) {
+                window.location.href = redirect;
+              } else {
+                _this.$router.push(redirect);
+              }
               _context.n = 4;
               break;
             case 3:
@@ -2159,7 +2213,93 @@ var render = function render() {
         name: "orders"
       }
     }
-  }, [_vm._v("View all orders →")])], 2)]) : _vm._e(), _vm._v(" "), _vm.activeTab === "overview" ? _c("div", {
+  }, [_vm._v("View all orders →")])], 2)]) : _vm._e(), _vm._v(" "), _vm.activeTab === "seller" ? _c("div", {
+    staticClass: "bg-slate-800 rounded-2xl border border-slate-700 p-6"
+  }, [_c("h2", {
+    staticClass: "text-lg font-bold text-white mb-2"
+  }, [_vm._v("Seller Center")]), _vm._v(" "), _c("p", {
+    staticClass: "text-sm text-slate-400 mb-5"
+  }, [_vm._v("Use the same account for shopping and selling.")]), _vm._v(" "), _vm.sellerSuccess ? _c("div", {
+    staticClass: "mb-4 p-3 bg-green-900/50 border border-green-800 rounded-lg text-green-300 text-sm"
+  }, [_vm._v(_vm._s(_vm.sellerSuccess))]) : _vm._e(), _vm._v(" "), _vm.sellerError ? _c("div", {
+    staticClass: "mb-4 p-3 bg-red-900/50 border border-red-800 rounded-lg text-red-300 text-sm"
+  }, [_vm._v(_vm._s(_vm.sellerError))]) : _vm._e(), _vm._v(" "), _vm.isSellerMode ? _c("div", {
+    staticClass: "space-y-4"
+  }, [_c("div", {
+    staticClass: "p-4 rounded-xl border border-slate-700 bg-slate-900"
+  }, [_c("p", {
+    staticClass: "text-slate-300 text-sm"
+  }, [_vm._v("Seller mode is active on this account.")]), _vm._v(" "), _c("p", {
+    staticClass: "text-xs mt-1",
+    "class": _vm.sellerStatus === "approved" ? "text-green-400" : "text-yellow-400"
+  }, [_vm._v("\n                Verification status: " + _vm._s(_vm.sellerStatus) + "\n              ")])]), _vm._v(" "), _c("a", {
+    staticClass: "inline-flex items-center px-4 py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors",
+    attrs: {
+      href: "/seller/app#/"
+    }
+  }, [_vm._v("\n              Open Seller Dashboard\n            ")])]) : _c("form", {
+    staticClass: "space-y-4",
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.activateSeller.apply(null, arguments);
+      }
+    }
+  }, [_c("div", [_c("label", {
+    staticClass: "block text-xs font-semibold text-slate-400 uppercase mb-1"
+  }, [_vm._v("Shop Name")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.sellerForm.shop_name,
+      expression: "sellerForm.shop_name"
+    }],
+    staticClass: "w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors",
+    attrs: {
+      required: "",
+      placeholder: "Your Shop Name"
+    },
+    domProps: {
+      value: _vm.sellerForm.shop_name
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.sellerForm, "shop_name", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "block text-xs font-semibold text-slate-400 uppercase mb-1"
+  }, [_vm._v("Shop Description")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.sellerForm.shop_description,
+      expression: "sellerForm.shop_description"
+    }],
+    staticClass: "w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors resize-none",
+    attrs: {
+      rows: "3",
+      placeholder: "Tell customers about your shop"
+    },
+    domProps: {
+      value: _vm.sellerForm.shop_description
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.sellerForm, "shop_description", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("button", {
+    staticClass: "btn-primary py-2.5 px-6 disabled:opacity-50",
+    attrs: {
+      type: "submit",
+      disabled: _vm.activatingSeller
+    }
+  }, [_vm.activatingSeller ? _c("span", [_vm._v("Activating…")]) : _c("span", [_vm._v("Yes, I want to be a seller")])]), _vm._v(" "), _c("p", {
+    staticClass: "text-xs text-slate-500"
+  }, [_vm._v("Seller access may require admin approval before all tools are enabled.")])])]) : _vm._e(), _vm._v(" "), _vm.activeTab === "overview" ? _c("div", {
     staticClass: "space-y-4"
   }, [_c("div", {
     staticClass: "bg-orange-500 text-white rounded-2xl p-6"
@@ -2228,9 +2368,9 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "text-center mb-8"
   }, [_c("h1", {
-    staticClass: "text-3xl font-black text-stone-900"
+    staticClass: "text-3xl font-black text-white"
   }, [_vm._v("Welcome Back")]), _vm._v(" "), _c("p", {
-    staticClass: "text-stone-500 mt-1"
+    staticClass: "text-slate-400 mt-1"
   }, [_vm._v("Sign in to your NurbanNxt account")])]), _vm._v(" "), _c("div", {
     staticClass: "bg-white rounded-2xl border border-stone-100 p-8 shadow-sm"
   }, [_vm.error ? _c("div", {
@@ -2308,12 +2448,7 @@ var render = function render() {
     }
   }, [_vm._v("Create one")])], 1), _vm._v(" "), _c("p", {
     staticClass: "text-center text-xs text-stone-400 mt-3"
-  }, [_vm._v("\n          Are you a seller?\n          "), _c("a", {
-    staticClass: "text-stone-600 hover:text-stone-900",
-    attrs: {
-      href: "/seller/app#/login"
-    }
-  }, [_vm._v("Seller Sign In →")])])])])])]);
+  }, [_vm._v("\n          Seller mode is available after login in your account dashboard.\n        ")])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2343,9 +2478,9 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "text-center mb-8"
   }, [_c("h1", {
-    staticClass: "text-3xl font-black text-stone-900"
+    staticClass: "text-3xl font-black text-white"
   }, [_vm._v("Create Account")]), _vm._v(" "), _c("p", {
-    staticClass: "text-stone-500 mt-1"
+    staticClass: "text-slate-400 mt-1"
   }, [_vm._v("Join NurbanNxt and start shopping")])]), _vm._v(" "), _c("div", {
     staticClass: "bg-white rounded-2xl border border-stone-100 p-8 shadow-sm"
   }, [_vm.error ? _c("div", {
@@ -7115,7 +7250,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   }
 });
 router.beforeEach(function (to, from, next) {
-  var token = localStorage.getItem('customer_token');
+  var token = localStorage.getItem('customer_token') || localStorage.getItem('seller_token');
   if (to.meta.auth && !token) {
     next({
       name: 'login',
@@ -7179,8 +7314,8 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 var state = {
-  user: JSON.parse(localStorage.getItem('customer_user') || 'null'),
-  token: localStorage.getItem('customer_token') || null
+  user: JSON.parse(localStorage.getItem('customer_user') || localStorage.getItem('seller_user') || 'null'),
+  token: localStorage.getItem('customer_token') || localStorage.getItem('seller_token') || null
 };
 var getters = {
   isAuthenticated: function isAuthenticated(s) {
@@ -7198,6 +7333,8 @@ var mutations = {
     state.token = token;
     localStorage.setItem('customer_token', token);
     localStorage.setItem('customer_user', JSON.stringify(user));
+    localStorage.setItem('seller_token', token);
+    localStorage.setItem('seller_user', JSON.stringify(user));
     axios__WEBPACK_IMPORTED_MODULE_0__["default"].defaults.headers.common['Authorization'] = "Bearer ".concat(token);
   },
   CLEAR_AUTH: function CLEAR_AUTH(state) {
@@ -7205,11 +7342,15 @@ var mutations = {
     state.token = null;
     localStorage.removeItem('customer_token');
     localStorage.removeItem('customer_user');
+    localStorage.removeItem('seller_token');
+    localStorage.removeItem('seller_user');
+    localStorage.removeItem('seller_store');
     delete axios__WEBPACK_IMPORTED_MODULE_0__["default"].defaults.headers.common['Authorization'];
   },
   UPDATE_USER: function UPDATE_USER(state, user) {
     state.user = user;
     localStorage.setItem('customer_user', JSON.stringify(user));
+    localStorage.setItem('seller_user', JSON.stringify(user));
   }
 };
 var actions = {
@@ -7221,15 +7362,15 @@ var actions = {
           case 0:
             commit = _ref2.commit;
             _context.n = 1;
-            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/login', credentials);
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/auth/login', credentials);
           case 1:
             _yield$axios$post = _context.v;
             data = _yield$axios$post.data;
-            if (!(data.user.role !== 'customer')) {
+            if (!(data.user.role === 'admin')) {
               _context.n = 2;
               break;
             }
-            throw new Error('This login is for customers only.');
+            throw new Error('Admin accounts must use the admin portal.');
           case 2:
             commit('SET_AUTH', {
               user: data.user,
@@ -7294,7 +7435,7 @@ var actions = {
             commit = _ref5.commit;
             _context4.p = 1;
             _context4.n = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/account');
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/user');
           case 2:
             _yield$axios$get = _context4.v;
             data = _yield$axios$get.data;
@@ -7308,6 +7449,26 @@ var actions = {
             return _context4.a(2);
         }
       }, _callee4, null, [[1, 3]]);
+    }))();
+  },
+  becomeSeller: function becomeSeller(_ref6, payload) {
+    return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var commit, _yield$axios$patch, data;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.n) {
+          case 0:
+            commit = _ref6.commit;
+            _context5.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].patch('/user/become-seller', payload);
+          case 1:
+            _yield$axios$patch = _context5.v;
+            data = _yield$axios$patch.data;
+            if (data.user) {
+              commit('UPDATE_USER', data.user);
+            }
+            return _context5.a(2, data);
+        }
+      }, _callee5);
     }))();
   }
 };
@@ -43145,7 +43306,7 @@ __webpack_require__.r(__webpack_exports__);
 axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.baseURL = '/api';
 axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.common['Accept'] = 'application/json';
-var token = localStorage.getItem('customer_token');
+var token = localStorage.getItem('customer_token') || localStorage.getItem('seller_token');
 if (token) {
   axios__WEBPACK_IMPORTED_MODULE_4__["default"].defaults.headers.common['Authorization'] = "Bearer ".concat(token);
 }
@@ -43155,6 +43316,9 @@ axios__WEBPACK_IMPORTED_MODULE_4__["default"].interceptors.response.use(function
   if (error.response && error.response.status === 401) {
     localStorage.removeItem('customer_token');
     localStorage.removeItem('customer_user');
+    localStorage.removeItem('seller_token');
+    localStorage.removeItem('seller_user');
+    localStorage.removeItem('seller_store');
     window.location.href = '/login';
   }
   return Promise.reject(error);
