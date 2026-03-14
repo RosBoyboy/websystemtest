@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ────────────────────────────────────── */
+:root {
+    --nn-black:    #0a0a0a;
+    --nn-offwhite: #f0ece3;
+    --nn-cream:    #e8e0d0;
+    --nn-orange:   #f97316;
+    --nn-rust:     #e05c2a;
+    --nn-grey:     #2a2a2a;
+    --nn-mid:      #5a5a5a;
+}
+
+@layer base {
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background-color: var(--nn-black);
+        color: var(--nn-offwhite);
+        overflow-x: hidden;
+    }
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    ::selection {
+        background: var(--nn-orange);
+        color: #000;
+    }
+}
+
+/* ─── Grain Overlay ─────────────────────────────────────── */
+.nn-grain {
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 8888; opacity: 0.55;
+}
+
+/* ─── Ticker / Marquee ──────────────────────────────────── */
+@keyframes nn-ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.nn-ticker { animation: nn-ticker 22s linear infinite; }
+.nn-ticker-slow { animation: nn-ticker 32s linear infinite; }
+
+/* ─── Floating / Spin ───────────────────────────────────── */
+@keyframes nn-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes nn-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-10px) rotate(5deg); }
+}
+.nn-badge-anim {
+    animation: nn-spin 14s linear infinite, nn-float 4s ease-in-out infinite;
+}
+
+/* ─── Scroll Reveal ─────────────────────────────────────── */
+.nn-reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.nn-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ─── Nav scrolled state ─────────────────────────────────── */
+.nn-nav-scrolled {
+    background: rgba(10,10,10,0.96) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(240,236,227,0.06);
+}
+
+/* ─── Buttons ───────────────────────────────────────────── */
+@layer components {
+    .btn-primary {
+        position: relative; overflow: hidden;
+        background: var(--nn-orange); color: var(--nn-black);
+        font-family: 'Syne', sans-serif; font-weight: 700;
+        font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+        padding: 14px 34px;
+        border: none; cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover { background: var(--nn-offwhite); transform: translateY(-1px); }
+
+    .btn-ghost {
+        background: transparent; color: var(--nn-offwhite);
+        font-family: 'Syne', sans-serif; font-weight: 600;
+        font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+        border: 1px solid rgba(240,236,227,0.3);
+        padding: 14px 34px; cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-ghost:hover { border-color: var(--nn-orange); color: var(--nn-orange); }
+
+    .btn-orange {
+        background: var(--nn-orange); color: var(--nn-black);
+        font-family: 'Syne', sans-serif; font-weight: 700;
+        font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+        padding: 14px 34px; border: none; cursor: pointer;
+        transition: background 0.2s;
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-orange:hover { background: var(--nn-offwhite); }
+
+    .btn-outline {
+        background: transparent; color: rgba(240,236,227,0.7);
+        font-family: 'Syne', sans-serif; font-weight: 600;
+        font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+        border: 1px solid rgba(240,236,227,0.25); padding: 14px 34px; cursor: pointer;
+        transition: border-color 0.2s, color 0.2s;
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-outline:hover { border-color: var(--nn-orange); color: var(--nn-orange); }
+
+    /* Input ── dark theme */
+    .input-field {
+        width: 100%; background: rgba(240,236,227,0.06);
+        border: 1px solid rgba(240,236,227,0.15);
+        padding: 12px 16px;
+        color: var(--nn-offwhite);
+        font-family: 'DM Sans', sans-serif; font-size: 14px;
+        transition: border-color 0.2s;
+        outline: none;
+    }
+    .input-field::placeholder { color: rgba(240,236,227,0.35); }
+    .input-field:focus { border-color: var(--nn-orange); }
+
+    .product-card {
+        background: var(--nn-grey);
+        overflow: hidden; cursor: pointer;
+        position: relative;
+    }
+    .badge {
+        display: inline-flex; align-items: center;
+        padding: 3px 10px; font-size: 10px;
+        font-family: 'Syne', sans-serif; font-weight: 700;
+        letter-spacing: 0.15em; text-transform: uppercase;
+    }
+
+    /* Thin scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--nn-grey); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--nn-mid); }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ─── Section label line ────────────────────────────────── */
+.section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Syne', sans-serif; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--nn-orange); margin-bottom: 12px;
+}
+.section-label::before {
+    content: ''; display: block;
+    width: 30px; height: 1px; background: var(--nn-orange);
+    flex-shrink: 0;
+}

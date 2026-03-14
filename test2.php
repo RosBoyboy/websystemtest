@@ -1,0 +1,1 @@
+<?php require "vendor/autoload.php"; $app = require "bootstrap/app.php"; $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap(); $p = App\Models\Product::first(); $p->update(["images" => ["https://test.com/1.jpg"]]); var_dump(App\Models\Product::first()->images);

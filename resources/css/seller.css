@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbars */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 #0f172a;
+}
+
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: #0f172a; }
+*::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 3px; }
+
+/* Active nav link override */
+.nav-link-active {
+    background-color: #f97316 !important;
+    color: #fff !important;
+}
+
+/* Seller accent */
+:root {
+    --seller-accent: #f97316;
+}

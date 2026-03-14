@@ -1,0 +1,14 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+import auth from './modules/auth';
+import dashboard from './modules/dashboard';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+    modules: {
+        auth,
+        dashboard,
+    },
+    strict: process.env.NODE_ENV !== 'production',
+});

@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Admin custom styles */
+:root {
+    --sidebar-width: 260px;
+}
+
+body {
+    @apply bg-slate-950 text-slate-100;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-600 rounded;
+}
+
+/* Sidebar active link */
+.nav-link-active {
+    @apply bg-orange-500 text-white;
+}
