@@ -2,6 +2,26 @@
 
 /*
 |--------------------------------------------------------------------------
+| Vercel Serverless Storage Overrides (Early Override)
+|--------------------------------------------------------------------------
+| We must override these constants BEFORE the Laravel Application is created.
+| This prevents the caching engine from targeting read-only directories.
+*/
+if (isset($_ENV['VERCEL']) || getenv('VERCEL') || isset($_SERVER['VERCEL'])) {
+    putenv('APP_SERVICES_CACHE=/tmp/services.php');
+    putenv('APP_PACKAGES_CACHE=/tmp/packages.php');
+    putenv('APP_CONFIG_CACHE=/tmp/config.php');
+    putenv('APP_ROUTES_CACHE=/tmp/routes.php');
+    putenv('APP_EVENTS_CACHE=/tmp/events.php');
+    $_ENV['APP_SERVICES_CACHE'] = '/tmp/services.php';
+    $_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
+    $_ENV['APP_CONFIG_CACHE']   = '/tmp/config.php';
+    $_ENV['APP_ROUTES_CACHE']   = '/tmp/routes.php';
+    $_ENV['APP_EVENTS_CACHE']   = '/tmp/events.php';
+}
+
+/*
+|--------------------------------------------------------------------------
 | Create The Application
 |--------------------------------------------------------------------------
 |
@@ -14,6 +34,10 @@
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
+
+if (isset($_ENV['VERCEL']) || getenv('VERCEL') || isset($_SERVER['VERCEL'])) {
+    $app->useStoragePath('/tmp');
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -43,23 +67,6 @@ $app->singleton(
 
 /*
 |--------------------------------------------------------------------------
-| Vercel Serverless Storage Overrides
-|--------------------------------------------------------------------------
-*/
-if (isset($_ENV['VERCEL']) || getenv('VERCEL') || isset($_SERVER['VERCEL'])) {
-    $app->useStoragePath('/tmp');
-    $app->useBootstrapPath('/tmp');
-    
-    // Safety fallback overrides for environment arrays
-    $_ENV['APP_SERVICES_CACHE'] = '/tmp/services.php';
-    $_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
-    $_ENV['APP_CONFIG_CACHE']   = '/tmp/config.php';
-    $_ENV['APP_ROUTES_CACHE']   = '/tmp/routes.php';
-    $_ENV['APP_EVENTS_CACHE']   = '/tmp/events.php';
-}
-
-/*
-|--------------------------------------------------------------------------
 | Return The Application
 |--------------------------------------------------------------------------
 |
@@ -70,3 +77,4 @@ if (isset($_ENV['VERCEL']) || getenv('VERCEL') || isset($_SERVER['VERCEL'])) {
 */
 
 return $app;
+
