@@ -1,6 +1,6 @@
 <template>
   <CustomerLayout>
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-10" style="max-width:100%">
       <h1 class="text-3xl font-black text-white mb-8">My Account</h1>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

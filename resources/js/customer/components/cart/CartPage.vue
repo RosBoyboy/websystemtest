@@ -1,6 +1,6 @@
 <template>
   <CustomerLayout>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-10" style="max-width:100%">
       <h1 class="text-3xl font-black text-white mb-8">Your Cart
         <span v-if="itemCount" class="text-slate-400 font-normal text-lg ml-2">({{ itemCount }} {{ itemCount === 1 ? 'item' : 'items' }})</span>
       </h1>
@@ -22,7 +22,7 @@
           <div
             v-for="(item, index) in items"
             :key="index"
-            class="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex items-start gap-4 items-center"
+            class="bg-slate-800 rounded-2xl border border-slate-700 p-4 flex gap-4 items-center"
           >
             <!-- Checkbox -->
             <div class="flex-shrink-0 flex items-center justify-center pt-2">

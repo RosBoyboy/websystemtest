@@ -1,698 +1,1038 @@
 <template>
-  <div style="background:#0a0a0a;min-height:100vh;overflow-x:hidden;">
-    <!-- ── Grain overlay ─────────────────────────────── -->
-    <div class="nn-grain"></div>
-
-    <!-- ── NAV ───────────────────────────────────────── -->
-    <header ref="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-            style="padding:20px 48px;display:flex;align-items:center;justify-content:space-between;">
-      <!-- Fade gradient beneath nav -->
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,0.95) 0%,transparent 100%);pointer-events:none;"></div>
-
-      <!-- Logo -->
-      <router-link :to="{ name: 'home' }" style="position:relative;text-decoration:none;">
-        <span style="font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:0.12em;color:#f97316;">Nurban</span><span style="font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:0.12em;color:#f0ece3;">Nxt</span>
-      </router-link>
-
-      <!-- Desktop links -->
-      <nav class="hidden md:flex" style="gap:32px;list-style:none;position:relative;">
-        <router-link :to="{ name: 'products' }"
-          style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,236,227,0.7);text-decoration:none;transition:color 0.2s;"
-         >Shop</router-link>
-        <router-link :to="{ name: 'products', query: { sort: 'featured' } }"
-          style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,236,227,0.7);text-decoration:none;transition:color 0.2s;"
-         >Featured</router-link>
-        <router-link :to="{ name: 'products', query: { sort: 'latest' } }"
-          style="font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,236,227,0.7);text-decoration:none;transition:color 0.2s;"
-         >New In</router-link>
-      </nav>
-
-      <!-- Right controls -->
-      <div style="display:flex;align-items:center;gap:20px;position:relative;">
-        <!-- Search -->
-        <button @click="searchOpen = !searchOpen"
-          style="background:none;border:none;color:rgba(240,236,227,0.65);cursor:pointer;padding:6px;transition:color 0.2s;"
-          onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(240,236,227,0.65)'">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        </button>
-
-        <!-- Cart -->
-        <router-link :to="{ name: 'cart' }"
-          style="position:relative;text-decoration:none;color:rgba(240,236,227,0.65);padding:6px;transition:color 0.2s;"
-          onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(240,236,227,0.65)'">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-          </svg>
-          <span v-if="cartCount > 0"
-            style="position:absolute;top:-4px;right:-4px;background:#e05c2a;color:white;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;">
-            {{ cartCount > 9 ? '9+' : cartCount }}
-          </span>
-        </router-link>
-
-        <!-- Account -->
-        <div style="position:relative;" @mouseenter="accountOpen = true" @mouseleave="accountOpen = false">
-          <button
-            style="background:none;border:none;color:rgba(240,236,227,0.65);cursor:pointer;padding:6px 14px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;display:flex;align-items:center;gap:6px;"
-            onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(240,236,227,0.65)'">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span class="hidden sm:inline">{{ isAuthenticated ? firstName : 'Account' }}</span>
-          </button>
-          <div v-if="accountOpen"
-            style="position:absolute;right:0;top:100%;background:#1a1a1a;border:1px solid rgba(240,236,227,0.1);padding:6px 0;min-width:160px;z-index:60;">
-            <template v-if="isAuthenticated">
-              <router-link :to="{ name: 'account' }" class="nav-dropdown-item">My Account</router-link>
-              <router-link :to="{ name: 'orders' }" class="nav-dropdown-item">My Orders</router-link>
-              <div style="height:1px;background:rgba(240,236,227,0.08);margin:4px 0;"></div>
-              <button @click="logout" class="nav-dropdown-item" style="width:100%;text-align:left;background:none;border:none;color:#e05c2a;cursor:pointer;">Sign Out</button>
-            </template>
-            <template v-else>
-              <router-link :to="{ name: 'login' }" class="nav-dropdown-item">Sign In</router-link>
-              <router-link :to="{ name: 'register' }" class="nav-dropdown-item">Create Account</router-link>
-            </template>
-          </div>
-        </div>
-
-        <!-- Mobile hamburger -->
-        <button @click="mobileOpen = !mobileOpen" class="md:hidden"
-          style="background:none;border:none;color:rgba(240,236,227,0.7);cursor:pointer;padding:6px;">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path v-if="!mobileOpen" d="M4 6h16M4 12h16M4 18h16"/>
-            <path v-else d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Search bar dropdown -->
-      <div v-if="searchOpen"
-        style="position:absolute;top:100%;left:0;right:0;background:#111;padding:12px 48px;border-bottom:1px solid rgba(240,236,227,0.08);">
-        <div style="display:flex;gap:8px;max-width:600px;margin:0 auto;">
-          <input v-model="searchQuery" @keyup.enter="doSearch" type="text" placeholder="Search streetwear…"
-            autofocus class="input-field" style="flex:1;font-size:14px;" />
-          <button @click="doSearch" class="btn-primary" style="padding:12px 20px;flex-shrink:0;">Search</button>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <div v-if="mobileOpen"
-        style="position:absolute;top:100%;left:0;right:0;background:#111;border-bottom:1px solid rgba(240,236,227,0.08);padding:12px 24px 20px;">
-        <router-link @click.native="mobileOpen=false" :to="{ name: 'products' }" class="mobile-nav-item">Shop</router-link>
-        <router-link @click.native="mobileOpen=false" :to="{ name: 'products', query: { sort: 'featured' } }" class="mobile-nav-item">Featured</router-link>
-        <router-link @click.native="mobileOpen=false" :to="{ name: 'products', query: { sort: 'latest' } }" class="mobile-nav-item">New In</router-link>
-        <div style="height:1px;background:rgba(240,236,227,0.08);margin:8px 0;"></div>
-        <template v-if="isAuthenticated">
-          <router-link @click.native="mobileOpen=false" :to="{ name: 'account' }" class="mobile-nav-item">My Account</router-link>
-          <router-link @click.native="mobileOpen=false" :to="{ name: 'orders' }" class="mobile-nav-item">My Orders</router-link>
-          <button @click="logout" class="mobile-nav-item" style="background:none;border:none;text-align:left;color:#e05c2a;cursor:pointer;">Sign Out</button>
-        </template>
-        <template v-else>
-          <router-link @click.native="mobileOpen=false" :to="{ name: 'login' }" class="mobile-nav-item">Sign In</router-link>
-          <router-link @click.native="mobileOpen=false" :to="{ name: 'register' }" class="mobile-nav-item">Create Account</router-link>
-        </template>
-      </div>
-    </header>
-
-    <!-- ── HERO ───────────────────────────────────────── -->
-    <section class="hero-grid" style="min-height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;">
-      <!-- Left content -->
-      <div ref="heroLeft" style="display:flex;flex-direction:column;justify-content:flex-end;padding:160px 48px 80px;position:relative;z-index:2;">
-        <div class="hero-tag nn-reveal" style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:#f97316;margin-bottom:24px;display:flex;align-items:center;gap:12px;">
-          <span style="display:block;width:40px;height:1px;background:#f97316;"></span>
-          SS 2026 Collection
-        </div>
-        <h1 ref="heroTitle" style="font-family:'Bebas Neue',cursive;font-size:clamp(80px,9vw,140px);line-height:0.92;letter-spacing:0.02em;color:#f0ece3;margin-bottom:0;">
-          <span style="display:block;">WEAR</span>
-          <span style="display:block;color:#f97316;">YOUR</span>
-          <span style="display:block;-webkit-text-stroke:1px #f0ece3;color:transparent;">VIBE</span>
+  <CustomerLayout>
+    <div class="nn-page">
+      <section class="hero">
+      <div class="hero-left">
+        <div class="hero-tag">SS 2026 Collection</div>
+        <h1 class="hero-h1">
+          <span class="white">WEAR</span>
+          <span class="orange">YOUR</span>
+          <span class="outline">VIBE</span>
         </h1>
-        <p style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:300;line-height:1.7;color:rgba(240,236,227,0.6);max-width:380px;margin-top:28px;">
-          Curated aesthetics for those who live on the edge of culture. Trending styles, bold silhouettes, and unapologetic drip.
-        </p>
-        <div style="display:flex;align-items:center;gap:20px;margin-top:44px;flex-wrap:wrap;">
-          <router-link :to="{ name: 'products' }" class="btn-primary">
-            Explore Collection
-          </router-link>
-          <router-link :to="{ name: 'products', query: { sort: 'featured' } }" class="btn-ghost">
-            View Featured
-          </router-link>
+        <p class="hero-sub">Curated aesthetics for those who live on the edge of culture. Trending styles, bold silhouettes, and unapologetic drip.</p>
+        <div class="hero-btns">
+          <router-link :to="{ name: 'products' }" class="btn-orange">Explore Collection</router-link>
+          <router-link :to="{ name: 'products', query: { sort: 'featured' } }" class="btn-outline">View Featured</router-link>
         </div>
+        <div class="hero-stat">
+          <strong>2.4K+</strong>
+          <span>Happy Drippers</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-right-overlay"></div>
+        <img class="hero-product-img" src="/images/products/illus-1.png" alt="Featured product"/>
+        <div class="hero-drop-badge">
+          <span style="font-size:11px;">2026</span>
+          <span style="font-size:16px;font-weight:900;">DROP</span>
+        </div>
+      </div>
+    </section>
 
-        <!-- Stats pill — anchored right in the left panel -->
-        <div style="display:inline-flex;align-items:center;gap:16px;background:#1a1a1a;border-left:3px solid #f97316;padding:14px 20px;margin-top:28px;align-self:flex-start;">
-          <div>
-            <div style="font-family:'Bebas Neue',cursive;font-size:28px;color:#f97316;line-height:1;">2.4K+</div>
-            <div style="font-family:'Syne',sans-serif;font-size:9px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:rgba(240,236,227,0.5);margin-top:2px;">Happy Drippers</div>
+    <div class="ticker-bar">
+      <div class="ticker-inner">
+        <span v-for="(item, i) in tickerItems" :key="`t-${i}`">{{ item }}</span>
+        <span v-for="(item, i) in tickerItems" :key="`t2-${i}`">{{ item }}</span>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-head reveal">
+        <div class="section-title">TRENDING RIGHT NOW</div>
+        <router-link :to="{ name: 'products' }" class="see-all">View all products -></router-link>
+      </div>
+
+      <div class="carousel" id="trendCarousel" ref="trendCarousel" @scroll="onCarouselScroll">
+        <div v-for="product in trendingProducts" :key="product.id" class="prod-card reveal" :class="product.delayClass">
+          <div class="prod-img-wrap">
+            <img :src="product.image" :alt="product.name"/>
+            <span v-if="product.tag" class="prod-tag" :class="product.tagClass">{{ product.tag }}</span>
+            <div class="prod-hover-overlay">
+              <button class="quick-peek" @click="goProductListing">Quick View</button>
+            </div>
           </div>
-          <div style="width:1px;height:36px;background:rgba(240,236,227,0.1);"></div>
-          <div style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;color:rgba(240,236,227,0.4);line-height:1.5;">Join the<br>culture.</div>
-        </div>
-      </div>
-
-      <!-- Right image -->
-      <div ref="heroRight" style="position:relative;overflow:hidden;">
-        <div style="position:absolute;inset:0;overflow:hidden;">
-          <img src="/images/products/illus-hero.png" alt="Hero look"
-            ref="heroImg"
-            style="width:100%;height:100%;object-fit:cover;filter:saturate(0.85) contrast(1.1);transform:scale(1.04);transition:transform 8s ease;" />
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,10,0.5) 0%,transparent 60%);"></div>
-        </div>
-        <!-- Spinning badge -->
-        <div class="nn-badge-anim"
-          style="position:absolute;bottom:48px;right:48px;background:#f97316;color:#0a0a0a;width:88px;height:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;z-index:5;">
-          <span style="font-size:10px;letter-spacing:0.15em;">NEW</span>
-          <strong style="font-size:22px;line-height:1;">DROP</strong>
-          <span style="font-size:10px;letter-spacing:0.1em;">2026</span>
-        </div>
-        <!-- Stats pill removed from here, now in left panel -->
-      </div>
-    </section>
-
-    <!-- ── TICKER ─────────────────────────────────────── -->
-    <div style="background:#f97316;overflow:hidden;padding:12px 0;position:relative;z-index:10;">
-      <div class="nn-ticker" style="display:flex;white-space:nowrap;">
-        <span v-for="item in tickerItems" :key="item" style="font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:0.1em;color:#0a0a0a;padding:0 28px;display:inline-flex;align-items:center;gap:14px;">
-          <span style="width:5px;height:5px;background:#0a0a0a;border-radius:50%;flex-shrink:0;display:inline-block;"></span>
-          {{ item }}
-        </span>
-        <!-- Duplicate for seamless loop -->
-        <span v-for="item in tickerItems" :key="'b-'+item" style="font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:0.1em;color:#0a0a0a;padding:0 28px;display:inline-flex;align-items:center;gap:14px;">
-          <span style="width:5px;height:5px;background:#0a0a0a;border-radius:50%;flex-shrink:0;display:inline-block;"></span>
-          {{ item }}
-        </span>
-      </div>
-    </div>
-
-    <!-- ── FEATURED PRODUCTS ──────────────────────────── -->
-    <section style="padding:100px 48px;" ref="featuredSection">
-      <div class="nn-reveal" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px;flex-wrap:wrap;gap:16px;">
-        <div>
-          <div class="section-label">This Week's Drops</div>
-          <h2 style="font-family:'Bebas Neue',cursive;font-size:clamp(48px,5vw,72px);line-height:0.95;letter-spacing:0.02em;color:#f0ece3;">
-            TRENDING <span style="-webkit-text-stroke:1px rgba(240,236,227,0.4);color:transparent;">RIGHT</span><br>NOW
-          </h2>
-        </div>
-        <router-link :to="{ name: 'products', query: { sort: 'featured' } }"
-          style="font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,236,227,0.5);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color 0.2s;margin-bottom:8px;"
-         
-          onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(240,236,227,0.5)'">
-          View All Products →
-        </router-link>
-      </div>
-
-      <!-- Skeleton -->
-      <div v-if="loadingFeatured" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
-        <div v-for="n in 4" :key="n"
-          style="background:#1a1a1a;aspect-ratio:3/4;" class="animate-pulse">
-          <div v-if="n===1" style="aspect-ratio:auto;height:100%;"></div>
-        </div>
-      </div>
-
-      <!-- Products grid — editorial layout when ≥4 items -->
-      <div v-else-if="featuredProducts.length" class="featured-grid">
-        <DarkProductCard
-          v-for="(product, i) in featuredProducts.slice(0, 5)"
-          :key="product.id"
-          :product="product"
-          :large="i === 0"
-          :class="i === 0 ? 'featured-large' : ''"
-        />
-      </div>
-
-      <div v-else style="text-align:center;padding:80px 0;color:rgba(240,236,227,0.4);">
-        <p style="font-family:'Syne',sans-serif;font-size:14px;letter-spacing:0.1em;">No featured products yet. Check back soon!</p>
-      </div>
-    </section>
-
-    <!-- ── COLLAB BANNER ──────────────────────────────── -->
-    <div class="nn-reveal" style="margin:0 48px 80px;background:#2a2a2a;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;position:relative;min-height:480px;">
-      <div style="padding:80px 64px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;">
-        <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:#e05c2a;margin-bottom:20px;">✦ Limited Collab Drop</div>
-        <h2 style="font-family:'Bebas Neue',cursive;font-size:clamp(52px,5vw,80px);line-height:0.93;letter-spacing:0.02em;margin-bottom:24px;">
-          DRIP<br>OR<br><span style="color:#e05c2a;">SKIP?</span>
-        </h2>
-        <p style="font-size:14px;line-height:1.8;font-weight:300;color:rgba(240,236,227,0.65);max-width:340px;margin-bottom:36px;">
-          Our exclusive collab capsule is here — raw, unfiltered streetwear energy meets curated aesthetic precision. Only 100 pieces per design.
-        </p>
-        <router-link :to="{ name: 'products', query: { sort: 'featured' } }" class="btn-primary"
-          style="width:fit-content"
-         >
-          Grab the Collab →
-        </router-link>
-      </div>
-      <div style="position:relative;overflow:hidden;">
-        <img src="/images/products/hoodie-maron.png" alt="Collab drop"
-          style="width:100%;height:100%;object-fit:cover;filter:saturate(0.8) contrast(1.1);transform:scale(1.03);transition:transform 6s ease;" />
-        <div style="position:absolute;inset:0;background:linear-gradient(to left,transparent,rgba(10,10,10,0.2));"></div>
-      </div>
-      <!-- Background watermark -->
-      <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Bebas Neue',cursive;font-size:160px;color:rgba(240,236,227,0.03);pointer-events:none;letter-spacing:0.05em;white-space:nowrap;">COLLAB</div>
-    </div>
-
-    <!-- ── NEW ARRIVALS ───────────────────────────────── -->
-    <section style="padding:100px 48px;" ref="newSection">
-      <div class="nn-reveal" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px;flex-wrap:wrap;gap:16px;">
-        <div>
-          <div class="section-label">Just Landed</div>
-          <h2 style="font-family:'Bebas Neue',cursive;font-size:clamp(48px,5vw,72px);line-height:0.95;letter-spacing:0.02em;color:#f0ece3;">
-            NEW <span style="-webkit-text-stroke:1px rgba(240,236,227,0.4);color:transparent;">ARRIVALS</span>
-          </h2>
-        </div>
-        <router-link :to="{ name: 'products', query: { sort: 'latest' } }"
-          style="font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(240,236,227,0.5);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;transition:color 0.2s;margin-bottom:8px;"
-         
-          onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(240,236,227,0.5)'">
-          View All →
-        </router-link>
-      </div>
-
-      <div v-if="loadingNew" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
-        <div v-for="n in 4" :key="n" style="background:#1a1a1a;aspect-ratio:3/4;" class="animate-pulse"></div>
-      </div>
-
-      <div v-else-if="newProducts.length" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;" class="sm:grid-cols-2">
-        <DarkProductCard
-          v-for="product in newProducts.slice(0, 4)"
-          :key="product.id"
-          :product="product"
-        />
-      </div>
-    </section>
-
-    <!-- ── CATEGORIES ─────────────────────────────────── -->
-    <section style="padding:0 48px 100px;">
-      <div class="nn-reveal" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px;flex-wrap:wrap;gap:16px;">
-        <div>
-          <div class="section-label">Browse By Vibe</div>
-          <h2 style="font-family:'Bebas Neue',cursive;font-size:clamp(48px,5vw,72px);line-height:0.95;letter-spacing:0.02em;color:#f0ece3;">
-            SHOP BY<br><span style="-webkit-text-stroke:1px rgba(240,236,227,0.4);color:transparent;">CATEGORY</span>
-          </h2>
-        </div>
-      </div>
-
-      <!-- Static category cards + dynamic pills -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="nn-reveal">
-        <!-- Static cards using real images -->
-        <div v-for="(cat, i) in catCards" :key="'cat-'+i"
-          style="position:relative;overflow:hidden;aspect-ratio:3/4;cursor:none;background:#2a2a2a;"
-         >
-          <img :src="cat.img" :alt="cat.name"
-            style="width:100%;height:100%;object-fit:cover;filter:saturate(0.5) brightness(0.75);transition:filter 0.5s,transform 0.6s;transform:scale(1.04);"
-            onmouseover="this.style.filter='saturate(0.9) brightness(0.85)';this.style.transform='scale(1)'"
-            onmouseout="this.style.filter='saturate(0.5) brightness(0.75)';this.style.transform='scale(1.04)'" />
-          <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:36px;">
-            <div style="font-family:'Bebas Neue',cursive;font-size:clamp(36px,3vw,52px);letter-spacing:0.04em;color:#f0ece3;line-height:0.95;margin-bottom:8px;">{{ cat.name }}</div>
-            <router-link :to="cat.to" class="btn-primary" style="width:fit-content;margin-top:12px;font-size:10px;padding:10px 22px;"
-             >
-              Shop Now →
-            </router-link>
+          <div class="prod-info">
+            <div class="prod-name">{{ product.name }}</div>
+            <div class="prod-price-row">
+              <span class="prod-price">P{{ product.price }}</span>
+              <span v-if="product.oldPrice" class="prod-old">P{{ product.oldPrice }}</span>
+            </div>
           </div>
-          <div style="position:absolute;top:20px;right:20px;width:38px;height:38px;border:1px solid rgba(240,236,227,0.3);display:flex;align-items:center;justify-content:center;color:#f0ece3;font-size:16px;transition:all 0.3s;"
-            onmouseover="this.style.background='#f97316';this.style.borderColor='#f97316';this.style.color='#0a0a0a'"
-            onmouseout="this.style.background='transparent';this.style.borderColor='rgba(240,236,227,0.3)';this.style.color='#f0ece3'">→</div>
-        </div>
-      </div>
-
-      <!-- Dynamic category pills (from API) -->
-      <div v-if="categories.length" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:32px;">
-        <router-link
-          :to="{ name: 'products' }"
-          style="padding:8px 20px;background:#f97316;color:#0a0a0a;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;transition:background 0.2s;"
-         >
-          All
-        </router-link>
-        <router-link
-          v-for="cat in categories"
-          :key="cat.id"
-          :to="{ name: 'products', query: { category: cat.slug } }"
-          style="padding:8px 20px;background:transparent;border:1px solid rgba(240,236,227,0.2);color:rgba(240,236,227,0.7);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;transition:all 0.2s;white-space:nowrap;"
-         
-          onmouseover="this.style.borderColor='#f97316';this.style.color='#f97316'"
-          onmouseout="this.style.borderColor='rgba(240,236,227,0.2)';this.style.color='rgba(240,236,227,0.7)'">
-          {{ cat.name }}
-        </router-link>
-      </div>
-    </section>
-
-    <!-- ── AESTHETIC BRANDS MARQUEE ───────────────────── -->
-    <div style="border-top:1px solid rgba(240,236,227,0.07);border-bottom:1px solid rgba(240,236,227,0.07);padding:24px 0;overflow:hidden;margin-bottom:80px;">
-      <div class="nn-ticker-slow" style="display:flex;white-space:nowrap;">
-        <span v-for="style in aestheticStyles" :key="style"
-          style="font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:0.25em;color:rgba(240,236,227,0.18);padding:0 36px;transition:color 0.3s;cursor:none;"
-          @mouseenter="$event.target.style.color='#f97316'" @mouseleave="$event.target.style.color='rgba(240,236,227,0.18)'">
-          {{ style }}
-        </span>
-        <span v-for="style in aestheticStyles" :key="'b-'+style"
-          style="font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:0.25em;color:rgba(240,236,227,0.18);padding:0 36px;transition:color 0.3s;cursor:none;"
-          @mouseenter="$event.target.style.color='#f97316'" @mouseleave="$event.target.style.color='rgba(240,236,227,0.18)'">
-          {{ style }}
-        </span>
-      </div>
-    </div>
-
-    <!-- ── NEWSLETTER ──────────────────────────────────── -->
-    <div class="nn-reveal" style="margin:0 48px 100px;background:#f97316;padding:80px;display:flex;align-items:center;justify-content:space-between;gap:48px;overflow:hidden;position:relative;flex-wrap:wrap;">
-      <div style="position:relative;z-index:1;">
-        <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:rgba(10,10,10,0.6);margin-bottom:16px;">✦ Stay in the Loop</div>
-        <h2 style="font-family:'Bebas Neue',cursive;font-size:clamp(44px,4vw,64px);line-height:0.92;color:#0a0a0a;letter-spacing:0.02em;">
-          GET FIRST<br>ACCESS TO<br>EVERY DROP
-        </h2>
-      </div>
-      <div style="position:relative;z-index:1;flex:0 0 min(420px, 100%);">
-        <div style="display:flex;border:2px solid #0a0a0a;">
-          <input v-model="email" type="email" placeholder="your@email.com"
-            style="flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:#0a0a0a;padding:14px 18px;"
-            />
-          <button @click="subscribeEmail"
-            style="background:#0a0a0a;color:#f97316;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;padding:14px 22px;border:none;cursor:none;transition:background 0.2s;"
-            onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0a0a0a'"
-           >
-            Subscribe →
+          <button class="quick-add-btn" :class="{ added: addedProductId === product.id }" @click="addToCart(product)">
+            {{ addedProductId === product.id ? 'ADDED' : 'ADD TO CART' }}
           </button>
         </div>
-        <p v-if="subscribeSuccess" style="font-size:12px;color:#0a0a0a;margin-top:10px;font-style:italic;">🎉 You're on the list! First drops coming your way.</p>
-        <p v-else style="font-size:12px;color:rgba(10,10,10,0.5);margin-top:10px;font-style:italic;">No spam. Only drops, lookbooks, and exclusive deals.</p>
       </div>
-      <!-- Watermark -->
-      <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',cursive;font-size:200px;color:rgba(10,10,10,0.06);pointer-events:none;letter-spacing:-0.02em;white-space:nowrap;line-height:1;">NXT</div>
+
+      <div class="carousel-dots" id="trendDots">
+        <div v-for="n in 3" :key="n" class="dot" :class="{ active: activeDot === (n - 1) }" @click="scrollToDot(n - 1)"></div>
+      </div>
+    </section>
+
+    <div class="collab-banner reveal">
+      <div class="collab-img">
+        <img src="/images/products/hoodie-maron.png" alt="Collab Drop"/>
+      </div>
+      <div class="collab-content">
+        <div class="collab-eyebrow">+ Limited Collab Drop</div>
+        <h2 class="collab-title">DRIP<br>OR<br>SKIP?</h2>
+        <p class="collab-body">Curated aesthetics for those who live on the edge of culture. Trending styles, bold silhouettes, and unapologetic drip. Only 100 pieces per design.</p>
+        <router-link :to="{ name: 'products', query: { sort: 'featured' } }" class="btn-dark">GRAB THE COLLAB -></router-link>
+      </div>
     </div>
 
-    <!-- ── SELLER BANNER ──────────────────────────────── -->
-    <div style="margin:0 48px 80px;background:#111;border:1px solid rgba(240,236,227,0.07);padding:60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:32px;">
+    <section class="section">
+      <div class="section-head reveal">
+        <div class="section-title">SHOP BY CATEGORY</div>
+      </div>
+      <div class="cats-grid">
+        <div v-for="(cat, idx) in categories" :key="cat.name" class="cat-card reveal" :class="idx === 1 ? 'd1' : idx === 2 ? 'd2' : ''">
+          <img :src="cat.image" :alt="cat.name"/>
+          <div class="cat-overlay"></div>
+          <div class="cat-info">
+            <div class="cat-name">{{ cat.name }}</div>
+            <button class="shop-now-btn" @click="goCategory(cat.slug)">SHOP NOW -></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="brands-bar">
+      <div class="brands-inner">
+        <span v-for="(brand, i) in aestheticStyles" :key="`b-${i}`">{{ brand }}</span>
+        <span v-for="(brand, i) in aestheticStyles" :key="`b2-${i}`">{{ brand }}</span>
+      </div>
+    </div>
+
+    <div class="newsletter reveal">
+      <div class="nl-left">
+        <div class="nl-eyebrow">+ Stay in the Loop</div>
+        <h2 class="nl-title">GET FIRST<br>ACCESS TO<br>EVERY DROP</h2>
+      </div>
+      <div class="nl-right">
+        <form class="nl-form" @submit.prevent="subscribe">
+          <input v-model="email" class="nl-input" type="email" placeholder="Email address"/>
+          <button class="nl-btn" type="submit">SUBSCRIBE</button>
+        </form>
+        <p v-if="subscribed" class="nl-note">Thanks. You are subscribed for first drop access.</p>
+        <p v-else class="nl-note">No spam. Only drops, lookbooks, and exclusive deals.</p>
+      </div>
+      <div class="nl-bg">NXT</div>
+    </div>
+
+    <div class="seller-cta reveal">
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:rgba(240,236,227,0.4);margin-bottom:12px;">Sell on NurbanNxt</div>
-        <h3 style="font-family:'Bebas Neue',cursive;font-size:clamp(36px,4vw,56px);line-height:0.95;color:#f0ece3;">
-          GROW YOUR<br><span style="color:#f97316;">BRAND</span> WITH US
-        </h3>
-        <p style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:rgba(240,236,227,0.55);max-width:360px;margin-top:16px;line-height:1.7;">
-          List your products on NurbanNxt and reach thousands of urban fashion shoppers.
-        </p>
+        <div class="seller-cta-eye">Sell on NurbanNxt</div>
+        <h2 class="seller-cta-title">GROW YOUR<br><span>BRAND</span> WITH US</h2>
+        <p class="seller-cta-sub">List your products on NurbanNxt and reach thousands of urban fashion shoppers.</p>
       </div>
-      <a href="/seller" class="btn-primary" style="flex-shrink:0;"
-       >
-        Open Your Store →
-      </a>
+      <button class="btn-orange" @click="goAccount">OPEN YOUR STORE -></button>
     </div>
 
-    <!-- ── FOOTER ─────────────────────────────────────── -->
-    <footer style="background:#2a2a2a;padding:80px 48px 40px;border-top:1px solid rgba(240,236,227,0.05);">
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:60px;" class="footer-grid">
-        <!-- Brand -->
-        <div>
-          <div style="font-family:'Bebas Neue',cursive;font-size:40px;letter-spacing:0.1em;margin-bottom:16px;">
-            <span style="color:#f97316;">Nurban</span><span style="color:#f0ece3;">Nxt</span>
-          </div>
-          <p style="font-size:13px;line-height:1.8;font-weight:300;color:rgba(240,236,227,0.4);max-width:260px;margin-bottom:24px;">
-            Aesthetic clothing for the culturally wired. We design for those who live ahead of the trend.
-          </p>
-          <div style="display:flex;gap:10px;">
-            <a v-for="soc in socials" :key="soc" href="#"
-              style="width:34px;height:34px;border:1px solid rgba(240,236,227,0.18);display:flex;align-items:center;justify-content:center;color:rgba(240,236,227,0.45);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-decoration:none;transition:all 0.2s;"
-             
-              onmouseover="this.style.background='#f97316';this.style.borderColor='#f97316';this.style.color='#0a0a0a'"
-              onmouseout="this.style.background='transparent';this.style.borderColor='rgba(240,236,227,0.18)';this.style.color='rgba(240,236,227,0.45)'">
-              {{ soc }}
-            </a>
-          </div>
-        </div>
-        <!-- Shop -->
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#f0ece3;margin-bottom:20px;">Shop</div>
-          <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'products' }" class="footer-link">All Products</router-link></li>
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'products', query: { sort: 'featured' } }" class="footer-link">Featured</router-link></li>
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'products', query: { sort: 'latest' } }" class="footer-link">New Arrivals</router-link></li>
-            <li><router-link :to="{ name: 'products', query: { sale: 1 } }" class="footer-link">Sale</router-link></li>
-          </ul>
-        </div>
-        <!-- Account -->
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#f0ece3;margin-bottom:20px;">Account</div>
-          <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'login' }" class="footer-link">Sign In</router-link></li>
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'register' }" class="footer-link">Create Account</router-link></li>
-            <li style="margin-bottom:12px;"><router-link :to="{ name: 'orders' }" class="footer-link">Order Tracking</router-link></li>
-            <li><router-link :to="{ name: 'account' }" class="footer-link">My Profile</router-link></li>
-          </ul>
-        </div>
-        <!-- Company -->
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#f0ece3;margin-bottom:20px;">Company</div>
-          <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:12px;"><a href="/seller" class="footer-link">Seller Portal</a></li>
-            <li style="margin-bottom:12px;"><a href="#" class="footer-link">About Us</a></li>
-            <li style="margin-bottom:12px;"><a href="#" class="footer-link">Contact</a></li>
-            <li><a href="#" class="footer-link">Sustainability</a></li>
-          </ul>
-        </div>
-      </div>
-      <div style="border-top:1px solid rgba(240,236,227,0.06);padding-top:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-        <span style="font-size:12px;color:rgba(240,236,227,0.28);font-weight:300;letter-spacing:0.05em;">© {{ year }} NurbanNxt. All rights reserved. Designed for the bold.</span>
-        <div style="display:flex;gap:8px;">
-          <span v-for="pay in payIcons" :key="pay"
-            style="background:rgba(240,236,227,0.07);padding:4px 10px;font-size:9px;font-family:'Syne',sans-serif;font-weight:600;letter-spacing:0.1em;color:rgba(240,236,227,0.3);border:1px solid rgba(240,236,227,0.08);">
-            {{ pay }}
-          </span>
-        </div>
-      </div>
-    </footer>
+    
   </div>
+  </CustomerLayout>
 </template>
 
-<style scoped>
-/* ── Featured editorial grid ───────────────────── */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-.featured-large {
-  grid-row: span 2;
-}
-
-/* ── Nav dropdown item ─────────────────────────── */
-.nav-dropdown-item {
-  display: block;
-  padding: 8px 20px;
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(240,236,227,0.65);
-  text-decoration: none;
-  transition: color 0.15s;
-  cursor: none;
-}
-.nav-dropdown-item:hover { color: #f97316; }
-
-/* ── Mobile nav item ───────────────────────────── */
-.mobile-nav-item {
-  display: block;
-  padding: 10px 0;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(240,236,227,0.65);
-  text-decoration: none;
-  transition: color 0.15s;
-  cursor: none;
-}
-.mobile-nav-item:hover { color: #f97316; }
-
-/* ── Footer link ───────────────────────────────── */
-.footer-link {
-  font-size: 13px;
-  font-weight: 300;
-  color: rgba(240,236,227,0.4);
-  text-decoration: none;
-  transition: color 0.2s;
-  cursor: none;
-}
-.footer-link:hover { color: #f97316; }
-
-/* ── Hero responsive ───────────────────────────── */
-@media (max-width: 768px) {
-  .hero-grid { grid-template-columns: 1fr !important; }
-  .featured-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .footer-grid { grid-template-columns: 1fr 1fr !important; }
-}
-</style>
-
 <script>
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import axios from 'axios';
-import DarkProductCard from '../products/DarkProductCard.vue';
-
-gsap.registerPlugin(ScrollTrigger);
+import CustomerLayout from '../layout/CustomerLayout.vue';
 
 export default {
   name: 'HomePage',
-  components: { DarkProductCard },
-
+  components: {
+    CustomerLayout
+  },
   data() {
     return {
-      featuredProducts: [],
-      newProducts:      [],
-      categories:       [],
-      loadingFeatured:  true,
-      loadingNew:       true,
-      searchOpen:       false,
-      searchQuery:      '',
-      accountOpen:      false,
-      mobileOpen:       false,
-      email:            '',
-      subscribeSuccess: false,
-
+      activeDot: 0,
+      subscribed: false,
+      email: '',
+      addedProductId: null,
       tickerItems: [
-        'FREE SHIPPING OVER ₱2,000',
+        'FREE SHIPPING OVER P2,000',
         'NEW DROPS EVERY FRIDAY',
         'LIMITED EDITION COLLABS',
-        'AESTHETIC IS NOT A TREND — IT\'S A LIFESTYLE',
+        'AESTHETIC IS NOT A TREND',
         'FREE RETURNS WITHIN 30 DAYS',
       ],
       aestheticStyles: [
-        'Y2K DRIP', 'COTTAGECORE', 'DARK ACADEMIA', 'STREETWEAR',
-        'SOFT GRUNGE', 'TECHWEAR', 'INDIE AESTHETIC', 'GORPCORE', 'COASTAL GIRL',
+        'Y2K DRIP', 'DARK ACADEMIA', 'STREETWEAR', 'TECHWEAR', 'SOFT GRUNGE', 'GORPCORE', 'INDIE AESTHETIC', 'COASTAL GIRL', 'COTTAGECORE',
       ],
-      catCards: [
-        { name: 'WOMEN',    img: '/images/products/illus-1.png',   to: { name: 'products', query: { category: 'women' } } },
-        { name: 'MEN',      img: '/images/products/illus-2.png',   to: { name: 'products', query: { category: 'men' } } },
-        { name: 'ACCESSORIES', img: '/images/products/illus-3.png', to: { name: 'products', query: { category: 'accessories' } } },
+      categories: [
+        { name: 'WOMEN', slug: 'women', image: '/images/products/illus-1.png' },
+        { name: 'MEN', slug: 'men', image: '/images/products/illus-2.png' },
+        { name: 'ACCESSORIES', slug: 'accessories', image: '/images/products/illus-3.png' },
       ],
-      socials:  ['IG', 'TK', 'FB', 'PT'],
-      payIcons: ['VISA', 'MASTERCARD', 'GCASH', 'MAYA', 'COD'],
-
-      // (no cursor state needed)
+      trendingProducts: [
+        { id: 1, name: 'T-shirt', price: '5.69', oldPrice: '10.59', tag: 'New', tagClass: 'new', delayClass: '', image: '/images/products/illus-1.png' },
+        { id: 2, name: 'Jacket hoodie', price: '15.99', oldPrice: '55.99', tag: 'New', tagClass: 'new', delayClass: 'd1', image: '/images/products/illus-2.png' },
+        { id: 3, name: 'Test mike', price: '12.99', oldPrice: '15.99', tag: 'New', tagClass: 'new', delayClass: 'd2', image: '/images/products/tshirt-vintage.png' },
+        { id: 4, name: 'Navy hoodie', price: '18.99', oldPrice: null, tag: 'Hot', tagClass: 'hot', delayClass: 'd3', image: '/images/products/hoodie-maron.png' },
+        { id: 5, name: 'Crew shirt', price: '8.79', oldPrice: null, tag: 'Sale', tagClass: 'sale', delayClass: '', image: '/images/products/tshirt-crew.png' },
+        { id: 6, name: 'Street polo', price: '10.99', oldPrice: '13.29', tag: '', tagClass: '', delayClass: 'd1', image: '/images/products/illus-3.png' },
+      ],
     };
   },
-
   computed: {
-    isAuthenticated() { return this.$store.getters['auth/isAuthenticated']; },
-    currentUser()     { return this.$store.getters['auth/currentUser']; },
-    cartCount()       { return this.$store.getters['cart/itemCount']; },
-    year()            { return new Date().getFullYear(); },
-    firstName() {
-      if (!this.currentUser) return '';
-      return this.currentUser.name.split(' ')[0];
+    cartCount() {
+      return this.$store.getters['cart/itemCount'];
+    },
+    isAuthenticated() {
+      return this.$store.getters['auth/isAuthenticated'];
     },
   },
-
-  created() {
-    this.fetchFeatured();
-    this.fetchNew();
-    this.fetchCategories();
-  },
-
   mounted() {
-    this.initGSAP();
-    this.initScrollReveal();
+    this.initReveal();
+    
   },
-
   beforeDestroy() {
-    ScrollTrigger.getAll().forEach(t => t.kill());
-    window.removeEventListener('scroll', this._onScroll);
+    
+    if (this._revealObserver) {
+      this._revealObserver.disconnect();
+    }
   },
-
   methods: {
-    /* ── Data fetching ────────────────────────── */
-    async fetchFeatured() {
-      this.loadingFeatured = true;
-      try {
-        const { data } = await axios.get('/shop/products/featured');
-        this.featuredProducts = data;
-      } catch (_) {}
-      this.loadingFeatured = false;
+    goSearch() {
+      this.$router.push({ name: 'products' });
     },
-    async fetchNew() {
-      this.loadingNew = true;
-      try {
-        const { data } = await axios.get('/shop/products', { params: { sort: 'latest', per_page: 8 } });
-        this.newProducts = data.data || [];
-      } catch (_) {}
-      this.loadingNew = false;
+    goAccount() {
+      this.$router.push({ name: this.isAuthenticated ? 'account' : 'login' });
     },
-    async fetchCategories() {
-      try {
-        const { data } = await axios.get('/shop/categories');
-        this.categories = data;
-      } catch (_) {}
+    goProductListing() {
+      this.$router.push({ name: 'products' });
     },
-
-    /* ── Navigation ───────────────────────────── */
-    doSearch() {
-      if (!this.searchQuery.trim()) return;
-      this.$router.push({ name: 'products', query: { q: this.searchQuery.trim() } });
-      this.searchOpen = false;
-      this.searchQuery = '';
+    goCategory(slug) {
+      this.$router.push({ name: 'products', query: { category: slug } });
     },
-    async logout() {
-      await this.$store.dispatch('auth/logout');
-      this.accountOpen = false;
-      this.mobileOpen = false;
-      this.$router.push({ name: 'home' });
-    },
-
-    /* ── GSAP Animations ──────────────────────── */
-    initGSAP() {
-      this.$nextTick(() => {
-        // Hero title lines stagger in
-        if (this.$refs.heroTitle) {
-          const lines = this.$refs.heroTitle.querySelectorAll('span');
-          gsap.fromTo(lines,
-            { y: 60, opacity: 0 },
-            { y: 0,  opacity: 1, duration: 1, stagger: 0.12, ease: 'power3.out', delay: 0.2 }
-          );
-        }
-        // Hero image parallax
-        if (this.$refs.heroImg) {
-          gsap.to(this.$refs.heroImg, {
-            yPercent: 15,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: this.$refs.heroRight,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 1.5,
-            },
-          });
-        }
-        // Nav scroll effect
-        this._onScroll = () => {
-          if (!this.$refs.nav) return;
-          if (window.scrollY > 60) {
-            this.$refs.nav.style.background   = 'rgba(10,10,10,0.96)';
-            this.$refs.nav.style.backdropFilter = 'blur(12px)';
-            this.$refs.nav.style.borderBottom = '1px solid rgba(240,236,227,0.06)';
-          } else {
-            this.$refs.nav.style.background   = '';
-            this.$refs.nav.style.backdropFilter = '';
-            this.$refs.nav.style.borderBottom = '';
-          }
-        };
-        window.addEventListener('scroll', this._onScroll, { passive: true });
-      });
-    },
-    initScrollReveal() {
-      this.$nextTick(() => {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(e => {
-            if (e.isIntersecting) {
-              e.target.classList.add('visible');
-            }
-          });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.nn-reveal').forEach(el => observer.observe(el));
-      });
-    },
-
-    /* ── Newsletter ───────────────────────────── */
-    subscribeEmail() {
+    subscribe() {
       if (!this.email || !this.email.includes('@')) return;
-      this.subscribeSuccess = true;
+      this.subscribed = true;
       this.email = '';
+    },
+    addToCart(product) {
+      this.$store.dispatch('cart/addItem', {
+        product_id: product.id,
+        name: product.name,
+        price: parseFloat(String(product.price).replace(/,/g, '')),
+        image: product.image,
+        size: null,
+        color: null,
+        quantity: 1,
+      });
+
+      this.addedProductId = product.id;
+      clearTimeout(this._addedTimer);
+      this._addedTimer = setTimeout(() => {
+        this.addedProductId = null;
+      }, 1600);
+    },
+    scrollToDot(idx) {
+      const c = this.$refs.trendCarousel;
+      if (!c) return;
+      const card = c.querySelector('.prod-card');
+      if (!card) return;
+      c.scrollTo({ left: idx * (card.offsetWidth + 16) * 2, behavior: 'smooth' });
+      this.activeDot = idx;
+    },
+    onCarouselScroll() {
+      const c = this.$refs.trendCarousel;
+      if (!c) return;
+      const card = c.querySelector('.prod-card');
+      if (!card) return;
+      const idx = Math.min(Math.round(c.scrollLeft / ((card.offsetWidth + 16) * 2)), 2);
+      this.activeDot = idx;
+    },
+    initReveal() {
+      this._revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      this.$nextTick(() => {
+        this.$el.querySelectorAll('.reveal').forEach((el) => this._revealObserver.observe(el));
+      });
     },
   },
 };
 </script>
+
+<style scoped>
+:root {
+    --black: #0a0a0a;
+    --dark: #111;
+    --card: #141414;
+    --border: #1a1a1a;
+    --white: #f0ece3;
+    --muted: rgba(240,236,227,0.6);
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.nn-page {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nn-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  height: 64px;
+  gap: 40px;
+  transition: box-shadow .3s;
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: .08em;
+  text-decoration: none;
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.nav-logo span { color: var(--orange); }
+
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  flex: 1;
+}
+
+.nav-links li a {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0 20px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active { color: var(--white); border-bottom-color: var(--orange); }
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto;
+}
+
+.nav-icons button {
+  background: none;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  padding: 4px;
+  opacity: .8;
+  transition: opacity .2s, color .2s;
+  position: relative;
+}
+
+.nav-icons button:hover { opacity: 1; color: var(--orange); }
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  background: var(--orange);
+  color: white;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  padding: 0 3px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 64px);
+  max-height: 720px;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 48px;
+  position: relative;
+}
+
+.hero-tag {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeUp .7s ease both;
+}
+
+.hero-tag::before {
+  content: '';
+  width: 28px;
+  height: 2px;
+  background: var(--orange);
+}
+
+.hero-h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 8vw, 120px);
+  line-height: .88;
+  letter-spacing: .02em;
+  animation: fadeUp .7s .1s ease both;
+}
+
+.hero-h1 .orange,
+.hero-h1 .white,
+.hero-h1 .outline { display: block; }
+.hero-h1 .orange { color: var(--orange); }
+.hero-h1 .white { color: var(--white); }
+.hero-h1 .outline {
+  color: transparent;
+  -webkit-text-stroke: 1.4px rgba(255,255,255,.4);
+  text-stroke: 1.4px rgba(255,255,255,.4);
+}
+
+.hero-sub {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 360px;
+  margin-top: 22px;
+  margin-bottom: 36px;
+  animation: fadeUp .7s .2s ease both;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  animation: fadeUp .7s .3s ease both;
+}
+
+.btn-orange,
+.btn-outline,
+.btn-dark {
+  text-decoration: none;
+}
+
+.btn-orange {
+  background: var(--orange);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  border: 2px solid var(--orange);
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+
+.btn-orange:hover { background: var(--orange2); transform: translateY(-2px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+
+.btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+.hero-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  margin-top: 32px;
+  width: fit-content;
+  border-left: 3px solid var(--orange);
+  animation: fadeUp .7s .4s ease both;
+}
+
+.hero-stat strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.hero-stat span {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-right {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 14%, rgba(249,115,22,.35) 0%, rgba(249,115,22,0) 44%),
+    linear-gradient(145deg, #101010 0%, #0a0a0a 55%, #151515 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-product-img {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  position: relative;
+  z-index: 2;
+  filter: saturate(.92) contrast(1.04) drop-shadow(0 24px 48px rgba(0,0,0,.34));
+  animation: floatImg 4s ease-in-out infinite, fadeIn 1s .3s ease both;
+}
+
+@keyframes floatImg {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+.hero-drop-badge {
+  position: absolute;
+  bottom: 36px;
+  right: 36px;
+  z-index: 3;
+  width: 68px;
+  height: 68px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  line-height: 1.1;
+  letter-spacing: .05em;
+  color: #111;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+  animation: rotateBadge 14s linear infinite;
+}
+
+@keyframes rotateBadge {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+.hero-right-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(249,115,22,.24) 0%, rgba(249,115,22,0) 42%),
+    linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0) 45%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ticker-bar { 
+  background: var(--orange); 
+  overflow: hidden; 
+  padding: 10px 0; 
+  white-space: nowrap; 
+  margin: 0;
+  width: 100%;
+}
+.ticker-inner { display: inline-flex; animation: scrollX 28s linear infinite; }
+.ticker-inner span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: .12em;
+  color: white;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.ticker-inner span::after { content: '\2022'; font-size: 10px; opacity: .7; }
+
+@keyframes scrollX {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.section { 
+  padding: 64px 48px; 
+  margin: 0;
+}
+.section-head { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 28px; 
+}
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .06em; color: var(--white); }
+.see-all {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap .2s;
+}
+.see-all:hover { gap: 10px; }
+
+.carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.prod-card {
+  flex: 0 0 210px;
+  scroll-snap-align: start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color .25s, transform .25s;
+}
+.prod-card:hover { border-color: var(--orange); transform: translateY(-4px); }
+
+.prod-img-wrap { background: #f5f4f2; height: 240px; position: relative; overflow: hidden; }
+.prod-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.prod-card:hover .prod-img-wrap img { transform: scale(1.06); }
+
+.prod-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.42);
+  opacity: 0;
+  transition: opacity .25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prod-card:hover .prod-hover-overlay { opacity: 1; }
+
+.quick-peek {
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.3);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.quick-peek:hover { background: var(--orange); border-color: var(--orange); }
+
+.prod-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+}
+.prod-tag.sale { background: var(--orange); }
+.prod-tag.new { background: #22c55e; }
+.prod-tag.hot { background: #ef4444; }
+
+.prod-info { padding: 12px 14px 4px; }
+.prod-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prod-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.prod-price { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .05em; color: var(--orange); }
+.prod-old { font-size: 12px; color: var(--muted); text-decoration: line-through; }
+
+.quick-add-btn {
+  width: 100%;
+  background: var(--dark);
+  color: var(--white);
+  border: 1px solid var(--border);
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 11px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.quick-add-btn:hover { background: var(--orange); border-color: var(--orange); color: white; }
+.quick-add-btn.added { background: #22c55e; border-color: #22c55e; color: #fff; }
+
+.carousel-dots { display: flex; gap: 6px; justify-content: center; margin-top: 22px; }
+.dot { width: 24px; height: 4px; border-radius: 2px; background: var(--border); cursor: pointer; transition: background .2s, width .25s; }
+.dot.active { background: var(--orange); width: 38px; }
+
+.collab-banner {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  min-height: 340px;
+  border: 1px solid var(--border);
+  width: 100%;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.collab-img { position: relative; overflow: hidden; background: #1a1015; }
+.collab-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.75) brightness(.8); transition: transform .6s, filter .4s; }
+.collab-banner:hover .collab-img img { transform: scale(1.04); filter: saturate(.9) brightness(.88); }
+
+.collab-content {
+  background: var(--orange);
+  padding: 52px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.collab-content::before {
+  content: 'DROP';
+  position: absolute;
+  right: -16px;
+  bottom: -24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 150px;
+  color: rgba(0,0,0,.08);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.collab-eyebrow {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.55);
+  margin-bottom: 14px;
+}
+
+.collab-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 4vw, 68px);
+  line-height: .88;
+  letter-spacing: .02em;
+  color: var(--black);
+  margin-bottom: 18px;
+}
+
+.collab-body {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(0,0,0,.65);
+  max-width: 290px;
+  margin-bottom: 28px;
+}
+
+.btn-dark {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  transition: background .2s;
+}
+.btn-dark:hover { background: #222; }
+
+.cats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.cat-card { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: pointer; background: var(--card); }
+.cat-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.5) saturate(.65); transition: filter .5s, transform .6s; }
+.cat-card:hover img { filter: brightness(.68) saturate(.9); transform: scale(1.06); }
+.cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, transparent 55%); }
+.cat-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 24px; }
+.cat-name { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .06em; color: white; line-height: 1; margin-bottom: 12px; }
+.shop-now-btn {
+  background: var(--orange);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: opacity .3s, transform .3s, background .2s;
+}
+.cat-card:hover .shop-now-btn { opacity: 1; transform: translateY(0); }
+.shop-now-btn:hover { background: var(--orange2); }
+
+.brands-bar { 
+  border-top: 1px solid var(--border); 
+  border-bottom: 1px solid var(--border); 
+  overflow: hidden; 
+  padding: 20px 0; 
+  margin: 0;
+  width: 100%;
+}
+.brands-inner { display: inline-flex; animation: scrollX 22s linear infinite; }
+.brands-inner span {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--border);
+  padding: 0 36px;
+  transition: color .2s;
+  cursor: default;
+}
+.brands-inner span:hover { color: var(--orange); }
+
+.newsletter {
+  background: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 64px 80px;
+  gap: 48px;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  width: 100%;
+}
+
+.seller-cta {
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 52px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  background: rgba(22,22,22,.7);
+  width: 100%;
+}
+.seller-cta-eye {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.seller-cta-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 4vw, 64px);
+  line-height: .9;
+  letter-spacing: .02em;
+  margin-bottom: 12px;
+}
+.seller-cta-title span { color: var(--orange); }
+.seller-cta-sub {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 420px;
+  line-height: 1.7;
+}
+.nl-bg {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 230px;
+  color: rgba(0,0,0,.07);
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.nl-left { position: relative; z-index: 1; }
+.nl-eyebrow { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: rgba(0,0,0,.5); margin-bottom: 12px; }
+.nl-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px,3.5vw,58px); line-height: .9; color: var(--black); letter-spacing: .02em; }
+.nl-right { position: relative; z-index: 1; flex: 0 0 400px; }
+.nl-form { display: flex; border: 2px solid var(--black); margin-bottom: 10px; }
+.nl-input { flex: 1; background: white; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); padding: 14px 18px; }
+.nl-input::placeholder { color: #aaa; }
+.nl-btn {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 14px 22px;
+  border: none;
+  cursor: pointer;
+  transition: background .2s;
+}
+.nl-btn:hover { background: #1a1a1a; }
+.nl-note { font-size: 12px; color: rgba(0,0,0,.5); font-style: italic; }
+
+footer { 
+  background: var(--dark); 
+  border-top: 1px solid var(--border); 
+  padding: 64px 48px 32px; 
+  margin: 0;
+  width: 100%;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .08em; color: var(--white); margin-bottom: 16px; }
+.footer-logo span { color: var(--orange); }
+.footer-desc { font-size: 13px; font-weight: 300; line-height: 1.8; color: var(--muted); max-width: 260px; margin-bottom: 24px; }
+.footer-socials { display: flex; gap: 10px; }
+.social-icon {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.social-icon:hover { background: var(--orange); border-color: var(--orange); color: white; }
+.footer-col h4 { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--white); margin-bottom: 18px; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 11px; }
+.footer-col ul li a {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.footer-col ul li a:hover { color: var(--orange); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+.footer-copy { font-size: 12px; color: #444; font-weight: 300; }
+.pay-methods { display: flex; gap: 8px; }
+.pay-chip { border: 1px solid var(--border); padding: 4px 10px; font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #444; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: .1s; }
+.d2 { transition-delay: .2s; }
+.d3 { transition-delay: .3s; }
+
+@media (max-width: 1024px) {
+  .nn-nav { padding: 0 24px; gap: 20px; }
+  .hero { grid-template-columns: 1fr; max-height: none; }
+  .hero-right { min-height: 340px; }
+  .section, footer { padding-left: 24px; padding-right: 24px; }
+  .collab-banner { grid-template-columns: 1fr; }
+  .seller-cta { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+  .newsletter { padding: 44px 24px; flex-direction: column; align-items: flex-start; }
+  .nl-right { flex: 1 1 auto; width: 100%; }
+  .cats-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</style>
+

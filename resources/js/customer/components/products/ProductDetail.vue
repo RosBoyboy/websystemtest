@@ -1,7 +1,7 @@
 <template>
   <CustomerLayout>
     <!-- Loading -->
-    <div v-if="loading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div v-if="loading" class="w-full px-4 sm:px-6 lg:px-8 py-16" style="max-width:100%">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div class="bg-slate-800 rounded-2xl aspect-square animate-pulse"></div>
         <div class="space-y-4">
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Product -->
-    <div v-else-if="product" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div v-else-if="product" class="w-full px-4 sm:px-6 lg:px-8 py-10" style="max-width:100%">
       <!-- Breadcrumb -->
       <nav class="text-sm text-slate-400 mb-6 flex items-center gap-2">
         <router-link :to="{ name: 'home' }" class="hover:text-slate-200 transition-colors">Home</router-link>
@@ -89,8 +89,8 @@
                 @click="selectedSize = size"
                 :class="['px-4 py-2 rounded-lg border text-sm font-medium transition-colors',
                   selectedSize === size
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-700 text-slate-200 hover:border-slate-400']"
+                    ? 'border-orange-500 bg-orange-500 text-white'
+                    : 'border-slate-700 text-slate-200 hover:border-slate-500 bg-slate-800']"
               >{{ size }}</button>
             </div>
           </div>
@@ -107,8 +107,8 @@
                 @click="selectedColor = color"
                 :class="['px-4 py-2 rounded-lg border text-sm font-medium transition-colors',
                   selectedColor === color
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-700 text-slate-200 hover:border-slate-400']"
+                    ? 'border-orange-500 bg-orange-500 text-white'
+                    : 'border-slate-700 text-slate-200 hover:border-slate-500 bg-slate-800']"
               >{{ color }}</button>
             </div>
           </div>

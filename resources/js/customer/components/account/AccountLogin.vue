@@ -33,6 +33,12 @@
           <p class="text-center text-xs text-stone-400 mt-3">
             Seller mode is available after login in your account dashboard.
           </p>
+
+          <div class="mt-6 pt-4 border-t border-stone-100 text-center">
+            <a href="/admin" class="text-xs text-stone-400 font-medium hover:text-orange-500 transition-colors uppercase tracking-wider">
+              Login as Admin
+            </a>
+          </div>
         </div>
       </div>
     </div>

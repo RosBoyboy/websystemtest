@@ -1,13 +1,7 @@
 <template>
   <CustomerLayout>
-    <!-- Redirect if cart empty -->
-    <div v-if="isEmpty" class="max-w-2xl mx-auto px-4 py-24 text-center">
-      <h2 class="text-xl font-bold text-white mb-4">Your cart is empty.</h2>
-      <router-link :to="{ name: 'products' }" class="btn-orange">Go Shopping</router-link>
-    </div>
-
     <!-- Success state -->
-    <div v-else-if="placedOrder" class="max-w-2xl mx-auto px-4 py-20 text-center">
+    <div v-if="placedOrder" class="w-full px-4 py-20 text-center" style="max-width:100%">
       <div class="w-20 h-20 bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
         <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12"/>
@@ -18,12 +12,18 @@
       <p class="text-slate-300 font-semibold text-lg mb-8">Order #{{ placedOrder.order_number }}</p>
       <div class="flex justify-center gap-3">
         <router-link :to="{ name: 'orders' }" class="btn-primary">View My Orders</router-link>
-        <router-link :to="{ name: 'products' }" class="btn-outline">Continue Shopping</router-link>
+        <router-link :to="{ name: 'products' }" class="btn-outline bg-transparent border-slate-500 text-slate-300 hover:text-white">Continue Shopping</router-link>
       </div>
     </div>
 
+    <!-- Redirect if cart empty -->
+    <div v-else-if="isEmpty" class="w-full px-4 py-24 text-center" style="max-width:100%">
+      <h2 class="text-xl font-bold text-white mb-4">Your cart is empty.</h2>
+      <router-link :to="{ name: 'products' }" class="btn-orange">Go Shopping</router-link>
+    </div>
+
     <!-- Checkout form -->
-    <div v-else class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div v-else class="w-full px-4 sm:px-6 lg:px-8 py-10" style="max-width:100%">
       <h1 class="text-3xl font-black text-white mb-8">Checkout</h1>
 
       <!-- Error -->
@@ -178,7 +178,7 @@ export default {
   computed: {
     cartItems()  { return this.$store.getters['cart/selectedItems']; },
     subtotal()   { return this.$store.getters['cart/subtotal']; },
-    isEmpty()    { return this.$store.getters['cart/isEmpty']; },
+    isEmpty()    { return this.cartItems.length === 0; },
     total()      { return this.subtotal + this.shippingFee; },
     currentUser(){ return this.$store.getters['auth/currentUser']; },
   },
