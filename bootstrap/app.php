@@ -48,6 +48,9 @@ $app->singleton(
 */
 if (isset($_ENV['VERCEL']) || getenv('VERCEL') || isset($_SERVER['VERCEL'])) {
     $app->useStoragePath('/tmp');
+    $app->useBootstrapPath('/tmp');
+    
+    // Safety fallback overrides for environment arrays
     $_ENV['APP_SERVICES_CACHE'] = '/tmp/services.php';
     $_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
     $_ENV['APP_CONFIG_CACHE']   = '/tmp/config.php';
