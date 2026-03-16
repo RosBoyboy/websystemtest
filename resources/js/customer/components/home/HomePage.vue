@@ -21,7 +21,7 @@
       </div>
       <div class="hero-right">
         <div class="hero-right-overlay"></div>
-        <img class="hero-product-img" src="/images/products/illus-1.png" alt="Featured product"/>
+        <img class="hero-product-img" src="/images/products/hero-couple.jpg" alt="Featured product"/>
         <div class="hero-drop-badge">
           <span style="font-size:11px;">2026</span>
           <span style="font-size:16px;font-weight:900;">DROP</span>
@@ -531,7 +531,7 @@ export default {
   max-width: none;
   height: 100%;
   object-fit: cover;
-  object-position: center 62%;
+  object-position: center 30%;
   position: relative;
   z-index: 2;
   filter: saturate(.92) contrast(1.04) drop-shadow(0 24px 48px rgba(0,0,0,.34));

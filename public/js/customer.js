@@ -2188,22 +2188,84 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("CustomerLayout", [_c("div", {
-    staticClass: "min-h-[70vh] flex items-center justify-center px-4 py-16"
+  return _c("div", {
+    staticClass: "min-h-screen bg-black flex flex-col"
+  }, [_c("nav", {
+    staticClass: "sticky top-0 z-50 bg-black border-b border-stone-900 px-12 py-4 flex items-center justify-between"
+  }, [_c("router-link", {
+    staticClass: "text-white font-bold text-xl tracking-wider",
+    attrs: {
+      to: {
+        name: "home"
+      }
+    }
+  }, [_vm._v("\n      NURBAN"), _c("span", {
+    staticClass: "text-orange-500"
+  }, [_vm._v("NXT")])]), _vm._v(" "), _c("div", {
+    staticClass: "flex items-center gap-6"
+  }, [_c("router-link", {
+    staticClass: "text-sm text-stone-400 hover:text-white uppercase tracking-wider transition-colors",
+    attrs: {
+      to: {
+        name: "products"
+      }
+    }
+  }, [_vm._v("Shop")]), _vm._v(" "), _c("router-link", {
+    staticClass: "text-sm text-stone-400 hover:text-white uppercase tracking-wider transition-colors",
+    attrs: {
+      to: {
+        name: "products",
+        query: {
+          sort: "featured"
+        }
+      }
+    }
+  }, [_vm._v("Featured")]), _vm._v(" "), _c("router-link", {
+    staticClass: "text-stone-400 hover:text-white transition-colors",
+    attrs: {
+      to: {
+        name: "cart"
+      }
+    }
+  }, [_c("svg", {
+    staticClass: "w-5 h-5",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "2",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("path", {
+    attrs: {
+      d: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"
+    }
+  }), _c("line", {
+    attrs: {
+      x1: "3",
+      y1: "6",
+      x2: "21",
+      y2: "6"
+    }
+  }), _c("path", {
+    attrs: {
+      d: "M16 10a4 4 0 01-8 0"
+    }
+  })])])], 1)], 1), _vm._v(" "), _c("div", {
+    staticClass: "flex-1 flex items-center justify-center px-6 py-12"
   }, [_c("div", {
-    staticClass: "w-full max-w-md"
-  }, [_c("div", {
-    staticClass: "text-center mb-8"
-  }, [_c("h1", {
-    staticClass: "text-3xl font-black text-white"
-  }, [_vm._v("Welcome Back")]), _vm._v(" "), _c("p", {
-    staticClass: "text-slate-400 mt-1"
-  }, [_vm._v("Sign in to your NurbanNxt account")])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-white rounded-2xl border border-stone-100 p-8 shadow-sm"
-  }, [_vm.error ? _c("div", {
-    staticClass: "mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
-  }, [_vm._v(_vm._s(_vm.error))]) : _vm._e(), _vm._v(" "), _c("form", {
-    staticClass: "space-y-4",
+    staticClass: "w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden shadow-2xl"
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "bg-white p-12 flex flex-col justify-center"
+  }, [_c("h2", {
+    staticClass: "text-3xl font-black text-black mb-8",
+    staticStyle: {
+      "font-family": "'Bebas Neue', sans-serif",
+      "letter-spacing": "0.05em"
+    }
+  }, [_vm._v("LOGIN")]), _vm._v(" "), _vm.error ? _c("div", {
+    staticClass: "mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium"
+  }, [_vm._v("\n          " + _vm._s(_vm.error) + "\n        ")]) : _vm._e(), _vm._v(" "), _c("form", {
+    staticClass: "space-y-5",
     on: {
       submit: function submit($event) {
         $event.preventDefault();
@@ -2211,15 +2273,31 @@ var render = function render() {
       }
     }
   }, [_c("div", [_c("label", {
-    staticClass: "block text-xs font-semibold text-stone-500 uppercase mb-1"
-  }, [_vm._v("Email")]), _vm._v(" "), _c("input", {
+    staticClass: "block text-xs font-bold text-stone-600 uppercase mb-2 tracking-wider"
+  }, [_vm._v("Email")]), _vm._v(" "), _c("div", {
+    staticClass: "relative"
+  }, [_c("span", {
+    staticClass: "absolute left-4 top-3.5 text-stone-400"
+  }, [_c("svg", {
+    staticClass: "w-5 h-5",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "2",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("path", {
+    attrs: {
+      d: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+    }
+  })])]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.form.email,
       expression: "form.email"
     }],
-    staticClass: "input-field",
+    staticClass: "w-full pl-12 pr-4 py-3 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors text-stone-800 font-medium",
     attrs: {
       type: "email",
       required: "",
@@ -2234,16 +2312,41 @@ var render = function render() {
         _vm.$set(_vm.form, "email", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("div", [_c("label", {
-    staticClass: "block text-xs font-semibold text-stone-500 uppercase mb-1"
-  }, [_vm._v("Password")]), _vm._v(" "), _c("input", {
+  })])]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "block text-xs font-bold text-stone-600 uppercase mb-2 tracking-wider"
+  }, [_vm._v("Password")]), _vm._v(" "), _c("div", {
+    staticClass: "relative"
+  }, [_c("span", {
+    staticClass: "absolute left-4 top-3.5 text-stone-400"
+  }, [_c("svg", {
+    staticClass: "w-5 h-5",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "2",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("rect", {
+    attrs: {
+      x: "3",
+      y: "11",
+      width: "18",
+      height: "11",
+      rx: "2",
+      ry: "2"
+    }
+  }), _c("path", {
+    attrs: {
+      d: "M7 11V7a5 5 0 0110 0v4"
+    }
+  })])]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.form.password,
       expression: "form.password"
     }],
-    staticClass: "input-field",
+    staticClass: "w-full pl-12 pr-4 py-3 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors text-stone-800 font-medium",
     attrs: {
       type: "password",
       required: "",
@@ -2258,33 +2361,195 @@ var render = function render() {
         _vm.$set(_vm.form, "password", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _c("button", {
-    staticClass: "btn-primary w-full py-3 mt-2 disabled:opacity-50",
+  })])]), _vm._v(" "), _c("button", {
+    staticClass: "w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-lg py-3.5 rounded-lg transition-all uppercase tracking-wider mt-8",
     attrs: {
       type: "submit",
       disabled: _vm.loading
     }
-  }, [_vm.loading ? _c("span", [_vm._v("Signing in…")]) : _c("span", [_vm._v("Sign In")])])]), _vm._v(" "), _c("p", {
-    staticClass: "text-center text-sm text-stone-500 mt-6"
-  }, [_vm._v("\n          Don't have an account?\n          "), _c("router-link", {
-    staticClass: "text-orange-500 font-semibold hover:text-orange-600",
+  }, [_vm.loading ? _c("span", {
+    staticClass: "flex items-center justify-center gap-2"
+  }, [_c("svg", {
+    staticClass: "w-5 h-5 animate-spin",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("circle", {
+    attrs: {
+      cx: "12",
+      cy: "12",
+      r: "10",
+      stroke: "currentColor",
+      "stroke-width": "2",
+      fill: "none",
+      opacity: "0.3"
+    }
+  }), _vm._v(" "), _c("path", {
+    attrs: {
+      fill: "currentColor",
+      d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+    }
+  })]), _vm._v("\n              Signing in…\n            ")]) : _c("span", [_vm._v("Sign In")])])]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+    staticClass: "text-center mt-5 pt-5 border-t border-stone-200"
+  }, [_c("p", {
+    staticClass: "text-sm text-stone-600"
+  }, [_vm._v("\n            Don't have an account?\n            "), _c("router-link", {
+    staticClass: "text-orange-500 font-bold hover:text-orange-600 transition-colors",
     attrs: {
       to: {
         name: "register"
       }
     }
-  }, [_vm._v("Create one")])], 1), _vm._v(" "), _c("p", {
-    staticClass: "text-center text-xs text-stone-400 mt-3"
-  }, [_vm._v("\n          Seller mode is available after login in your account dashboard.\n        ")]), _vm._v(" "), _c("div", {
-    staticClass: "mt-6 pt-4 border-t border-stone-100 text-center"
+  }, [_vm._v("\n              Create one\n            ")])], 1)]), _vm._v(" "), _c("p", {
+    staticClass: "text-center text-xs text-stone-500 mt-4 leading-relaxed"
+  }, [_vm._v("\n          Seller mode is available after login in your account dashboard.\n        ")]), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _vm._m(3)]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "hidden lg:flex relative bg-gradient-to-b from-black/40 to-black/60 items-center justify-center p-12",
+    staticStyle: {
+      "background-image": "url('/images/auth/login-hero.jpg')",
+      "background-size": "cover",
+      "background-position": "center"
+    }
+  }, [_c("div", {
+    staticClass: "absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"
+  }), _vm._v(" "), _c("div", {
+    staticClass: "relative z-10 text-left max-w-sm"
+  }, [_c("h1", {
+    staticClass: "text-5xl font-black text-white mb-4",
+    staticStyle: {
+      "font-family": "'Bebas Neue', sans-serif",
+      "letter-spacing": "0.05em"
+    }
+  }, [_vm._v("Welcome Back")]), _vm._v(" "), _c("p", {
+    staticClass: "text-xl text-stone-300"
+  }, [_vm._v("Sign in to your NurbanNxt account")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "text-center mt-6"
+  }, [_c("a", {
+    staticClass: "text-sm text-orange-500 font-semibold hover:text-orange-600 transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("\n            Forgot password?\n          ")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "mt-6 pt-4 border-t border-stone-200 text-center"
   }, [_c("a", {
     staticClass: "text-xs text-stone-400 font-medium hover:text-orange-500 transition-colors uppercase tracking-wider",
     attrs: {
       href: "/admin"
     }
-  }, [_vm._v("\n            Login as Admin\n          ")])])])])])]);
-};
-var staticRenderFns = [];
+  }, [_vm._v("\n            Login as Admin\n          ")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("footer", {
+    staticClass: "bg-stone-900 border-t border-stone-800"
+  }, [_c("div", {
+    staticClass: "max-w-7xl mx-auto px-12 py-16 grid grid-cols-1 md:grid-cols-4 gap-12"
+  }, [_c("div", [_c("h3", {
+    staticClass: "text-white font-bold text-lg mb-4"
+  }, [_vm._v("NURBAN"), _c("span", {
+    staticClass: "text-orange-500"
+  }, [_vm._v("NXT")])]), _vm._v(" "), _c("p", {
+    staticClass: "text-stone-400 text-sm leading-relaxed"
+  }, [_vm._v("\n          Aesthetic clothing for the culturally wired. We design for those who live ahead of the trend.\n        ")])]), _vm._v(" "), _c("div", [_c("h4", {
+    staticClass: "text-white font-bold text-sm uppercase mb-4 tracking-wider"
+  }, [_vm._v("SHOP")]), _vm._v(" "), _c("ul", {
+    staticClass: "space-y-2"
+  }, [_c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("All Products")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Featured")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("New Arrivals")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Sale")])])])]), _vm._v(" "), _c("div", [_c("h4", {
+    staticClass: "text-white font-bold text-sm uppercase mb-4 tracking-wider"
+  }, [_vm._v("ACCOUNT")]), _vm._v(" "), _c("ul", {
+    staticClass: "space-y-2"
+  }, [_c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Seller Portal")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Create Account")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Order Tracking")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("My Profile")])])])]), _vm._v(" "), _c("div", [_c("h4", {
+    staticClass: "text-white font-bold text-sm uppercase mb-4 tracking-wider"
+  }, [_vm._v("COMPANY")]), _vm._v(" "), _c("ul", {
+    staticClass: "space-y-2"
+  }, [_c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("About Us")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Contact")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Sustainability")])]), _vm._v(" "), _c("li", [_c("a", {
+    staticClass: "text-stone-400 text-sm hover:text-white transition-colors",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Careers")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "border-t border-stone-800 px-12 py-6 flex justify-between items-center"
+  }, [_c("p", {
+    staticClass: "text-stone-500 text-xs"
+  }, [_vm._v("© 2026 NurbanNxt. All rights reserved.")]), _vm._v(" "), _c("div", {
+    staticClass: "flex gap-4"
+  }, [_c("span", {
+    staticClass: "text-stone-500 text-xs border border-stone-700 px-3 py-1 rounded"
+  }, [_vm._v("VISA")]), _vm._v(" "), _c("span", {
+    staticClass: "text-stone-500 text-xs border border-stone-700 px-3 py-1 rounded"
+  }, [_vm._v("MASTERCARD")]), _vm._v(" "), _c("span", {
+    staticClass: "text-stone-500 text-xs border border-stone-700 px-3 py-1 rounded"
+  }, [_vm._v("GCASH")])])])]);
+}];
 render._withStripped = true;
 
 
@@ -3263,7 +3528,7 @@ var render = function render() {
   }), _vm._v(" "), _c("img", {
     staticClass: "hero-product-img",
     attrs: {
-      src: "/images/products/illus-1.png",
+      src: "/images/products/hero-couple.jpg",
       alt: "Featured product"
     }
   }), _vm._v(" "), _c("div", {
@@ -7718,7 +7983,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-099bcfa8]:root {\r\n    --black: #0a0a0a;\r\n    --dark: #111;\r\n    --card: #141414;\r\n    --border: #1a1a1a;\r\n    --white: #f0ece3;\r\n    --muted: rgba(240,236,227,0.6);\n}\n*[data-v-099bcfa8], *[data-v-099bcfa8]::before, *[data-v-099bcfa8]::after {\r\n  margin: 0;\r\n  padding: 0;\r\n  box-sizing: border-box;\n}\n.nn-page[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'DM Sans', sans-serif;\r\n  overflow-x: hidden;\r\n  margin: 0;\r\n  padding: 0;\r\n  width: 100%;\r\n  display: flex;\r\n  flex-direction: column;\n}\n.nn-nav[data-v-099bcfa8] {\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 200;\r\n  background: var(--black);\r\n  border-bottom: 1px solid var(--border);\r\n  display: flex;\r\n  align-items: center;\r\n  padding: 0 48px;\r\n  height: 64px;\r\n  gap: 40px;\r\n  transition: box-shadow .3s;\n}\n.nav-logo[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 24px;\r\n  letter-spacing: .08em;\r\n  text-decoration: none;\r\n  color: var(--white);\r\n  white-space: nowrap;\n}\n.nav-logo span[data-v-099bcfa8] { color: var(--orange);\n}\n.nav-links[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 0;\r\n  list-style: none;\r\n  flex: 1;\n}\n.nav-links li a[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 13px;\r\n  font-weight: 600;\r\n  letter-spacing: .05em;\r\n  color: var(--muted);\r\n  text-decoration: none;\r\n  padding: 0 20px;\r\n  height: 64px;\r\n  display: flex;\r\n  align-items: center;\r\n  border-bottom: 2px solid transparent;\r\n  transition: color .2s, border-color .2s;\n}\n.nav-links li a[data-v-099bcfa8]:hover,\r\n.nav-links li a.active[data-v-099bcfa8] { color: var(--white); border-bottom-color: var(--orange);\n}\n.nav-icons[data-v-099bcfa8] {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 20px;\r\n  margin-left: auto;\n}\n.nav-icons button[data-v-099bcfa8] {\r\n  background: none;\r\n  border: none;\r\n  color: var(--white);\r\n  cursor: pointer;\r\n  padding: 4px;\r\n  opacity: .8;\r\n  transition: opacity .2s, color .2s;\r\n  position: relative;\n}\n.nav-icons button[data-v-099bcfa8]:hover { opacity: 1; color: var(--orange);\n}\n.cart-badge[data-v-099bcfa8] {\r\n  position: absolute;\r\n  top: -4px;\r\n  right: -5px;\r\n  background: var(--orange);\r\n  color: white;\r\n  min-width: 15px;\r\n  height: 15px;\r\n  border-radius: 999px;\r\n  font-size: 8px;\r\n  font-weight: 700;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  font-family: 'Syne', sans-serif;\r\n  padding: 0 3px;\n}\n.hero[data-v-099bcfa8] {\r\n  display: grid;\r\n  grid-template-columns: 1fr 1fr;\r\n  min-height: calc(100vh - 64px);\r\n  max-height: 720px;\n}\n.hero-left[data-v-099bcfa8] {\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  padding: 64px 48px;\r\n  position: relative;\n}\n.hero-tag[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 11px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: var(--orange);\r\n  margin-bottom: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  animation: fadeUp-099bcfa8 .7s ease both;\n}\n.hero-tag[data-v-099bcfa8]::before {\r\n  content: '';\r\n  width: 28px;\r\n  height: 2px;\r\n  background: var(--orange);\n}\n.hero-h1[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(72px, 8vw, 120px);\r\n  line-height: .88;\r\n  letter-spacing: .02em;\r\n  animation: fadeUp-099bcfa8 .7s .1s ease both;\n}\n.hero-h1 .orange[data-v-099bcfa8],\r\n.hero-h1 .white[data-v-099bcfa8],\r\n.hero-h1 .outline[data-v-099bcfa8] { display: block;\n}\n.hero-h1 .orange[data-v-099bcfa8] { color: var(--orange);\n}\n.hero-h1 .white[data-v-099bcfa8] { color: var(--white);\n}\n.hero-h1 .outline[data-v-099bcfa8] {\r\n  color: transparent;\r\n  -webkit-text-stroke: 1.4px rgba(255,255,255,.4);\r\n  text-stroke: 1.4px rgba(255,255,255,.4);\n}\n.hero-sub[data-v-099bcfa8] {\r\n  font-size: 14px;\r\n  font-weight: 300;\r\n  line-height: 1.8;\r\n  color: var(--muted);\r\n  max-width: 360px;\r\n  margin-top: 22px;\r\n  margin-bottom: 36px;\r\n  animation: fadeUp-099bcfa8 .7s .2s ease both;\n}\n.hero-btns[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 12px;\r\n  flex-wrap: wrap;\r\n  animation: fadeUp-099bcfa8 .7s .3s ease both;\n}\n.btn-orange[data-v-099bcfa8],\r\n.btn-outline[data-v-099bcfa8],\r\n.btn-dark[data-v-099bcfa8] {\r\n  text-decoration: none;\n}\n.btn-orange[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .18em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: 2px solid var(--orange);\r\n  cursor: pointer;\r\n  transition: background .2s, transform .15s;\n}\n.btn-orange[data-v-099bcfa8]:hover { background: var(--orange2); transform: translateY(-2px);\n}\n.btn-outline[data-v-099bcfa8] {\r\n  background: transparent;\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .18em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: 2px solid var(--border);\r\n  cursor: pointer;\r\n  transition: border-color .2s, color .2s;\n}\n.btn-outline[data-v-099bcfa8]:hover { border-color: var(--orange); color: var(--orange);\n}\n.hero-stat[data-v-099bcfa8] {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  background: var(--card);\r\n  border: 1px solid var(--border);\r\n  padding: 10px 16px;\r\n  margin-top: 32px;\r\n  width: -moz-fit-content;\r\n  width: fit-content;\r\n  border-left: 3px solid var(--orange);\r\n  animation: fadeUp-099bcfa8 .7s .4s ease both;\n}\n.hero-stat strong[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 26px;\r\n  color: var(--orange);\r\n  line-height: 1;\n}\n.hero-stat span[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 600;\r\n  letter-spacing: .12em;\r\n  text-transform: uppercase;\r\n  color: var(--muted);\n}\n.hero-right[data-v-099bcfa8] {\r\n  position: relative;\r\n  overflow: hidden;\r\n  background:\r\n    radial-gradient(circle at 78% 14%, rgba(249,115,22,.35) 0%, rgba(249,115,22,0) 44%),\r\n    linear-gradient(145deg, #101010 0%, #0a0a0a 55%, #151515 100%);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\n}\n.hero-product-img[data-v-099bcfa8] {\r\n  width: 100%;\r\n  max-width: none;\r\n  height: 100%;\r\n  -o-object-fit: cover;\r\n     object-fit: cover;\r\n  -o-object-position: center 62%;\r\n     object-position: center 62%;\r\n  position: relative;\r\n  z-index: 2;\r\n  filter: saturate(.92) contrast(1.04) drop-shadow(0 24px 48px rgba(0,0,0,.34));\r\n  animation: floatImg-099bcfa8 4s ease-in-out infinite,fadeIn-099bcfa8 1s .3s ease both;\n}\n@keyframes floatImg-099bcfa8 {\n0%, 100% { transform: translateY(0);\n}\n50% { transform: translateY(-14px);\n}\n}\n.hero-drop-badge[data-v-099bcfa8] {\r\n  position: absolute;\r\n  bottom: 36px;\r\n  right: 36px;\r\n  z-index: 3;\r\n  width: 68px;\r\n  height: 68px;\r\n  border: none;\r\n  border-radius: 50%;\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  background: var(--orange);\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 13px;\r\n  line-height: 1.1;\r\n  letter-spacing: .05em;\r\n  color: #111;\r\n  text-align: center;\r\n  box-shadow: 0 4px 24px rgba(0,0,0,.18);\r\n  animation: rotateBadge-099bcfa8 14s linear infinite;\n}\n@keyframes rotateBadge-099bcfa8 {\nfrom { transform: rotate(0);\n}\nto { transform: rotate(360deg);\n}\n}\n.hero-right-overlay[data-v-099bcfa8] {\r\n  position: absolute;\r\n  inset: 0;\r\n  background:\r\n    linear-gradient(135deg, rgba(249,115,22,.24) 0%, rgba(249,115,22,0) 42%),\r\n    linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0) 45%);\r\n  z-index: 1;\r\n  pointer-events: none;\n}\n.ticker-bar[data-v-099bcfa8] { \r\n  background: var(--orange); \r\n  overflow: hidden; \r\n  padding: 10px 0; \r\n  white-space: nowrap; \r\n  margin: 0;\r\n  width: 100%;\n}\n.ticker-inner[data-v-099bcfa8] { display: inline-flex; animation: scrollX-099bcfa8 28s linear infinite;\n}\n.ticker-inner span[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 15px;\r\n  letter-spacing: .12em;\r\n  color: white;\r\n  padding: 0 28px;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 20px;\n}\n.ticker-inner span[data-v-099bcfa8]::after { content: '\\2022'; font-size: 10px; opacity: .7;\n}\n@keyframes scrollX-099bcfa8 {\nfrom { transform: translateX(0);\n}\nto { transform: translateX(-50%);\n}\n}\n.section[data-v-099bcfa8] { \r\n  padding: 64px 48px; \r\n  margin: 0;\n}\n.section-head[data-v-099bcfa8] { \r\n  display: flex; \r\n  align-items: center; \r\n  justify-content: space-between; \r\n  margin-bottom: 28px;\n}\n.section-title[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .06em; color: var(--white);\n}\n.see-all[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 12px;\r\n  font-weight: 600;\r\n  letter-spacing: .1em;\r\n  text-transform: uppercase;\r\n  color: var(--orange);\r\n  text-decoration: none;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  transition: gap .2s;\n}\n.see-all[data-v-099bcfa8]:hover { gap: 10px;\n}\n.carousel[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 16px;\r\n  overflow-x: auto;\r\n  scroll-snap-type: x mandatory;\r\n  padding-bottom: 4px;\r\n  scrollbar-width: none;\n}\n.carousel[data-v-099bcfa8]::-webkit-scrollbar { display: none;\n}\n.prod-card[data-v-099bcfa8] {\r\n  flex: 0 0 210px;\r\n  scroll-snap-align: start;\r\n  background: var(--card);\r\n  border: 1px solid var(--border);\r\n  overflow: hidden;\r\n  transition: border-color .25s, transform .25s;\n}\n.prod-card[data-v-099bcfa8]:hover { border-color: var(--orange); transform: translateY(-4px);\n}\n.prod-img-wrap[data-v-099bcfa8] { background: #f5f4f2; height: 240px; position: relative; overflow: hidden;\n}\n.prod-img-wrap img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; transition: transform .5s;\n}\n.prod-card:hover .prod-img-wrap img[data-v-099bcfa8] { transform: scale(1.06);\n}\n.prod-hover-overlay[data-v-099bcfa8] {\r\n  position: absolute;\r\n  inset: 0;\r\n  background: rgba(0,0,0,.42);\r\n  opacity: 0;\r\n  transition: opacity .25s;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\n}\n.prod-card:hover .prod-hover-overlay[data-v-099bcfa8] { opacity: 1;\n}\n.quick-peek[data-v-099bcfa8] {\r\n  background: rgba(255,255,255,.12);\r\n  backdrop-filter: blur(6px);\r\n  border: 1px solid rgba(255,255,255,.3);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .15em;\r\n  text-transform: uppercase;\r\n  padding: 9px 18px;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s;\n}\n.quick-peek[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange);\n}\n.prod-tag[data-v-099bcfa8] {\r\n  position: absolute;\r\n  top: 10px;\r\n  left: 10px;\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 9px;\r\n  font-weight: 700;\r\n  letter-spacing: .15em;\r\n  text-transform: uppercase;\r\n  padding: 3px 9px;\n}\n.prod-tag.sale[data-v-099bcfa8] { background: var(--orange);\n}\n.prod-tag.new[data-v-099bcfa8] { background: #22c55e;\n}\n.prod-tag.hot[data-v-099bcfa8] { background: #ef4444;\n}\n.prod-info[data-v-099bcfa8] { padding: 12px 14px 4px;\n}\n.prod-name[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 13px;\r\n  font-weight: 600;\r\n  color: var(--white);\r\n  margin-bottom: 4px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\n}\n.prod-price-row[data-v-099bcfa8] { display: flex; align-items: center; gap: 8px; margin-bottom: 10px;\n}\n.prod-price[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .05em; color: var(--orange);\n}\n.prod-old[data-v-099bcfa8] { font-size: 12px; color: var(--muted); text-decoration: line-through;\n}\n.quick-add-btn[data-v-099bcfa8] {\r\n  width: 100%;\r\n  background: var(--dark);\r\n  color: var(--white);\r\n  border: 1px solid var(--border);\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 11px;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s, color .2s;\n}\n.quick-add-btn[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange); color: white;\n}\n.quick-add-btn.added[data-v-099bcfa8] { background: #22c55e; border-color: #22c55e; color: #fff;\n}\n.carousel-dots[data-v-099bcfa8] { display: flex; gap: 6px; justify-content: center; margin-top: 22px;\n}\n.dot[data-v-099bcfa8] { width: 24px; height: 4px; border-radius: 2px; background: var(--border); cursor: pointer; transition: background .2s, width .25s;\n}\n.dot.active[data-v-099bcfa8] { background: var(--orange); width: 38px;\n}\n.collab-banner[data-v-099bcfa8] {\r\n  margin: 0;\r\n  display: grid;\r\n  grid-template-columns: 1fr 1fr;\r\n  overflow: hidden;\r\n  min-height: 340px;\r\n  border: 1px solid var(--border);\r\n  width: 100%;\r\n  border-top: 1px solid var(--border);\r\n  border-bottom: 1px solid var(--border);\n}\n.collab-img[data-v-099bcfa8] { position: relative; overflow: hidden; background: #1a1015;\n}\n.collab-img img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; filter: saturate(.75) brightness(.8); transition: transform .6s, filter .4s;\n}\n.collab-banner:hover .collab-img img[data-v-099bcfa8] { transform: scale(1.04); filter: saturate(.9) brightness(.88);\n}\n.collab-content[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  padding: 52px 48px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  position: relative;\r\n  overflow: hidden;\n}\n.collab-content[data-v-099bcfa8]::before {\r\n  content: 'DROP';\r\n  position: absolute;\r\n  right: -16px;\r\n  bottom: -24px;\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 150px;\r\n  color: rgba(0,0,0,.08);\r\n  line-height: 1;\r\n  pointer-events: none;\n}\n.collab-eyebrow[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: rgba(0,0,0,.55);\r\n  margin-bottom: 14px;\n}\n.collab-title[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(42px, 4vw, 68px);\r\n  line-height: .88;\r\n  letter-spacing: .02em;\r\n  color: var(--black);\r\n  margin-bottom: 18px;\n}\n.collab-body[data-v-099bcfa8] {\r\n  font-size: 13px;\r\n  font-weight: 300;\r\n  line-height: 1.8;\r\n  color: rgba(0,0,0,.65);\r\n  max-width: 290px;\r\n  margin-bottom: 28px;\n}\n.btn-dark[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: none;\r\n  cursor: pointer;\r\n  width: -moz-fit-content;\r\n  width: fit-content;\r\n  transition: background .2s;\n}\n.btn-dark[data-v-099bcfa8]:hover { background: #222;\n}\n.cats-grid[data-v-099bcfa8] { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;\n}\n.cat-card[data-v-099bcfa8] { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: pointer; background: var(--card);\n}\n.cat-card img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; filter: brightness(.5) saturate(.65); transition: filter .5s, transform .6s;\n}\n.cat-card:hover img[data-v-099bcfa8] { filter: brightness(.68) saturate(.9); transform: scale(1.06);\n}\n.cat-overlay[data-v-099bcfa8] { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, transparent 55%);\n}\n.cat-info[data-v-099bcfa8] { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 24px;\n}\n.cat-name[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .06em; color: white; line-height: 1; margin-bottom: 12px;\n}\n.shop-now-btn[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 10px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 8px 18px;\r\n  border: none;\r\n  cursor: pointer;\r\n  display: inline-flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  transform: translateY(6px);\r\n  opacity: 0;\r\n  transition: opacity .3s, transform .3s, background .2s;\n}\n.cat-card:hover .shop-now-btn[data-v-099bcfa8] { opacity: 1; transform: translateY(0);\n}\n.shop-now-btn[data-v-099bcfa8]:hover { background: var(--orange2);\n}\n.brands-bar[data-v-099bcfa8] { \r\n  border-top: 1px solid var(--border); \r\n  border-bottom: 1px solid var(--border); \r\n  overflow: hidden; \r\n  padding: 20px 0; \r\n  margin: 0;\r\n  width: 100%;\n}\n.brands-inner[data-v-099bcfa8] { display: inline-flex; animation: scrollX-099bcfa8 22s linear infinite;\n}\n.brands-inner span[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 11px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: var(--border);\r\n  padding: 0 36px;\r\n  transition: color .2s;\r\n  cursor: default;\n}\n.brands-inner span[data-v-099bcfa8]:hover { color: var(--orange);\n}\n.newsletter[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  padding: 64px 80px;\r\n  gap: 48px;\r\n  position: relative;\r\n  overflow: hidden;\r\n  margin: 0;\r\n  width: 100%;\n}\n.seller-cta[data-v-099bcfa8] {\r\n  margin: 0;\r\n  border: none;\r\n  border-top: 1px solid var(--border);\r\n  border-bottom: 1px solid var(--border);\r\n  padding: 52px 48px;\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  gap: 24px;\r\n  background: rgba(22,22,22,.7);\r\n  width: 100%;\n}\n.seller-cta-eye[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  letter-spacing: .28em;\r\n  text-transform: uppercase;\r\n  color: var(--muted);\r\n  margin-bottom: 10px;\n}\n.seller-cta-title[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(42px, 4vw, 64px);\r\n  line-height: .9;\r\n  letter-spacing: .02em;\r\n  margin-bottom: 12px;\n}\n.seller-cta-title span[data-v-099bcfa8] { color: var(--orange);\n}\n.seller-cta-sub[data-v-099bcfa8] {\r\n  font-size: 14px;\r\n  color: var(--muted);\r\n  max-width: 420px;\r\n  line-height: 1.7;\n}\n.nl-bg[data-v-099bcfa8] {\r\n  position: absolute;\r\n  right: -10px;\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 230px;\r\n  color: rgba(0,0,0,.07);\r\n  line-height: 1;\r\n  pointer-events: none;\r\n  white-space: nowrap;\n}\n.nl-left[data-v-099bcfa8] { position: relative; z-index: 1;\n}\n.nl-eyebrow[data-v-099bcfa8] { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: rgba(0,0,0,.5); margin-bottom: 12px;\n}\n.nl-title[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px,3.5vw,58px); line-height: .9; color: var(--black); letter-spacing: .02em;\n}\n.nl-right[data-v-099bcfa8] { position: relative; z-index: 1; flex: 0 0 400px;\n}\n.nl-form[data-v-099bcfa8] { display: flex; border: 2px solid var(--black); margin-bottom: 10px;\n}\n.nl-input[data-v-099bcfa8] { flex: 1; background: white; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); padding: 14px 18px;\n}\n.nl-input[data-v-099bcfa8]::-moz-placeholder { color: #aaa;\n}\n.nl-input[data-v-099bcfa8]::placeholder { color: #aaa;\n}\n.nl-btn[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 14px 22px;\r\n  border: none;\r\n  cursor: pointer;\r\n  transition: background .2s;\n}\n.nl-btn[data-v-099bcfa8]:hover { background: #1a1a1a;\n}\n.nl-note[data-v-099bcfa8] { font-size: 12px; color: rgba(0,0,0,.5); font-style: italic;\n}\nfooter[data-v-099bcfa8] { \r\n  background: var(--dark); \r\n  border-top: 1px solid var(--border); \r\n  padding: 64px 48px 32px; \r\n  margin: 0;\r\n  width: 100%;\n}\n.footer-grid[data-v-099bcfa8] { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px;\n}\n.footer-logo[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .08em; color: var(--white); margin-bottom: 16px;\n}\n.footer-logo span[data-v-099bcfa8] { color: var(--orange);\n}\n.footer-desc[data-v-099bcfa8] { font-size: 13px; font-weight: 300; line-height: 1.8; color: var(--muted); max-width: 260px; margin-bottom: 24px;\n}\n.footer-socials[data-v-099bcfa8] { display: flex; gap: 10px;\n}\n.social-icon[data-v-099bcfa8] {\r\n  width: 34px;\r\n  height: 34px;\r\n  border: 1px solid var(--border);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  color: var(--muted);\r\n  font-size: 11px;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  text-decoration: none;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s, color .2s;\n}\n.social-icon[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange); color: white;\n}\n.footer-col h4[data-v-099bcfa8] { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--white); margin-bottom: 18px;\n}\n.footer-col ul[data-v-099bcfa8] { list-style: none;\n}\n.footer-col ul li[data-v-099bcfa8] { margin-bottom: 11px;\n}\n.footer-col ul li a[data-v-099bcfa8] {\r\n  font-size: 13px;\r\n  font-weight: 300;\r\n  color: var(--muted);\r\n  text-decoration: none;\r\n  transition: color .2s;\n}\n.footer-col ul li a[data-v-099bcfa8]:hover { color: var(--orange);\n}\n.footer-bottom[data-v-099bcfa8] { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between;\n}\n.footer-copy[data-v-099bcfa8] { font-size: 12px; color: #444; font-weight: 300;\n}\n.pay-methods[data-v-099bcfa8] { display: flex; gap: 8px;\n}\n.pay-chip[data-v-099bcfa8] { border: 1px solid var(--border); padding: 4px 10px; font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #444;\n}\n@keyframes fadeUp-099bcfa8 {\nfrom { opacity: 0; transform: translateY(28px);\n}\nto { opacity: 1; transform: none;\n}\n}\n@keyframes fadeIn-099bcfa8 {\nfrom { opacity: 0;\n}\nto { opacity: 1;\n}\n}\n.reveal[data-v-099bcfa8] {\r\n  opacity: 0;\r\n  transform: translateY(32px);\r\n  transition: opacity .7s ease, transform .7s ease;\n}\n.reveal.in[data-v-099bcfa8] { opacity: 1; transform: none;\n}\n.d1[data-v-099bcfa8] { transition-delay: .1s;\n}\n.d2[data-v-099bcfa8] { transition-delay: .2s;\n}\n.d3[data-v-099bcfa8] { transition-delay: .3s;\n}\n@media (max-width: 1024px) {\n.nn-nav[data-v-099bcfa8] { padding: 0 24px; gap: 20px;\n}\n.hero[data-v-099bcfa8] { grid-template-columns: 1fr; max-height: none;\n}\n.hero-right[data-v-099bcfa8] { min-height: 340px;\n}\n.section[data-v-099bcfa8], footer[data-v-099bcfa8] { padding-left: 24px; padding-right: 24px;\n}\n.collab-banner[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.seller-cta[data-v-099bcfa8] { padding: 36px 24px; flex-direction: column; align-items: flex-start;\n}\n.newsletter[data-v-099bcfa8] { padding: 44px 24px; flex-direction: column; align-items: flex-start;\n}\n.nl-right[data-v-099bcfa8] { flex: 1 1 auto; width: 100%;\n}\n.cats-grid[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.footer-grid[data-v-099bcfa8] { grid-template-columns: 1fr 1fr;\n}\n}\n@media (max-width: 768px) {\n.nav-links[data-v-099bcfa8] { display: none;\n}\n.footer-grid[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.footer-bottom[data-v-099bcfa8] { flex-direction: column; align-items: flex-start; gap: 12px;\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n[data-v-099bcfa8]:root {\r\n    --black: #0a0a0a;\r\n    --dark: #111;\r\n    --card: #141414;\r\n    --border: #1a1a1a;\r\n    --white: #f0ece3;\r\n    --muted: rgba(240,236,227,0.6);\n}\n*[data-v-099bcfa8], *[data-v-099bcfa8]::before, *[data-v-099bcfa8]::after {\r\n  margin: 0;\r\n  padding: 0;\r\n  box-sizing: border-box;\n}\n.nn-page[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'DM Sans', sans-serif;\r\n  overflow-x: hidden;\r\n  margin: 0;\r\n  padding: 0;\r\n  width: 100%;\r\n  display: flex;\r\n  flex-direction: column;\n}\n.nn-nav[data-v-099bcfa8] {\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 200;\r\n  background: var(--black);\r\n  border-bottom: 1px solid var(--border);\r\n  display: flex;\r\n  align-items: center;\r\n  padding: 0 48px;\r\n  height: 64px;\r\n  gap: 40px;\r\n  transition: box-shadow .3s;\n}\n.nav-logo[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 24px;\r\n  letter-spacing: .08em;\r\n  text-decoration: none;\r\n  color: var(--white);\r\n  white-space: nowrap;\n}\n.nav-logo span[data-v-099bcfa8] { color: var(--orange);\n}\n.nav-links[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 0;\r\n  list-style: none;\r\n  flex: 1;\n}\n.nav-links li a[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 13px;\r\n  font-weight: 600;\r\n  letter-spacing: .05em;\r\n  color: var(--muted);\r\n  text-decoration: none;\r\n  padding: 0 20px;\r\n  height: 64px;\r\n  display: flex;\r\n  align-items: center;\r\n  border-bottom: 2px solid transparent;\r\n  transition: color .2s, border-color .2s;\n}\n.nav-links li a[data-v-099bcfa8]:hover,\r\n.nav-links li a.active[data-v-099bcfa8] { color: var(--white); border-bottom-color: var(--orange);\n}\n.nav-icons[data-v-099bcfa8] {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 20px;\r\n  margin-left: auto;\n}\n.nav-icons button[data-v-099bcfa8] {\r\n  background: none;\r\n  border: none;\r\n  color: var(--white);\r\n  cursor: pointer;\r\n  padding: 4px;\r\n  opacity: .8;\r\n  transition: opacity .2s, color .2s;\r\n  position: relative;\n}\n.nav-icons button[data-v-099bcfa8]:hover { opacity: 1; color: var(--orange);\n}\n.cart-badge[data-v-099bcfa8] {\r\n  position: absolute;\r\n  top: -4px;\r\n  right: -5px;\r\n  background: var(--orange);\r\n  color: white;\r\n  min-width: 15px;\r\n  height: 15px;\r\n  border-radius: 999px;\r\n  font-size: 8px;\r\n  font-weight: 700;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  font-family: 'Syne', sans-serif;\r\n  padding: 0 3px;\n}\n.hero[data-v-099bcfa8] {\r\n  display: grid;\r\n  grid-template-columns: 1fr 1fr;\r\n  min-height: calc(100vh - 64px);\r\n  max-height: 720px;\n}\n.hero-left[data-v-099bcfa8] {\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  padding: 64px 48px;\r\n  position: relative;\n}\n.hero-tag[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 11px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: var(--orange);\r\n  margin-bottom: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  animation: fadeUp-099bcfa8 .7s ease both;\n}\n.hero-tag[data-v-099bcfa8]::before {\r\n  content: '';\r\n  width: 28px;\r\n  height: 2px;\r\n  background: var(--orange);\n}\n.hero-h1[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(72px, 8vw, 120px);\r\n  line-height: .88;\r\n  letter-spacing: .02em;\r\n  animation: fadeUp-099bcfa8 .7s .1s ease both;\n}\n.hero-h1 .orange[data-v-099bcfa8],\r\n.hero-h1 .white[data-v-099bcfa8],\r\n.hero-h1 .outline[data-v-099bcfa8] { display: block;\n}\n.hero-h1 .orange[data-v-099bcfa8] { color: var(--orange);\n}\n.hero-h1 .white[data-v-099bcfa8] { color: var(--white);\n}\n.hero-h1 .outline[data-v-099bcfa8] {\r\n  color: transparent;\r\n  -webkit-text-stroke: 1.4px rgba(255,255,255,.4);\r\n  text-stroke: 1.4px rgba(255,255,255,.4);\n}\n.hero-sub[data-v-099bcfa8] {\r\n  font-size: 14px;\r\n  font-weight: 300;\r\n  line-height: 1.8;\r\n  color: var(--muted);\r\n  max-width: 360px;\r\n  margin-top: 22px;\r\n  margin-bottom: 36px;\r\n  animation: fadeUp-099bcfa8 .7s .2s ease both;\n}\n.hero-btns[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 12px;\r\n  flex-wrap: wrap;\r\n  animation: fadeUp-099bcfa8 .7s .3s ease both;\n}\n.btn-orange[data-v-099bcfa8],\r\n.btn-outline[data-v-099bcfa8],\r\n.btn-dark[data-v-099bcfa8] {\r\n  text-decoration: none;\n}\n.btn-orange[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .18em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: 2px solid var(--orange);\r\n  cursor: pointer;\r\n  transition: background .2s, transform .15s;\n}\n.btn-orange[data-v-099bcfa8]:hover { background: var(--orange2); transform: translateY(-2px);\n}\n.btn-outline[data-v-099bcfa8] {\r\n  background: transparent;\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .18em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: 2px solid var(--border);\r\n  cursor: pointer;\r\n  transition: border-color .2s, color .2s;\n}\n.btn-outline[data-v-099bcfa8]:hover { border-color: var(--orange); color: var(--orange);\n}\n.hero-stat[data-v-099bcfa8] {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  background: var(--card);\r\n  border: 1px solid var(--border);\r\n  padding: 10px 16px;\r\n  margin-top: 32px;\r\n  width: -moz-fit-content;\r\n  width: fit-content;\r\n  border-left: 3px solid var(--orange);\r\n  animation: fadeUp-099bcfa8 .7s .4s ease both;\n}\n.hero-stat strong[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 26px;\r\n  color: var(--orange);\r\n  line-height: 1;\n}\n.hero-stat span[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 600;\r\n  letter-spacing: .12em;\r\n  text-transform: uppercase;\r\n  color: var(--muted);\n}\n.hero-right[data-v-099bcfa8] {\r\n  position: relative;\r\n  overflow: hidden;\r\n  background:\r\n    radial-gradient(circle at 78% 14%, rgba(249,115,22,.35) 0%, rgba(249,115,22,0) 44%),\r\n    linear-gradient(145deg, #101010 0%, #0a0a0a 55%, #151515 100%);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\n}\n.hero-product-img[data-v-099bcfa8] {\r\n  width: 100%;\r\n  max-width: none;\r\n  height: 100%;\r\n  -o-object-fit: cover;\r\n     object-fit: cover;\r\n  -o-object-position: center 30%;\r\n     object-position: center 30%;\r\n  position: relative;\r\n  z-index: 2;\r\n  filter: saturate(.92) contrast(1.04) drop-shadow(0 24px 48px rgba(0,0,0,.34));\r\n  animation: floatImg-099bcfa8 4s ease-in-out infinite,fadeIn-099bcfa8 1s .3s ease both;\n}\n@keyframes floatImg-099bcfa8 {\n0%, 100% { transform: translateY(0);\n}\n50% { transform: translateY(-14px);\n}\n}\n.hero-drop-badge[data-v-099bcfa8] {\r\n  position: absolute;\r\n  bottom: 36px;\r\n  right: 36px;\r\n  z-index: 3;\r\n  width: 68px;\r\n  height: 68px;\r\n  border: none;\r\n  border-radius: 50%;\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  background: var(--orange);\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 13px;\r\n  line-height: 1.1;\r\n  letter-spacing: .05em;\r\n  color: #111;\r\n  text-align: center;\r\n  box-shadow: 0 4px 24px rgba(0,0,0,.18);\r\n  animation: rotateBadge-099bcfa8 14s linear infinite;\n}\n@keyframes rotateBadge-099bcfa8 {\nfrom { transform: rotate(0);\n}\nto { transform: rotate(360deg);\n}\n}\n.hero-right-overlay[data-v-099bcfa8] {\r\n  position: absolute;\r\n  inset: 0;\r\n  background:\r\n    linear-gradient(135deg, rgba(249,115,22,.24) 0%, rgba(249,115,22,0) 42%),\r\n    linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0) 45%);\r\n  z-index: 1;\r\n  pointer-events: none;\n}\n.ticker-bar[data-v-099bcfa8] { \r\n  background: var(--orange); \r\n  overflow: hidden; \r\n  padding: 10px 0; \r\n  white-space: nowrap; \r\n  margin: 0;\r\n  width: 100%;\n}\n.ticker-inner[data-v-099bcfa8] { display: inline-flex; animation: scrollX-099bcfa8 28s linear infinite;\n}\n.ticker-inner span[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 15px;\r\n  letter-spacing: .12em;\r\n  color: white;\r\n  padding: 0 28px;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 20px;\n}\n.ticker-inner span[data-v-099bcfa8]::after { content: '\\2022'; font-size: 10px; opacity: .7;\n}\n@keyframes scrollX-099bcfa8 {\nfrom { transform: translateX(0);\n}\nto { transform: translateX(-50%);\n}\n}\n.section[data-v-099bcfa8] { \r\n  padding: 64px 48px; \r\n  margin: 0;\n}\n.section-head[data-v-099bcfa8] { \r\n  display: flex; \r\n  align-items: center; \r\n  justify-content: space-between; \r\n  margin-bottom: 28px;\n}\n.section-title[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .06em; color: var(--white);\n}\n.see-all[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 12px;\r\n  font-weight: 600;\r\n  letter-spacing: .1em;\r\n  text-transform: uppercase;\r\n  color: var(--orange);\r\n  text-decoration: none;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  transition: gap .2s;\n}\n.see-all[data-v-099bcfa8]:hover { gap: 10px;\n}\n.carousel[data-v-099bcfa8] {\r\n  display: flex;\r\n  gap: 16px;\r\n  overflow-x: auto;\r\n  scroll-snap-type: x mandatory;\r\n  padding-bottom: 4px;\r\n  scrollbar-width: none;\n}\n.carousel[data-v-099bcfa8]::-webkit-scrollbar { display: none;\n}\n.prod-card[data-v-099bcfa8] {\r\n  flex: 0 0 210px;\r\n  scroll-snap-align: start;\r\n  background: var(--card);\r\n  border: 1px solid var(--border);\r\n  overflow: hidden;\r\n  transition: border-color .25s, transform .25s;\n}\n.prod-card[data-v-099bcfa8]:hover { border-color: var(--orange); transform: translateY(-4px);\n}\n.prod-img-wrap[data-v-099bcfa8] { background: #f5f4f2; height: 240px; position: relative; overflow: hidden;\n}\n.prod-img-wrap img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; transition: transform .5s;\n}\n.prod-card:hover .prod-img-wrap img[data-v-099bcfa8] { transform: scale(1.06);\n}\n.prod-hover-overlay[data-v-099bcfa8] {\r\n  position: absolute;\r\n  inset: 0;\r\n  background: rgba(0,0,0,.42);\r\n  opacity: 0;\r\n  transition: opacity .25s;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\n}\n.prod-card:hover .prod-hover-overlay[data-v-099bcfa8] { opacity: 1;\n}\n.quick-peek[data-v-099bcfa8] {\r\n  background: rgba(255,255,255,.12);\r\n  backdrop-filter: blur(6px);\r\n  border: 1px solid rgba(255,255,255,.3);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .15em;\r\n  text-transform: uppercase;\r\n  padding: 9px 18px;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s;\n}\n.quick-peek[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange);\n}\n.prod-tag[data-v-099bcfa8] {\r\n  position: absolute;\r\n  top: 10px;\r\n  left: 10px;\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 9px;\r\n  font-weight: 700;\r\n  letter-spacing: .15em;\r\n  text-transform: uppercase;\r\n  padding: 3px 9px;\n}\n.prod-tag.sale[data-v-099bcfa8] { background: var(--orange);\n}\n.prod-tag.new[data-v-099bcfa8] { background: #22c55e;\n}\n.prod-tag.hot[data-v-099bcfa8] { background: #ef4444;\n}\n.prod-info[data-v-099bcfa8] { padding: 12px 14px 4px;\n}\n.prod-name[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 13px;\r\n  font-weight: 600;\r\n  color: var(--white);\r\n  margin-bottom: 4px;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\n}\n.prod-price-row[data-v-099bcfa8] { display: flex; align-items: center; gap: 8px; margin-bottom: 10px;\n}\n.prod-price[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .05em; color: var(--orange);\n}\n.prod-old[data-v-099bcfa8] { font-size: 12px; color: var(--muted); text-decoration: line-through;\n}\n.quick-add-btn[data-v-099bcfa8] {\r\n  width: 100%;\r\n  background: var(--dark);\r\n  color: var(--white);\r\n  border: 1px solid var(--border);\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 11px;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s, color .2s;\n}\n.quick-add-btn[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange); color: white;\n}\n.quick-add-btn.added[data-v-099bcfa8] { background: #22c55e; border-color: #22c55e; color: #fff;\n}\n.carousel-dots[data-v-099bcfa8] { display: flex; gap: 6px; justify-content: center; margin-top: 22px;\n}\n.dot[data-v-099bcfa8] { width: 24px; height: 4px; border-radius: 2px; background: var(--border); cursor: pointer; transition: background .2s, width .25s;\n}\n.dot.active[data-v-099bcfa8] { background: var(--orange); width: 38px;\n}\n.collab-banner[data-v-099bcfa8] {\r\n  margin: 0;\r\n  display: grid;\r\n  grid-template-columns: 1fr 1fr;\r\n  overflow: hidden;\r\n  min-height: 340px;\r\n  border: 1px solid var(--border);\r\n  width: 100%;\r\n  border-top: 1px solid var(--border);\r\n  border-bottom: 1px solid var(--border);\n}\n.collab-img[data-v-099bcfa8] { position: relative; overflow: hidden; background: #1a1015;\n}\n.collab-img img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; filter: saturate(.75) brightness(.8); transition: transform .6s, filter .4s;\n}\n.collab-banner:hover .collab-img img[data-v-099bcfa8] { transform: scale(1.04); filter: saturate(.9) brightness(.88);\n}\n.collab-content[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  padding: 52px 48px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  position: relative;\r\n  overflow: hidden;\n}\n.collab-content[data-v-099bcfa8]::before {\r\n  content: 'DROP';\r\n  position: absolute;\r\n  right: -16px;\r\n  bottom: -24px;\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 150px;\r\n  color: rgba(0,0,0,.08);\r\n  line-height: 1;\r\n  pointer-events: none;\n}\n.collab-eyebrow[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: rgba(0,0,0,.55);\r\n  margin-bottom: 14px;\n}\n.collab-title[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(42px, 4vw, 68px);\r\n  line-height: .88;\r\n  letter-spacing: .02em;\r\n  color: var(--black);\r\n  margin-bottom: 18px;\n}\n.collab-body[data-v-099bcfa8] {\r\n  font-size: 13px;\r\n  font-weight: 300;\r\n  line-height: 1.8;\r\n  color: rgba(0,0,0,.65);\r\n  max-width: 290px;\r\n  margin-bottom: 28px;\n}\n.btn-dark[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 13px 28px;\r\n  border: none;\r\n  cursor: pointer;\r\n  width: -moz-fit-content;\r\n  width: fit-content;\r\n  transition: background .2s;\n}\n.btn-dark[data-v-099bcfa8]:hover { background: #222;\n}\n.cats-grid[data-v-099bcfa8] { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;\n}\n.cat-card[data-v-099bcfa8] { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: pointer; background: var(--card);\n}\n.cat-card img[data-v-099bcfa8] { width: 100%; height: 100%; -o-object-fit: cover; object-fit: cover; filter: brightness(.5) saturate(.65); transition: filter .5s, transform .6s;\n}\n.cat-card:hover img[data-v-099bcfa8] { filter: brightness(.68) saturate(.9); transform: scale(1.06);\n}\n.cat-overlay[data-v-099bcfa8] { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, transparent 55%);\n}\n.cat-info[data-v-099bcfa8] { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 24px;\n}\n.cat-name[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .06em; color: white; line-height: 1; margin-bottom: 12px;\n}\n.shop-now-btn[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  color: white;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 10px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 8px 18px;\r\n  border: none;\r\n  cursor: pointer;\r\n  display: inline-flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  transform: translateY(6px);\r\n  opacity: 0;\r\n  transition: opacity .3s, transform .3s, background .2s;\n}\n.cat-card:hover .shop-now-btn[data-v-099bcfa8] { opacity: 1; transform: translateY(0);\n}\n.shop-now-btn[data-v-099bcfa8]:hover { background: var(--orange2);\n}\n.brands-bar[data-v-099bcfa8] { \r\n  border-top: 1px solid var(--border); \r\n  border-bottom: 1px solid var(--border); \r\n  overflow: hidden; \r\n  padding: 20px 0; \r\n  margin: 0;\r\n  width: 100%;\n}\n.brands-inner[data-v-099bcfa8] { display: inline-flex; animation: scrollX-099bcfa8 22s linear infinite;\n}\n.brands-inner span[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 11px;\r\n  font-weight: 700;\r\n  letter-spacing: .3em;\r\n  text-transform: uppercase;\r\n  color: var(--border);\r\n  padding: 0 36px;\r\n  transition: color .2s;\r\n  cursor: default;\n}\n.brands-inner span[data-v-099bcfa8]:hover { color: var(--orange);\n}\n.newsletter[data-v-099bcfa8] {\r\n  background: var(--orange);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  padding: 64px 80px;\r\n  gap: 48px;\r\n  position: relative;\r\n  overflow: hidden;\r\n  margin: 0;\r\n  width: 100%;\n}\n.seller-cta[data-v-099bcfa8] {\r\n  margin: 0;\r\n  border: none;\r\n  border-top: 1px solid var(--border);\r\n  border-bottom: 1px solid var(--border);\r\n  padding: 52px 48px;\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  gap: 24px;\r\n  background: rgba(22,22,22,.7);\r\n  width: 100%;\n}\n.seller-cta-eye[data-v-099bcfa8] {\r\n  font-family: 'Syne', sans-serif;\r\n  font-size: 10px;\r\n  letter-spacing: .28em;\r\n  text-transform: uppercase;\r\n  color: var(--muted);\r\n  margin-bottom: 10px;\n}\n.seller-cta-title[data-v-099bcfa8] {\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: clamp(42px, 4vw, 64px);\r\n  line-height: .9;\r\n  letter-spacing: .02em;\r\n  margin-bottom: 12px;\n}\n.seller-cta-title span[data-v-099bcfa8] { color: var(--orange);\n}\n.seller-cta-sub[data-v-099bcfa8] {\r\n  font-size: 14px;\r\n  color: var(--muted);\r\n  max-width: 420px;\r\n  line-height: 1.7;\n}\n.nl-bg[data-v-099bcfa8] {\r\n  position: absolute;\r\n  right: -10px;\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  font-family: 'Bebas Neue', sans-serif;\r\n  font-size: 230px;\r\n  color: rgba(0,0,0,.07);\r\n  line-height: 1;\r\n  pointer-events: none;\r\n  white-space: nowrap;\n}\n.nl-left[data-v-099bcfa8] { position: relative; z-index: 1;\n}\n.nl-eyebrow[data-v-099bcfa8] { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: rgba(0,0,0,.5); margin-bottom: 12px;\n}\n.nl-title[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px,3.5vw,58px); line-height: .9; color: var(--black); letter-spacing: .02em;\n}\n.nl-right[data-v-099bcfa8] { position: relative; z-index: 1; flex: 0 0 400px;\n}\n.nl-form[data-v-099bcfa8] { display: flex; border: 2px solid var(--black); margin-bottom: 10px;\n}\n.nl-input[data-v-099bcfa8] { flex: 1; background: white; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--black); padding: 14px 18px;\n}\n.nl-input[data-v-099bcfa8]::-moz-placeholder { color: #aaa;\n}\n.nl-input[data-v-099bcfa8]::placeholder { color: #aaa;\n}\n.nl-btn[data-v-099bcfa8] {\r\n  background: var(--black);\r\n  color: var(--white);\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  font-size: 11px;\r\n  letter-spacing: .2em;\r\n  text-transform: uppercase;\r\n  padding: 14px 22px;\r\n  border: none;\r\n  cursor: pointer;\r\n  transition: background .2s;\n}\n.nl-btn[data-v-099bcfa8]:hover { background: #1a1a1a;\n}\n.nl-note[data-v-099bcfa8] { font-size: 12px; color: rgba(0,0,0,.5); font-style: italic;\n}\nfooter[data-v-099bcfa8] { \r\n  background: var(--dark); \r\n  border-top: 1px solid var(--border); \r\n  padding: 64px 48px 32px; \r\n  margin: 0;\r\n  width: 100%;\n}\n.footer-grid[data-v-099bcfa8] { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px;\n}\n.footer-logo[data-v-099bcfa8] { font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: .08em; color: var(--white); margin-bottom: 16px;\n}\n.footer-logo span[data-v-099bcfa8] { color: var(--orange);\n}\n.footer-desc[data-v-099bcfa8] { font-size: 13px; font-weight: 300; line-height: 1.8; color: var(--muted); max-width: 260px; margin-bottom: 24px;\n}\n.footer-socials[data-v-099bcfa8] { display: flex; gap: 10px;\n}\n.social-icon[data-v-099bcfa8] {\r\n  width: 34px;\r\n  height: 34px;\r\n  border: 1px solid var(--border);\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  color: var(--muted);\r\n  font-size: 11px;\r\n  font-family: 'Syne', sans-serif;\r\n  font-weight: 700;\r\n  text-decoration: none;\r\n  cursor: pointer;\r\n  transition: background .2s, border-color .2s, color .2s;\n}\n.social-icon[data-v-099bcfa8]:hover { background: var(--orange); border-color: var(--orange); color: white;\n}\n.footer-col h4[data-v-099bcfa8] { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--white); margin-bottom: 18px;\n}\n.footer-col ul[data-v-099bcfa8] { list-style: none;\n}\n.footer-col ul li[data-v-099bcfa8] { margin-bottom: 11px;\n}\n.footer-col ul li a[data-v-099bcfa8] {\r\n  font-size: 13px;\r\n  font-weight: 300;\r\n  color: var(--muted);\r\n  text-decoration: none;\r\n  transition: color .2s;\n}\n.footer-col ul li a[data-v-099bcfa8]:hover { color: var(--orange);\n}\n.footer-bottom[data-v-099bcfa8] { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between;\n}\n.footer-copy[data-v-099bcfa8] { font-size: 12px; color: #444; font-weight: 300;\n}\n.pay-methods[data-v-099bcfa8] { display: flex; gap: 8px;\n}\n.pay-chip[data-v-099bcfa8] { border: 1px solid var(--border); padding: 4px 10px; font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #444;\n}\n@keyframes fadeUp-099bcfa8 {\nfrom { opacity: 0; transform: translateY(28px);\n}\nto { opacity: 1; transform: none;\n}\n}\n@keyframes fadeIn-099bcfa8 {\nfrom { opacity: 0;\n}\nto { opacity: 1;\n}\n}\n.reveal[data-v-099bcfa8] {\r\n  opacity: 0;\r\n  transform: translateY(32px);\r\n  transition: opacity .7s ease, transform .7s ease;\n}\n.reveal.in[data-v-099bcfa8] { opacity: 1; transform: none;\n}\n.d1[data-v-099bcfa8] { transition-delay: .1s;\n}\n.d2[data-v-099bcfa8] { transition-delay: .2s;\n}\n.d3[data-v-099bcfa8] { transition-delay: .3s;\n}\n@media (max-width: 1024px) {\n.nn-nav[data-v-099bcfa8] { padding: 0 24px; gap: 20px;\n}\n.hero[data-v-099bcfa8] { grid-template-columns: 1fr; max-height: none;\n}\n.hero-right[data-v-099bcfa8] { min-height: 340px;\n}\n.section[data-v-099bcfa8], footer[data-v-099bcfa8] { padding-left: 24px; padding-right: 24px;\n}\n.collab-banner[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.seller-cta[data-v-099bcfa8] { padding: 36px 24px; flex-direction: column; align-items: flex-start;\n}\n.newsletter[data-v-099bcfa8] { padding: 44px 24px; flex-direction: column; align-items: flex-start;\n}\n.nl-right[data-v-099bcfa8] { flex: 1 1 auto; width: 100%;\n}\n.cats-grid[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.footer-grid[data-v-099bcfa8] { grid-template-columns: 1fr 1fr;\n}\n}\n@media (max-width: 768px) {\n.nav-links[data-v-099bcfa8] { display: none;\n}\n.footer-grid[data-v-099bcfa8] { grid-template-columns: 1fr;\n}\n.footer-bottom[data-v-099bcfa8] { flex-direction: column; align-items: flex-start; gap: 12px;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

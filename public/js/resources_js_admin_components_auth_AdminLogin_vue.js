@@ -158,30 +158,9 @@ var render = function render() {
   }, [_c("p", {
     staticClass: "text-slate-500 text-xs text-center mb-3 uppercase tracking-widest font-semibold"
   }, [_vm._v("Other portals")]), _vm._v(" "), _c("div", {
-    staticClass: "grid grid-cols-2 gap-3"
+    staticClass: "flex justify-center"
   }, [_c("a", {
-    staticClass: "flex flex-col items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-orange-500/50 rounded-lg py-3 px-2 transition-all group",
-    attrs: {
-      href: "/seller"
-    }
-  }, [_c("svg", {
-    staticClass: "w-5 h-5 text-orange-400 group-hover:text-orange-300",
-    attrs: {
-      fill: "none",
-      stroke: "currentColor",
-      viewBox: "0 0 24 24"
-    }
-  }, [_c("path", {
-    attrs: {
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "stroke-width": "2",
-      d: "M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-    }
-  })]), _vm._v(" "), _c("span", {
-    staticClass: "text-slate-300 group-hover:text-white text-xs font-medium transition-colors"
-  }, [_vm._v("Seller Sign In")])]), _vm._v(" "), _c("a", {
-    staticClass: "flex flex-col items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-orange-500/50 rounded-lg py-3 px-2 transition-all group",
+    staticClass: "flex flex-col items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-orange-500/50 rounded-lg py-3 px-6 transition-all group",
     attrs: {
       href: "/login"
     }
