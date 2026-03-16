@@ -46,8 +46,24 @@ $app->singleton(
 | Vercel Serverless Storage Overrides
 |--------------------------------------------------------------------------
 */
-if (isset($_ENV['VERCEL']) || env('VERCEL')) {
-    $app->useStoragePath('/tmp');
+$isRunningInVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL_URL']) || env('VERCEL_URL') || getenv('VERCEL_URL');
+if ($isRunningInVercel) {
+    $storagePath = '/tmp/storage';
+    if (!is_dir($storagePath)) {
+        @mkdir($storagePath, 0777, true);
+        @mkdir($storagePath . '/app/public', 0777, true);
+        @mkdir($storagePath . '/framework/cache/data', 0777, true);
+        @mkdir($storagePath . '/framework/sessions', 0777, true);
+        @mkdir($storagePath . '/framework/testing', 0777, true);
+        @mkdir($storagePath . '/framework/views', 0777, true);
+        @mkdir($storagePath . '/logs', 0777, true);
+    }
+    $app->useStoragePath($storagePath);
+    
+    $app->useBootstrapPath('/tmp/bootstrap');
+    if (!is_dir('/tmp/bootstrap/cache')) {
+        @mkdir('/tmp/bootstrap/cache', 0777, true);
+    }
 }
 
 /*
