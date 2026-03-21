@@ -60,7 +60,9 @@ if ($isRunningInVercel) {
     }
     $app->useStoragePath($storagePath);
     
-    $app->useBootstrapPath('/tmp/bootstrap');
+    $app->bind('path.bootstrap', function() {
+        return '/tmp/bootstrap';
+    });
     if (!is_dir('/tmp/bootstrap/cache')) {
         @mkdir('/tmp/bootstrap/cache', 0777, true);
     }
