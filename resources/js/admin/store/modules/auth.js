@@ -43,6 +43,9 @@ const actions = {
             // silently fail
         }
         commit('CLEAR_AUTH');
+        
+        // Redirect to home page after logout
+        window.location.href = '/';
     },
 };
 

@@ -19,8 +19,9 @@ class SellerOrderController extends Controller
         $query = Order::whereHas('items', fn ($q) => $q->where('seller_id', $seller->id))
             ->with([
                 'user:id,name,email',
-                'items' => fn ($q) => $q->where('seller_id', $seller->id)->with('product:id,name,images,sku'),
-                'delivery',
+                'items' => fn ($q) => $q->where('seller_id', $seller->id)
+                    ->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')
+                    ->with('product:id,name,images,sku'),
             ]);
 
         if ($request->filled('status')) {
@@ -46,7 +47,9 @@ class SellerOrderController extends Controller
         $order = Order::whereHas('items', fn ($q) => $q->where('seller_id', $seller->id))
             ->with([
                 'user:id,name,email',
-                'items' => fn ($q) => $q->where('seller_id', $seller->id)->with('product:id,name,images,sku'),
+                'items' => fn ($q) => $q->where('seller_id', $seller->id)
+                    ->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')
+                    ->with('product:id,name,images,sku'),
                 'delivery',
             ])
             ->findOrFail($id);
@@ -55,22 +58,38 @@ class SellerOrderController extends Controller
     }
 
     /**
-     * Update fulfillment status — sellers can only advance their own item statuses.
-     * Allowed seller transitions: confirmed → processing → shipped
+     * Update fulfillment status — sellers can update status for all their items in an order.
+     * This updates the order status and all order items statuses.
      */
     public function updateFulfillment(Request $request, $id)
     {
         $seller = $request->user()->seller;
 
         $request->validate([
-            'status' => 'required|in:processing,shipped,delivered',
+            'status' => 'required|in:confirmed,processing,shipped,delivered',
         ]);
 
-        // Validate the order item belongs to the seller
-        $orderItem = OrderItem::where('seller_id', $seller->id)->findOrFail($id);
+        // Find the order and verify it has items from this seller
+        $order = Order::whereHas('items', fn ($q) => $q->where('seller_id', $seller->id))
+            ->findOrFail($id);
 
-        $orderItem->update(['status' => $request->status]);
+        // Update the order status
+        $order->update(['status' => $request->status]);
 
-        return response()->json(['message' => 'Item status updated.', 'order_item' => $orderItem->fresh()]);
+        // Update all order items belonging to this seller with the same status
+        OrderItem::where('order_id', $order->id)
+            ->where('seller_id', $seller->id)
+            ->update(['status' => $request->status]);
+
+        // Return the updated order with seller's items
+        $updatedOrder = Order::with([
+            'user:id,name,email',
+            'items' => fn ($q) => $q->where('seller_id', $seller->id)
+                ->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')
+                ->with('product:id,name,images,sku'),
+            'delivery',
+        ])->findOrFail($id);
+
+        return response()->json(['message' => 'Order status updated successfully.', 'order' => $updatedOrder]);
     }
 }

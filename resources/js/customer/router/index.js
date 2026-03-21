@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import HomePage        from '../components/home/HomePage.vue';
-import ProductListing  from '../components/products/ProductListing.vue';
-import ProductDetail   from '../components/products/ProductDetail.vue';
-import CartPage        from '../components/cart/CartPage.vue';
-import CheckoutPage    from '../components/checkout/CheckoutPage.vue';
-import OrderTracking   from '../components/orders/OrderTracking.vue';
-import AccountLogin    from '../components/account/AccountLogin.vue';
-import AccountRegister from '../components/account/AccountRegister.vue';
-import AccountDashboard from '../components/account/AccountDashboard.vue';
+const HomePage        = () => import('../components/home/HomePage.vue');
+const ProductListing  = () => import('../components/products/ProductListing.vue');
+const ProductDetail   = () => import('../components/products/ProductDetail.vue');
+const CartPage        = () => import('../components/cart/CartPage.vue');
+const CheckoutPage    = () => import('../components/checkout/CheckoutPage.vue');
+const OrderTracking   = () => import('../components/orders/OrderTracking.vue');
+const AccountLogin    = () => import('../components/account/AccountLogin.vue');
+const AccountRegister = () => import('../components/account/AccountRegister.vue');
+const AccountDashboard = () => import('../components/account/AccountDashboard.vue');
 
 Vue.use(VueRouter);
 

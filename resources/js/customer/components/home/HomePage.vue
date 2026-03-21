@@ -36,38 +36,7 @@
       </div>
     </div>
 
-    <section class="section">
-      <div class="section-head reveal">
-        <div class="section-title">TRENDING RIGHT NOW</div>
-        <router-link :to="{ name: 'products' }" class="see-all">View all products -></router-link>
-      </div>
 
-      <div class="carousel" id="trendCarousel" ref="trendCarousel" @scroll="onCarouselScroll">
-        <div v-for="product in trendingProducts" :key="product.id" class="prod-card reveal" :class="product.delayClass">
-          <div class="prod-img-wrap">
-            <img :src="product.image" :alt="product.name"/>
-            <span v-if="product.tag" class="prod-tag" :class="product.tagClass">{{ product.tag }}</span>
-            <div class="prod-hover-overlay">
-              <button class="quick-peek" @click="goProductListing">Quick View</button>
-            </div>
-          </div>
-          <div class="prod-info">
-            <div class="prod-name">{{ product.name }}</div>
-            <div class="prod-price-row">
-              <span class="prod-price">P{{ product.price }}</span>
-              <span v-if="product.oldPrice" class="prod-old">P{{ product.oldPrice }}</span>
-            </div>
-          </div>
-          <button class="quick-add-btn" :class="{ added: addedProductId === product.id }" @click="addToCart(product)">
-            {{ addedProductId === product.id ? 'ADDED' : 'ADD TO CART' }}
-          </button>
-        </div>
-      </div>
-
-      <div class="carousel-dots" id="trendDots">
-        <div v-for="n in 3" :key="n" class="dot" :class="{ active: activeDot === (n - 1) }" @click="scrollToDot(n - 1)"></div>
-      </div>
-    </section>
 
     <div class="collab-banner reveal">
       <div class="collab-img">
@@ -144,10 +113,8 @@ export default {
   },
   data() {
     return {
-      activeDot: 0,
       subscribed: false,
       email: '',
-      addedProductId: null,
       tickerItems: [
         'FREE SHIPPING OVER P2,000',
         'NEW DROPS EVERY FRIDAY',
@@ -163,14 +130,6 @@ export default {
         { name: 'MEN', slug: 'men', image: '/images/products/illus-2.png' },
         { name: 'ACCESSORIES', slug: 'accessories', image: '/images/products/illus-3.png' },
       ],
-      trendingProducts: [
-        { id: 1, name: 'T-shirt', price: '5.69', oldPrice: '10.59', tag: 'New', tagClass: 'new', delayClass: '', image: '/images/products/illus-1.png' },
-        { id: 2, name: 'Jacket hoodie', price: '15.99', oldPrice: '55.99', tag: 'New', tagClass: 'new', delayClass: 'd1', image: '/images/products/illus-2.png' },
-        { id: 3, name: 'Test mike', price: '12.99', oldPrice: '15.99', tag: 'New', tagClass: 'new', delayClass: 'd2', image: '/images/products/tshirt-vintage.png' },
-        { id: 4, name: 'Navy hoodie', price: '18.99', oldPrice: null, tag: 'Hot', tagClass: 'hot', delayClass: 'd3', image: '/images/products/hoodie-maron.png' },
-        { id: 5, name: 'Crew shirt', price: '8.79', oldPrice: null, tag: 'Sale', tagClass: 'sale', delayClass: '', image: '/images/products/tshirt-crew.png' },
-        { id: 6, name: 'Street polo', price: '10.99', oldPrice: '13.29', tag: '', tagClass: '', delayClass: 'd1', image: '/images/products/illus-3.png' },
-      ],
     };
   },
   computed: {
@@ -183,7 +142,6 @@ export default {
   },
   mounted() {
     this.initReveal();
-    
   },
   beforeDestroy() {
     
@@ -198,9 +156,6 @@ export default {
     goAccount() {
       this.$router.push({ name: this.isAuthenticated ? 'account' : 'login' });
     },
-    goProductListing() {
-      this.$router.push({ name: 'products' });
-    },
     goCategory(slug) {
       this.$router.push({ name: 'products', query: { category: slug } });
     },
@@ -208,39 +163,6 @@ export default {
       if (!this.email || !this.email.includes('@')) return;
       this.subscribed = true;
       this.email = '';
-    },
-    addToCart(product) {
-      this.$store.dispatch('cart/addItem', {
-        product_id: product.id,
-        name: product.name,
-        price: parseFloat(String(product.price).replace(/,/g, '')),
-        image: product.image,
-        size: null,
-        color: null,
-        quantity: 1,
-      });
-
-      this.addedProductId = product.id;
-      clearTimeout(this._addedTimer);
-      this._addedTimer = setTimeout(() => {
-        this.addedProductId = null;
-      }, 1600);
-    },
-    scrollToDot(idx) {
-      const c = this.$refs.trendCarousel;
-      if (!c) return;
-      const card = c.querySelector('.prod-card');
-      if (!card) return;
-      c.scrollTo({ left: idx * (card.offsetWidth + 16) * 2, behavior: 'smooth' });
-      this.activeDot = idx;
-    },
-    onCarouselScroll() {
-      const c = this.$refs.trendCarousel;
-      if (!c) return;
-      const card = c.querySelector('.prod-card');
-      if (!card) return;
-      const idx = Math.min(Math.round(c.scrollLeft / ((card.offsetWidth + 16) * 2)), 2);
-      this.activeDot = idx;
     },
     initReveal() {
       this._revealObserver = new IntersectionObserver((entries) => {

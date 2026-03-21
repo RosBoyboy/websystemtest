@@ -74,23 +74,27 @@ class CustomerProductController extends Controller
 
     public function featured()
     {
-        $products = Product::with(['category:id,name,slug'])
-            ->where('status', 'active')
-            ->where('is_featured', true)
-            ->latest()
-            ->take(8)
-            ->get();
+        $products = \Illuminate\Support\Facades\Cache::remember('featured_products', 3600, function () {
+            return Product::with(['seller:id,store_name', 'category:id,name,slug'])
+                ->where('status', 'active')
+                ->where('is_featured', true)
+                ->latest()
+                ->take(8)
+                ->get();
+        });
 
         return response()->json($products);
     }
 
     public function categories()
     {
-        $categories = Category::where('is_active', true)
-            ->whereNull('parent_id')
-            ->with(['children' => fn($q) => $q->where('is_active', true)])
-            ->orderBy('name')
-            ->get();
+        $categories = \Illuminate\Support\Facades\Cache::remember('active_categories', 3600, function () {
+            return Category::where('is_active', true)
+                ->whereNull('parent_id')
+                ->with(['children' => fn($q) => $q->where('is_active', true)])
+                ->orderBy('name')
+                ->get();
+        });
 
         return response()->json($categories);
     }

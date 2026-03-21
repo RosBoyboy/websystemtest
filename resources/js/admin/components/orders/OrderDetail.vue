@@ -15,10 +15,9 @@
             <p class="font-mono text-xs text-slate-400">{{ order.order_number }}</p>
             <span class="px-2 py-0.5 rounded text-xs mt-1 inline-block" :class="statusClass(order.status)">{{ order.status }}</span>
           </div>
-          <select v-model="newStatus" @change="updateStatus"
-            class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-orange-500">
-            <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
-          </select>
+          <div class="text-xs text-slate-500">
+            <p>Managed by seller</p>
+          </div>
         </div>
         <div class="space-y-1 pt-2">
           <div class="flex justify-between"><span class="text-slate-500">Customer</span><span class="text-white">{{ order.user ? order.user.name : '—' }}</span></div>
@@ -55,23 +54,29 @@
 export default {
   name: 'OrderDetail',
   data() {
-    return { order: null, loading: false, newStatus: '', statuses: ['pending','confirmed','processing','shipped','delivered','cancelled','refunded'] };
+    return { 
+      order: null, 
+      loading: false,
+    };
   },
   methods: {
     async fetchOrder() {
       this.loading = true;
       try {
         const { data } = await this.$http.get(`/admin/orders/${this.$route.params.id}`);
-        this.order     = data;
-        this.newStatus = data.status;
+        this.order = data;
       } finally { this.loading = false; }
     },
-    async updateStatus() {
-      await this.$http.put(`/admin/orders/${this.order.id}/status`, { status: this.newStatus });
-      this.order.status = this.newStatus;
-    },
     statusClass(status) {
-      const map = { pending: 'bg-yellow-900/50 text-yellow-400', confirmed: 'bg-blue-900/50 text-blue-400', processing: 'bg-indigo-900/50 text-indigo-400', shipped: 'bg-cyan-900/50 text-cyan-400', delivered: 'bg-green-900/50 text-green-400', cancelled: 'bg-red-900/50 text-red-400', refunded: 'bg-slate-700/50 text-slate-400' };
+      const map = { 
+        pending: 'bg-yellow-900/50 text-yellow-400', 
+        confirmed: 'bg-blue-900/50 text-blue-400', 
+        processing: 'bg-indigo-900/50 text-indigo-400', 
+        shipped: 'bg-cyan-900/50 text-cyan-400', 
+        delivered: 'bg-green-900/50 text-green-400', 
+        cancelled: 'bg-red-900/50 text-red-400', 
+        refunded: 'bg-slate-700/50 text-slate-400' 
+      };
       return map[status] || '';
     },
   },

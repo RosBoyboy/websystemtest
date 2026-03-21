@@ -15,7 +15,9 @@ class CustomerOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with(['items.product:id,name,images,slug'])
+        $orders = Order::with([
+                'items' => fn ($q) => $q->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')->with('product:id,name,images,slug', 'seller:id,store_name'),
+            ])
             ->where('user_id', $request->user()->id)
             ->latest()
             ->paginate(10);
@@ -26,7 +28,7 @@ class CustomerOrderController extends Controller
     public function show(Request $request, $id)
     {
         $order = Order::with([
-                'items.product:id,name,images,slug',
+                'items' => fn ($q) => $q->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')->with('product:id,name,images,slug', 'seller:id,store_name'),
                 'delivery',
             ])
             ->where('user_id', $request->user()->id)
@@ -112,6 +114,7 @@ class CustomerOrderController extends Controller
                     'color'       => $line['color'],
                     'unit_price'  => $line['unit_price'],
                     'total_price' => $line['total_price'],
+                    'status'      => 'pending',
                 ]);
 
                 // Reduce stock

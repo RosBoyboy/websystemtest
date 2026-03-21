@@ -20,9 +20,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
   data: function data() {
     return {
       order: null,
-      loading: false,
-      newStatus: '',
-      statuses: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']
+      loading: false
     };
   },
   methods: {
@@ -41,7 +39,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _yield$_this$$http$ge = _context.v;
               data = _yield$_this$$http$ge.data;
               _this.order = data;
-              _this.newStatus = data.status;
             case 3:
               _context.p = 3;
               _this.loading = false;
@@ -50,24 +47,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               return _context.a(2);
           }
         }, _callee, null, [[1,, 3, 4]]);
-      }))();
-    },
-    updateStatus: function updateStatus() {
-      var _this2 = this;
-      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-        return _regenerator().w(function (_context2) {
-          while (1) switch (_context2.n) {
-            case 0:
-              _context2.n = 1;
-              return _this2.$http.put("/admin/orders/".concat(_this2.order.id, "/status"), {
-                status: _this2.newStatus
-              });
-            case 1:
-              _this2.order.status = _this2.newStatus;
-            case 2:
-              return _context2.a(2);
-          }
-        }, _callee2);
       }))();
     },
     statusClass: function statusClass(status) {
@@ -128,33 +107,7 @@ var render = function render() {
   }, [_vm._v(_vm._s(_vm.order.order_number))]), _vm._v(" "), _c("span", {
     staticClass: "px-2 py-0.5 rounded text-xs mt-1 inline-block",
     "class": _vm.statusClass(_vm.order.status)
-  }, [_vm._v(_vm._s(_vm.order.status))])]), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.newStatus,
-      expression: "newStatus"
-    }],
-    staticClass: "bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-orange-500",
-    on: {
-      change: [function ($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.newStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.updateStatus]
-    }
-  }, _vm._l(_vm.statuses, function (s) {
-    return _c("option", {
-      key: s,
-      domProps: {
-        value: s
-      }
-    }, [_vm._v(_vm._s(s))]);
-  }), 0)]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.order.status))])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c("div", {
     staticClass: "space-y-1 pt-2"
   }, [_c("div", {
     staticClass: "flex justify-between"
@@ -213,7 +166,13 @@ var render = function render() {
     staticClass: "text-slate-600 text-sm"
   }, [_vm._v("No items.")])])]) : _vm._e()]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "text-xs text-slate-500"
+  }, [_c("p", [_vm._v("Managed by seller")])]);
+}];
 render._withStripped = true;
 
 

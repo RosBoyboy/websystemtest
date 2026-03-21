@@ -12,47 +12,47 @@ class SellerMessageController extends Controller
 {
     public function getCustomers()
     {
-        \ = Auth::user()->seller->id;
+        $sellerId = Auth::user()->seller->id;
         
-        \ = Message::where('seller_id', \)
+        $customerIds = Message::where('seller_id', $sellerId)
             ->pluck('customer_id')
             ->unique();
             
-        \ = User::whereIn('id', \)->get();
-        return response()->json(\);
+        $customers = User::whereIn('id', $customerIds)->get();
+        return response()->json($customers);
     }
 
-    public function getMessages(\)
+    public function getMessages($customerId)
     {
-        \ = Auth::user()->seller->id;
+        $sellerId = Auth::user()->seller->id;
         
-        \ = Message::where('seller_id', \)
-            ->where('customer_id', \)
+        $messages = Message::where('seller_id', $sellerId)
+            ->where('customer_id', $customerId)
             ->orderBy('created_at', 'asc')
             ->get();
 
         // Mark as read
-        Message::where('seller_id', \)
-            ->where('customer_id', \)
+        Message::where('seller_id', $sellerId)
+            ->where('customer_id', $customerId)
             ->where('sender_role', 'customer')
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        return response()->json(\);
+        return response()->json($messages);
     }
 
-    public function sendMessage(Request \, \)
+    public function sendMessage(Request $request, $customerId)
     {
-        \->validate(['message' => 'required|string']);
-        \ = Auth::user()->seller->id;
+        $request->validate(['message' => 'required|string']);
+        $sellerId = Auth::user()->seller->id;
 
-        \ = Message::create([
-            'customer_id' => \,
-            'seller_id' => \,
+        $message = Message::create([
+            'customer_id' => $customerId,
+            'seller_id' => $sellerId,
             'sender_role' => 'seller',
-            'message' => \->message,
+            'message' => $request->message,
         ]);
 
-        return response()->json(\, 201);
+        return response()->json($message, 201);
     }
 }

@@ -77,7 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Order management
         Route::get('/orders',              [AdminOrderController::class, 'index']);
         Route::get('/orders/{id}',         [AdminOrderController::class, 'show']);
-        Route::put('/orders/{id}/status',  [AdminOrderController::class, 'updateStatus']);
+        // Note: Order status updates are only allowed for sellers, not admins
 
         // Delivery tracking
         Route::get('/deliveries',     [AdminDeliveryController::class, 'index']);

@@ -17,15 +17,8 @@ const OrderDetail    = () => import('../components/orders/OrderDetail.vue');
 const InventoryManager = () => import('../components/inventory/InventoryManager.vue');
 const DeliveryTracker  = () => import('../components/delivery/DeliveryTracker.vue');
 const SiteSettings     = () => import('../components/settings/SiteSettings.vue');
-const AdminLogin       = () => import('../components/auth/AdminLogin.vue');
 
 const routes = [
-    {
-        path: '/login',
-        name: 'admin.login',
-        component: AdminLogin,
-        meta: { guest: true },
-    },
     {
         path: '/',
         component: AdminLayout,
@@ -57,13 +50,15 @@ const router = new VueRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('admin_token');
+    
+    // If route requires auth but no token, redirect to login
     if (to.meta.requiresAuth && !token) {
-        next({ name: 'admin.login' });
-    } else if (to.meta.guest && token) {
-        next({ name: 'admin.dashboard' });
-    } else {
-        next();
+        window.location.href = '/login?type=admin';
+        return; // Stop here, don't call next()
     }
+    
+    // Otherwise allow navigation
+    next();
 });
 
 export default router;

@@ -1,10 +1,10 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/admin.js": "/js/admin.js",
-    "/js/seller.js": "/js/seller.js",
-    "/js/customer.js": "/js/customer.js",
-    "/css/customer.css": "/css/customer.css",
-    "/css/seller.css": "/css/seller.css",
-    "/css/admin.css": "/css/admin.css",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=15e35a402a4bc1dc2d1c1a33600bee45",
+    "/js/admin.js": "/js/admin.js?id=194235803810e58394406685a6fbb9a6",
+    "/js/seller.js": "/js/seller.js?id=a0e4bdf5c37f78b8e4f02ffc98519cc2",
+    "/js/customer.js": "/js/customer.js?id=0c4b840b4776a6a8bea6c019ce031206",
+    "/css/customer.css": "/css/customer.css?id=678a464804275e9c4edcc97f2bba1293",
+    "/css/seller.css": "/css/seller.css?id=ec5c2893b1904334bb6e1b21f4bc0ae0",
+    "/css/admin.css": "/css/admin.css?id=8adec1a08969c5b49de34b4586b2fd82",
+    "/css/app.css": "/css/app.css?id=ffb6021266664c5a00fa1f64a7c36ba2"
 }

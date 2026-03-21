@@ -100,16 +100,37 @@
             <p class="text-sm font-semibold text-slate-200 mb-2">Color
               <span v-if="selectedColor" class="text-orange-500 font-bold ml-1">— {{ selectedColor }}</span>
             </p>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-3">
               <button
                 v-for="color in colors"
                 :key="color"
                 @click="selectedColor = color"
-                :class="['px-4 py-2 rounded-lg border text-sm font-medium transition-colors',
-                  selectedColor === color
-                    ? 'border-orange-500 bg-orange-500 text-white'
-                    : 'border-slate-700 text-slate-200 hover:border-slate-500 bg-slate-800']"
-              >{{ color }}</button>
+                :class="['relative rounded-lg border-2 transition-all', 
+                  selectedColor === color 
+                    ? 'ring-2 ring-orange-400 ring-offset-2 ring-offset-slate-950' 
+                    : 'border-slate-700 hover:border-slate-500']"
+              >
+                <!-- Color swatch if valid hex, otherwise text button -->
+                <div v-if="isColorHex(color)"
+                  :style="{ backgroundColor: color }"
+                  class="w-10 h-10 rounded-md border border-slate-600">
+                </div>
+                <div v-else
+                  class="px-4 py-2 rounded-lg bg-slate-800 text-slate-200 text-sm font-medium">
+                  {{ color }}
+                </div>
+                <!-- Check mark for selected -->
+                <div v-if="selectedColor === color && !isColorHex(color)" class="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div v-if="selectedColor === color && isColorHex(color)" class="absolute inset-0 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -150,9 +171,20 @@
           </div>
 
           <!-- Seller info -->
-          <div v-if="product.seller" class="mt-8 p-4 bg-slate-900 rounded-xl border border-slate-800">
-            <p class="text-xs text-slate-400 uppercase font-semibold tracking-wide mb-1">Sold by</p>
-            <p class="font-semibold text-white">{{ product.seller.store_name }}</p>
+          <div v-if="product.seller" class="mt-8 p-4 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-slate-400 uppercase font-semibold tracking-wide mb-1">Sold by</p>
+              <p class="font-semibold text-white">{{ product.seller.store_name }}</p>
+            </div>
+            <button 
+              @click="contactSeller" 
+              :disabled="!product.seller || !product.seller.id"
+              class="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg transition-colors shadow-lg hover:shadow-orange-500/50">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+              </svg>
+              Contact Seller
+            </button>
           </div>
         </div>
       </div>
@@ -206,6 +238,9 @@ export default {
     this.load(this.$route.params.slug);
   },
   methods: {
+    isColorHex(color) {
+      return /^#[0-9A-F]{6}$/i.test(color);
+    },
     async load(slug) {
       this.loading = true;
       this.product = null;
@@ -239,6 +274,24 @@ export default {
 
     buyNow() {
       this.addToCart();
+    },
+
+    contactSeller() {
+      if (!this.product || !this.product.seller || !this.product.seller.id) {
+        console.error('Seller information not available');
+        return;
+      }
+      if (!this.$store.getters['auth/isAuthenticated']) {
+        this.$router.push({ name: 'login', query: { redirect: this.$route.fullPath } });
+        return;
+      }
+      this.$router.push({ 
+        name: 'account', 
+        query: { 
+          tab: 'messages', 
+          seller_id: this.product.seller.id 
+        } 
+      });
     },
   },
 };

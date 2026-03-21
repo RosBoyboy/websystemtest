@@ -102,17 +102,7 @@ var DeliveryTracker = function DeliveryTracker() {
 var SiteSettings = function SiteSettings() {
   return __webpack_require__.e(/*! import() */ "resources_js_admin_components_settings_SiteSettings_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/settings/SiteSettings.vue */ "./resources/js/admin/components/settings/SiteSettings.vue"));
 };
-var AdminLogin = function AdminLogin() {
-  return __webpack_require__.e(/*! import() */ "resources_js_admin_components_auth_AdminLogin_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/auth/AdminLogin.vue */ "./resources/js/admin/components/auth/AdminLogin.vue"));
-};
 var routes = [{
-  path: '/login',
-  name: 'admin.login',
-  component: AdminLogin,
-  meta: {
-    guest: true
-  }
-}, {
   path: '/',
   component: AdminLayout,
   meta: {
@@ -180,17 +170,15 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 // Navigation guard
 router.beforeEach(function (to, from, next) {
   var token = localStorage.getItem('admin_token');
+
+  // If route requires auth but no token, redirect to login
   if (to.meta.requiresAuth && !token) {
-    next({
-      name: 'admin.login'
-    });
-  } else if (to.meta.guest && token) {
-    next({
-      name: 'admin.dashboard'
-    });
-  } else {
-    next();
+    window.location.href = '/login?type=admin';
+    return; // Stop here, don't call next()
   }
+
+  // Otherwise allow navigation
+  next();
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
@@ -322,6 +310,9 @@ var actions = {
             _t = _context2.v;
           case 4:
             commit('CLEAR_AUTH');
+
+            // Redirect to home page after logout
+            window.location.href = '/';
           case 5:
             return _context2.a(2);
         }
@@ -24782,7 +24773,7 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_admin_components_layout_AdminLayout_vue":1,"resources_js_admin_components_dashboard_Dashboard_vue":1,"resources_js_admin_components_users_UserList_vue":1,"resources_js_admin_components_users_UserDetail_vue":1,"resources_js_admin_components_sellers_SellerList_vue":1,"resources_js_admin_components_sellers_SellerDetail_vue":1,"resources_js_admin_components_products_ProductList_vue":1,"resources_js_admin_components_products_ProductDetail_vue":1,"resources_js_admin_components_orders_OrderList_vue":1,"resources_js_admin_components_orders_OrderDetail_vue":1,"resources_js_admin_components_inventory_InventoryManager_vue":1,"resources_js_admin_components_delivery_DeliveryTracker_vue":1,"resources_js_admin_components_settings_SiteSettings_vue":1,"resources_js_admin_components_auth_AdminLogin_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_admin_components_layout_AdminLayout_vue":1,"resources_js_admin_components_dashboard_Dashboard_vue":1,"resources_js_admin_components_users_UserList_vue":1,"resources_js_admin_components_users_UserDetail_vue":1,"resources_js_admin_components_sellers_SellerList_vue":1,"resources_js_admin_components_sellers_SellerDetail_vue":1,"resources_js_admin_components_products_ProductList_vue":1,"resources_js_admin_components_products_ProductDetail_vue":1,"resources_js_admin_components_orders_OrderList_vue":1,"resources_js_admin_components_orders_OrderDetail_vue":1,"resources_js_admin_components_inventory_InventoryManager_vue":1,"resources_js_admin_components_delivery_DeliveryTracker_vue":1,"resources_js_admin_components_settings_SiteSettings_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

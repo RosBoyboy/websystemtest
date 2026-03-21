@@ -79,27 +79,74 @@
       </div>
 
       <!-- Variants -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
-        <h3 class="text-white font-semibold text-base mb-2">Variants</h3>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
+        <h3 class="text-white font-semibold text-base mb-4">Variants</h3>
 
+        <!-- Sizes Selection -->
         <div>
-          <label class="block text-sm font-medium text-slate-400 mb-2">
+          <label class="block text-sm font-medium text-slate-400 mb-3">
             Sizes
-            <span class="text-slate-600 font-normal ml-1">(comma-separated, e.g. XS,S,M,L,XL)</span>
+            <span class="text-slate-600 font-normal ml-1">{{ form.sizes.length > 0 ? `(${form.sizes.length} selected)` : '' }}</span>
           </label>
-          <input v-model="sizesInput" type="text"
-            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors"
-            placeholder="XS,S,M,L,XL,XXL" />
+          <div class="flex flex-wrap gap-2">
+            <button v-for="size in availableSizes" :key="size" type="button"
+              @click="toggleSize(size)"
+              :class="{
+                'bg-orange-500 border-orange-500 text-white': form.sizes.includes(size),
+                'bg-slate-800 border-slate-700 text-slate-400 hover:border-orange-500': !form.sizes.includes(size),
+              }"
+              class="px-4 py-2 border rounded-lg font-medium transition-colors cursor-pointer">
+              {{ size }}
+            </button>
+          </div>
+          <!-- Custom size input -->
+          <div class="mt-4">
+            <input v-model="customSizeInput" type="text" @keyup.enter="addCustomSize"
+              class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm"
+              placeholder="Add custom size (e.g., One Size)" />
+            <p class="text-slate-600 text-xs mt-1">Press Enter to add custom size</p>
+          </div>
         </div>
 
+        <!-- Colors Selection -->
         <div>
-          <label class="block text-sm font-medium text-slate-400 mb-2">
+          <label class="block text-sm font-medium text-slate-400 mb-3">
             Colors
-            <span class="text-slate-600 font-normal ml-1">(comma-separated)</span>
+            <span class="text-slate-600 font-normal ml-1">{{ form.colors.length > 0 ? `(${form.colors.length} selected)` : '' }}</span>
           </label>
-          <input v-model="colorsInput" type="text"
-            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors"
-            placeholder="Black,White,Gray" />
+          <div class="flex flex-wrap gap-2">
+            <button v-for="color in availableColors" :key="color.name" type="button"
+              @click="toggleColor(color.name)"
+              :class="{
+                'ring-2 ring-orange-400 ring-offset-2 ring-offset-slate-900': form.colors.includes(color.name),
+                'opacity-75 hover:opacity-100': !form.colors.includes(color.name),
+              }"
+              :style="{ backgroundColor: color.hex }"
+              class="w-12 h-12 rounded-lg transition-all cursor-pointer border border-slate-700 flex items-center justify-center group relative"
+              :title="color.name">
+              <!-- Checkmark for selected colors -->
+              <svg v-if="form.colors.includes(color.name)" class="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+              <!-- Tooltip on hover -->
+              <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-950 text-slate-200 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                {{ color.name }}
+              </span>
+            </button>
+          </div>
+          <!-- Custom color input -->
+          <div class="mt-4 flex gap-2">
+            <input v-model="customColorHex" type="color"
+              class="w-12 h-10 rounded-lg cursor-pointer border border-slate-700"
+              title="Pick a color" />
+            <input v-model="customColorName" type="text" @keyup.enter="addCustomColor"
+              class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm"
+              placeholder="Color name (e.g., Navy Blue)" />
+            <button type="button" @click="addCustomColor"
+              class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-orange-400 hover:border-orange-500 transition-colors text-sm font-medium">
+              Add
+            </button>
+          </div>
         </div>
       </div>
 
@@ -219,12 +266,32 @@ export default {
       // Each entry: { preview: <dataURL or server URL>, url: <server URL|null>, uploading: bool, error: str|null, file: File|null }
       imageEntries: [],
       dragging:        false,
-      sizesInput:      '',
-      colorsInput:     '',
       categories:      [],
       saving:          false,
       fetchingProduct: false,
       error:           null,
+      
+      // Predefined sizes and colors
+      availableSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'],
+      availableColors: [
+        { name: 'Black', hex: '#000000' },
+        { name: 'White', hex: '#FFFFFF' },
+        { name: 'Gray', hex: '#808080' },
+        { name: 'Red', hex: '#EF4444' },
+        { name: 'Blue', hex: '#3B82F6' },
+        { name: 'Navy', hex: '#001F3F' },
+        { name: 'Green', hex: '#10B981' },
+        { name: 'Yellow', hex: '#FBBF24' },
+        { name: 'Orange', hex: '#F97316' },
+        { name: 'Purple', hex: '#A855F7' },
+        { name: 'Pink', hex: '#EC4899' },
+        { name: 'Brown', hex: '#92400E' },
+      ],
+      
+      // For custom variants
+      customSizeInput: '',
+      customColorHex: '#000000',
+      customColorName: '',
     };
   },
   computed: {
@@ -267,13 +334,50 @@ export default {
         this.imageEntries = (data.images || []).map(url => ({
           preview: url, url, uploading: false, error: null, file: null,
         }));
-        this.sizesInput  = (data.sizes  || []).join(',');
-        this.colorsInput = (data.colors || []).join(',');
       } catch (e) {
         this.error = 'Failed to load product.';
       } finally {
         this.fetchingProduct = false;
       }
+    },
+
+    /* ── Variant selection helpers ── */
+    toggleSize(size) {
+      const idx = this.form.sizes.indexOf(size);
+      if (idx > -1) {
+        this.form.sizes.splice(idx, 1);
+      } else {
+        this.form.sizes.push(size);
+      }
+    },
+    toggleColor(color) {
+      const idx = this.form.colors.indexOf(color);
+      if (idx > -1) {
+        this.form.colors.splice(idx, 1);
+      } else {
+        this.form.colors.push(color);
+      }
+    },
+    addCustomSize() {
+      const size = this.customSizeInput.trim().toUpperCase();
+      if (!size) return;
+      if (!this.form.sizes.includes(size)) {
+        this.form.sizes.push(size);
+      }
+      this.customSizeInput = '';
+    },
+    addCustomColor() {
+      const colorName = this.customColorName.trim();
+      if (!colorName) return;
+      if (!this.form.colors.includes(colorName)) {
+        this.form.colors.push(colorName);
+        // Also add to available colors for future selections
+        if (!this.availableColors.find(c => c.name === colorName)) {
+          this.availableColors.push({ name: colorName, hex: this.customColorHex });
+        }
+      }
+      this.customColorName = '';
+      this.customColorHex = '#000000';
     },
 
     /* ── Image upload helpers ── */
@@ -347,9 +451,7 @@ export default {
 
       // Collect server URLs
       this.form.images = this.imageEntries.map(e => e.url).filter(Boolean);
-      // Parse variant CSV
-      this.form.sizes  = this.sizesInput.split(',').map(s => s.trim()).filter(Boolean);
-      this.form.colors = this.colorsInput.split(',').map(c => c.trim()).filter(Boolean);
+      // Sizes and colors are already arrays from checkbox selections
 
       try {
         if (this.isEdit) {

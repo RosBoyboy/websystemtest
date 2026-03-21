@@ -56,6 +56,9 @@ const actions = {
     async logout({ commit }) {
         try { await axios.post('/logout'); } catch (_) {}
         commit('CLEAR_AUTH');
+        
+        // Redirect to home page after logout
+        window.location.href = '/';
     },
 
     async refreshUser({ commit }) {

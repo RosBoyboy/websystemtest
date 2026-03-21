@@ -41,23 +41,11 @@ class AdminOrderController extends Controller
     {
         $order = Order::with([
             'user:id,name,email',
-            'items.product:id,name,images',
-            'items.seller:id,store_name',
+            'items' => fn ($q) => $q->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')
+                ->with('product:id,name,images', 'seller:id,store_name'),
             'delivery',
         ])->findOrFail($id);
 
         return response()->json($order);
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled,refunded',
-        ]);
-
-        $order = Order::findOrFail($id);
-        $order->update(['status' => $request->status]);
-
-        return response()->json(['message' => 'Order status updated.', 'order' => $order]);
     }
 }

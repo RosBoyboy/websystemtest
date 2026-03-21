@@ -56,8 +56,8 @@
         <div class="bg-slate-900 rounded-2xl border border-slate-700 p-6 mb-6">
           <h2 class="text-base font-bold text-white mb-4 uppercase tracking-wider">Items</h2>
           <div class="space-y-4">
-            <div v-for="item in activeOrder.items" :key="item.id" class="flex items-start gap-4">
-              <div class="w-16 h-16 bg-slate-800 rounded-xl overflow-hidden flex-shrink-0">
+            <div v-for="item in activeOrder.items" :key="item.id" class="flex items-start gap-4 p-4 bg-slate-800 rounded-xl">
+              <div class="w-16 h-16 bg-slate-700 rounded-xl overflow-hidden flex-shrink-0">
                 <img v-if="item.product && productImage(item.product)" :src="productImage(item.product)" :alt="item.product.name" class="w-full h-full object-cover" />
               </div>
               <div class="flex-1 min-w-0">
@@ -66,6 +66,14 @@
                   <span v-if="item.size">Size: {{ item.size }}</span>
                   <span v-if="item.color">Color: {{ item.color }}</span>
                   <span>Qty: {{ item.quantity }}</span>
+                </div>
+                <!-- Seller fulfillment status -->
+                <div class="mt-2 flex items-center gap-2">
+                  <span class="text-xs text-slate-500">Seller:</span>
+                  <span :class="['text-xs px-2 py-1 rounded-full font-medium', itemStatusClass(item.status)]">
+                    {{ item.status || 'pending' }}
+                  </span>
+                  <span v-if="item.seller" class="text-xs text-slate-500">{{ item.seller.store_name }}</span>
                 </div>
               </div>
               <p class="font-bold text-orange-500 text-sm flex-shrink-0">${{ parseFloat(item.total_price).toFixed(2) }}</p>
@@ -231,6 +239,15 @@ export default {
         refunded:   'bg-stone-100 text-stone-600',
       };
       return map[status] || 'bg-stone-100 text-stone-600';
+    },
+    itemStatusClass(status) {
+      const map = {
+        pending:    'bg-yellow-900/40 text-yellow-400',
+        processing: 'bg-indigo-900/40 text-indigo-400',
+        shipped:    'bg-purple-900/40 text-purple-400',
+        delivered:  'bg-green-900/40 text-green-400',
+      };
+      return map[status] || 'bg-slate-800 text-slate-400';
     },
     isStepDone(key) {
       if (!this.activeOrder || !this.activeOrder.delivery) return false;

@@ -37,12 +37,53 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       // Each entry: { preview: <dataURL or server URL>, url: <server URL|null>, uploading: bool, error: str|null, file: File|null }
       imageEntries: [],
       dragging: false,
-      sizesInput: '',
-      colorsInput: '',
       categories: [],
       saving: false,
       fetchingProduct: false,
-      error: null
+      error: null,
+      // Predefined sizes and colors
+      availableSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'],
+      availableColors: [{
+        name: 'Black',
+        hex: '#000000'
+      }, {
+        name: 'White',
+        hex: '#FFFFFF'
+      }, {
+        name: 'Gray',
+        hex: '#808080'
+      }, {
+        name: 'Red',
+        hex: '#EF4444'
+      }, {
+        name: 'Blue',
+        hex: '#3B82F6'
+      }, {
+        name: 'Navy',
+        hex: '#001F3F'
+      }, {
+        name: 'Green',
+        hex: '#10B981'
+      }, {
+        name: 'Yellow',
+        hex: '#FBBF24'
+      }, {
+        name: 'Orange',
+        hex: '#F97316'
+      }, {
+        name: 'Purple',
+        hex: '#A855F7'
+      }, {
+        name: 'Pink',
+        hex: '#EC4899'
+      }, {
+        name: 'Brown',
+        hex: '#92400E'
+      }],
+      // For custom variants
+      customSizeInput: '',
+      customColorHex: '#000000',
+      customColorName: ''
     };
   },
   computed: {
@@ -142,8 +183,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
                   file: null
                 };
               });
-              _this3.sizesInput = (data.sizes || []).join(',');
-              _this3.colorsInput = (data.colors || []).join(',');
               _context3.n = 4;
               break;
             case 3:
@@ -159,6 +198,48 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
           }
         }, _callee3, null, [[1, 3, 4, 5]]);
       }))();
+    },
+    /* ── Variant selection helpers ── */toggleSize: function toggleSize(size) {
+      var idx = this.form.sizes.indexOf(size);
+      if (idx > -1) {
+        this.form.sizes.splice(idx, 1);
+      } else {
+        this.form.sizes.push(size);
+      }
+    },
+    toggleColor: function toggleColor(color) {
+      var idx = this.form.colors.indexOf(color);
+      if (idx > -1) {
+        this.form.colors.splice(idx, 1);
+      } else {
+        this.form.colors.push(color);
+      }
+    },
+    addCustomSize: function addCustomSize() {
+      var size = this.customSizeInput.trim().toUpperCase();
+      if (!size) return;
+      if (!this.form.sizes.includes(size)) {
+        this.form.sizes.push(size);
+      }
+      this.customSizeInput = '';
+    },
+    addCustomColor: function addCustomColor() {
+      var colorName = this.customColorName.trim();
+      if (!colorName) return;
+      if (!this.form.colors.includes(colorName)) {
+        this.form.colors.push(colorName);
+        // Also add to available colors for future selections
+        if (!this.availableColors.find(function (c) {
+          return c.name === colorName;
+        })) {
+          this.availableColors.push({
+            name: colorName,
+            hex: this.customColorHex
+          });
+        }
+      }
+      this.customColorName = '';
+      this.customColorHex = '#000000';
     },
     /* ── Image upload helpers ── */onFileChange: function onFileChange(e) {
       this.processFiles(Array.from(e.target.files));
@@ -292,13 +373,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this7.form.images = _this7.imageEntries.map(function (e) {
                 return e.url;
               }).filter(Boolean);
-              // Parse variant CSV
-              _this7.form.sizes = _this7.sizesInput.split(',').map(function (s) {
-                return s.trim();
-              }).filter(Boolean);
-              _this7.form.colors = _this7.colorsInput.split(',').map(function (c) {
-                return c.trim();
-              }).filter(Boolean);
+              // Sizes and colors are already arrays from checkbox selections
               _context6.p = 3;
               if (!_this7.isEdit) {
                 _context6.n = 5;
@@ -605,52 +680,161 @@ var render = function render() {
       }
     }
   })])])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+    staticClass: "bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6"
   }, [_c("h3", {
-    staticClass: "text-white font-semibold text-base mb-2"
-  }, [_vm._v("Variants")]), _vm._v(" "), _c("div", [_vm._m(4), _vm._v(" "), _c("input", {
+    staticClass: "text-white font-semibold text-base mb-4"
+  }, [_vm._v("Variants")]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "block text-sm font-medium text-slate-400 mb-3"
+  }, [_vm._v("\n          Sizes\n          "), _c("span", {
+    staticClass: "text-slate-600 font-normal ml-1"
+  }, [_vm._v(_vm._s(_vm.form.sizes.length > 0 ? "(".concat(_vm.form.sizes.length, " selected)") : ""))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-wrap gap-2"
+  }, _vm._l(_vm.availableSizes, function (size) {
+    return _c("button", {
+      key: size,
+      staticClass: "px-4 py-2 border rounded-lg font-medium transition-colors cursor-pointer",
+      "class": {
+        "bg-orange-500 border-orange-500 text-white": _vm.form.sizes.includes(size),
+        "bg-slate-800 border-slate-700 text-slate-400 hover:border-orange-500": !_vm.form.sizes.includes(size)
+      },
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.toggleSize(size);
+        }
+      }
+    }, [_vm._v("\n            " + _vm._s(size) + "\n          ")]);
+  }), 0), _vm._v(" "), _c("div", {
+    staticClass: "mt-4"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.sizesInput,
-      expression: "sizesInput"
+      value: _vm.customSizeInput,
+      expression: "customSizeInput"
     }],
-    staticClass: "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors",
+    staticClass: "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm",
     attrs: {
       type: "text",
-      placeholder: "XS,S,M,L,XL,XXL"
+      placeholder: "Add custom size (e.g., One Size)"
     },
     domProps: {
-      value: _vm.sizesInput
+      value: _vm.customSizeInput
+    },
+    on: {
+      keyup: function keyup($event) {
+        if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
+        return _vm.addCustomSize.apply(null, arguments);
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.customSizeInput = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _c("p", {
+    staticClass: "text-slate-600 text-xs mt-1"
+  }, [_vm._v("Press Enter to add custom size")])])]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "block text-sm font-medium text-slate-400 mb-3"
+  }, [_vm._v("\n          Colors\n          "), _c("span", {
+    staticClass: "text-slate-600 font-normal ml-1"
+  }, [_vm._v(_vm._s(_vm.form.colors.length > 0 ? "(".concat(_vm.form.colors.length, " selected)") : ""))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-wrap gap-2"
+  }, _vm._l(_vm.availableColors, function (color) {
+    return _c("button", {
+      key: color.name,
+      staticClass: "w-12 h-12 rounded-lg transition-all cursor-pointer border border-slate-700 flex items-center justify-center group relative",
+      "class": {
+        "ring-2 ring-orange-400 ring-offset-2 ring-offset-slate-900": _vm.form.colors.includes(color.name),
+        "opacity-75 hover:opacity-100": !_vm.form.colors.includes(color.name)
+      },
+      style: {
+        backgroundColor: color.hex
+      },
+      attrs: {
+        type: "button",
+        title: color.name
+      },
+      on: {
+        click: function click($event) {
+          return _vm.toggleColor(color.name);
+        }
+      }
+    }, [_vm.form.colors.includes(color.name) ? _c("svg", {
+      staticClass: "w-6 h-6 text-white drop-shadow-lg",
+      attrs: {
+        fill: "none",
+        stroke: "currentColor",
+        viewBox: "0 0 24 24"
+      }
+    }, [_c("path", {
+      attrs: {
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        "stroke-width": "2.5",
+        d: "M5 13l4 4L19 7"
+      }
+    })]) : _vm._e(), _vm._v(" "), _c("span", {
+      staticClass: "absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-950 text-slate-200 text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+    }, [_vm._v("\n              " + _vm._s(color.name) + "\n            ")])]);
+  }), 0), _vm._v(" "), _c("div", {
+    staticClass: "mt-4 flex gap-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.customColorHex,
+      expression: "customColorHex"
+    }],
+    staticClass: "w-12 h-10 rounded-lg cursor-pointer border border-slate-700",
+    attrs: {
+      type: "color",
+      title: "Pick a color"
+    },
+    domProps: {
+      value: _vm.customColorHex
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.sizesInput = $event.target.value;
+        _vm.customColorHex = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", [_vm._m(5), _vm._v(" "), _c("input", {
+  }), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.colorsInput,
-      expression: "colorsInput"
+      value: _vm.customColorName,
+      expression: "customColorName"
     }],
-    staticClass: "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors",
+    staticClass: "flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm",
     attrs: {
       type: "text",
-      placeholder: "Black,White,Gray"
+      placeholder: "Color name (e.g., Navy Blue)"
     },
     domProps: {
-      value: _vm.colorsInput
+      value: _vm.customColorName
     },
     on: {
+      keyup: function keyup($event) {
+        if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
+        return _vm.addCustomColor.apply(null, arguments);
+      },
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.colorsInput = $event.target.value;
+        _vm.customColorName = $event.target.value;
       }
     }
-  })])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("button", {
+    staticClass: "px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-orange-400 hover:border-orange-500 transition-colors text-sm font-medium",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.addCustomColor
+    }
+  }, [_vm._v("\n            Add\n          ")])])])]), _vm._v(" "), _c("div", {
     staticClass: "bg-slate-900 border border-slate-800 rounded-xl p-6"
   }, [_c("h3", {
     staticClass: "text-white font-semibold text-base mb-1"
@@ -876,22 +1060,6 @@ var staticRenderFns = [function () {
   }, [_vm._v("Stock Qty "), _c("span", {
     staticClass: "text-red-500"
   }, [_vm._v("*")])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "block text-sm font-medium text-slate-400 mb-2"
-  }, [_vm._v("\n          Sizes\n          "), _c("span", {
-    staticClass: "text-slate-600 font-normal ml-1"
-  }, [_vm._v("(comma-separated, e.g. XS,S,M,L,XL)")])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "block text-sm font-medium text-slate-400 mb-2"
-  }, [_vm._v("\n          Colors\n          "), _c("span", {
-    staticClass: "text-slate-600 font-normal ml-1"
-  }, [_vm._v("(comma-separated)")])]);
 }];
 render._withStripped = true;
 

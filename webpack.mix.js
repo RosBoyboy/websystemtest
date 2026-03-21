@@ -33,4 +33,4 @@ mix.js('resources/js/app.js', 'public/js')
                 '@customer': path.resolve(__dirname, 'resources/js/customer'),
             },
         },
-    });
+    }).version();

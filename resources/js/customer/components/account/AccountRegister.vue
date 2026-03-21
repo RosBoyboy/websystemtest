@@ -12,20 +12,20 @@
 
           <form @submit.prevent="handleRegister" class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Full Name</label>
-              <input v-model="form.name" type="text" required class="input-field" placeholder="Jane Doe" />
+              <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Full Name</label>
+              <input v-model="form.name" type="text" required class="w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900" placeholder="Jane Doe" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Email</label>
-              <input v-model="form.email" type="email" required class="input-field" placeholder="you@example.com" />
+              <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email</label>
+              <input v-model="form.email" type="email" required class="w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900" placeholder="you@example.com" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Password</label>
-              <input v-model="form.password" type="password" required minlength="8" class="input-field" placeholder="Min. 8 characters" />
+              <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Password</label>
+              <input v-model="form.password" type="password" required minlength="8" class="w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900" placeholder="Min. 8 characters" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Confirm Password</label>
-              <input v-model="form.password_confirmation" type="password" required class="input-field" placeholder="••••••••" />
+              <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Confirm Password</label>
+              <input v-model="form.password_confirmation" type="password" required class="w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900" placeholder="••••••••" />
             </div>
             <button type="submit" :disabled="loading" class="btn-orange w-full py-3 mt-2 disabled:opacity-50">
               <span v-if="loading">Creating account…</span>

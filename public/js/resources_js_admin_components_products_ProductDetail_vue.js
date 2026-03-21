@@ -20,14 +20,40 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
   data: function data() {
     return {
       product: null,
-      loading: false
+      editStatus: null,
+      updating: false,
+      loading: false,
+      colorMap: {
+        'Black': '#000000',
+        'White': '#FFFFFF',
+        'Gray': '#808080',
+        'Grey': '#808080',
+        'Red': '#EF4444',
+        'Blue': '#3B82F6',
+        'Navy': '#001F3F',
+        'Green': '#10B981',
+        'Yellow': '#FBBF24',
+        'Orange': '#F97316',
+        'Purple': '#A855F7',
+        'Pink': '#EC4899',
+        'Brown': '#92400E',
+        'Beige': '#D4A574',
+        'Tan': '#D2B48C',
+        'Gold': '#FFD700'
+      }
     };
   },
   methods: {
+    isColorHex: function isColorHex(color) {
+      return /^#[0-9A-F]{6}$/i.test(color);
+    },
+    getColorHex: function getColorHex(colorName) {
+      return this.colorMap[colorName] || '#808080';
+    },
     fetchProduct: function fetchProduct() {
       var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var _yield$_this$$http$ge, data;
+        var _yield$_this$$http$ge, data, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
@@ -45,14 +71,67 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this.product = data.data.find(function (p) {
                 return p.id == _this.$route.params.id;
               }) || null;
+              if (_this.product) {
+                _this.editStatus = _this.product.status;
+              }
+              _context.n = 4;
+              break;
             case 3:
               _context.p = 3;
-              _this.loading = false;
-              return _context.f(3);
+              _t = _context.v;
+              console.error('Failed to fetch product:', _t);
             case 4:
+              _context.p = 4;
+              _this.loading = false;
+              return _context.f(4);
+            case 5:
               return _context.a(2);
           }
-        }, _callee, null, [[1,, 3, 4]]);
+        }, _callee, null, [[1, 3, 4, 5]]);
+      }))();
+    },
+    updateStatus: function updateStatus() {
+      var _this2 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var _yield$_this2$$http$p, data, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              if (!(_this2.editStatus === _this2.product.status)) {
+                _context2.n = 1;
+                break;
+              }
+              return _context2.a(2);
+            case 1:
+              _this2.updating = true;
+              _context2.p = 2;
+              _context2.n = 3;
+              return _this2.$http.post("/admin/products/".concat(_this2.product.id, "/status"), {
+                status: _this2.editStatus
+              });
+            case 3:
+              _yield$_this2$$http$p = _context2.v;
+              data = _yield$_this2$$http$p.data;
+              _this2.product.status = _this2.editStatus;
+
+              // Show success message (you could use a toast notification here)
+              alert("Product status updated to: ".concat(_this2.editStatus));
+              _context2.n = 5;
+              break;
+            case 4:
+              _context2.p = 4;
+              _t2 = _context2.v;
+              console.error('Failed to update status:', _t2);
+              _this2.editStatus = _this2.product.status;
+              alert('Failed to update status. Please try again.');
+            case 5:
+              _context2.p = 5;
+              _this2.updating = false;
+              return _context2.f(5);
+            case 6:
+              return _context2.a(2);
+          }
+        }, _callee2, null, [[2, 4, 5, 6]]);
       }))();
     }
   },
@@ -93,6 +172,25 @@ var render = function render() {
   }, [_vm._v("Loading…")]) : _vm.product ? _c("div", {
     staticClass: "grid grid-cols-1 lg:grid-cols-2 gap-6"
   }, [_c("div", {
+    staticClass: "space-y-4"
+  }, [_vm.product.images && _vm.product.images.length ? _c("div", {
+    staticClass: "bg-slate-900 rounded-xl border border-slate-800 p-6"
+  }, [_c("h3", {
+    staticClass: "text-white font-bold mb-4"
+  }, [_vm._v("Product Images")]), _vm._v(" "), _c("div", {
+    staticClass: "grid grid-cols-2 gap-4"
+  }, _vm._l(_vm.product.images, function (image, idx) {
+    return _c("div", {
+      key: idx,
+      staticClass: "aspect-square rounded-lg overflow-hidden bg-slate-800"
+    }, [_c("img", {
+      staticClass: "w-full h-full object-cover",
+      attrs: {
+        src: image,
+        alt: "Product image ".concat(idx + 1)
+      }
+    })]);
+  }), 0)]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "bg-slate-900 rounded-xl border border-slate-800 p-6 space-y-3 text-sm"
   }, [_c("h2", {
     staticClass: "text-white text-xl font-bold"
@@ -112,16 +210,7 @@ var render = function render() {
     staticClass: "text-slate-500"
   }, [_vm._v("Stock")]), _vm._v(" "), _c("p", {
     "class": _vm.product.stock_quantity <= _vm.product.low_stock_threshold ? "text-red-400 font-semibold" : "text-white"
-  }, [_vm._v("\n            " + _vm._s(_vm.product.stock_quantity) + "\n          ")])]), _vm._v(" "), _c("div", [_c("span", {
-    staticClass: "text-slate-500"
-  }, [_vm._v("Status")]), _vm._v(" "), _c("p", [_c("span", {
-    staticClass: "px-2 py-0.5 rounded text-xs",
-    "class": {
-      "bg-green-900/50 text-green-400": _vm.product.status === "active",
-      "bg-red-900/50 text-red-400": _vm.product.status === "inactive",
-      "bg-slate-700/50 text-slate-400": _vm.product.status === "draft"
-    }
-  }, [_vm._v("\n            " + _vm._s(_vm.product.status))])])]), _vm._v(" "), _c("div", [_c("span", {
+  }, [_vm._v("\n              " + _vm._s(_vm.product.stock_quantity) + "\n            ")])]), _vm._v(" "), _c("div", [_c("span", {
     staticClass: "text-slate-500"
   }, [_vm._v("Category")]), _c("p", {
     staticClass: "text-white"
@@ -129,9 +218,114 @@ var render = function render() {
     staticClass: "text-slate-500"
   }, [_vm._v("Seller")]), _c("p", {
     staticClass: "text-white"
-  }, [_vm._v(_vm._s(_vm.product.seller ? _vm.product.seller.store_name : "—"))])])])])]) : _vm._e()]);
+  }, [_vm._v(_vm._s(_vm.product.seller ? _vm.product.seller.store_name : "—"))])])]), _vm._v(" "), _c("div", {
+    staticClass: "border-t border-slate-700 pt-4 mt-4 space-y-3"
+  }, [_c("div", [_c("span", {
+    staticClass: "text-slate-500 block mb-2"
+  }, [_vm._v("Sizes")]), _vm._v(" "), _vm.product.sizes && _vm.product.sizes.length ? _c("div", {
+    staticClass: "flex flex-wrap gap-2"
+  }, _vm._l(_vm.product.sizes, function (size) {
+    return _c("span", {
+      key: size,
+      staticClass: "px-3 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-700 text-xs font-medium"
+    }, [_vm._v("\n                " + _vm._s(size) + "\n              ")]);
+  }), 0) : _c("p", {
+    staticClass: "text-slate-600"
+  }, [_vm._v("No sizes specified")])]), _vm._v(" "), _c("div", [_c("span", {
+    staticClass: "text-slate-500 block mb-2"
+  }, [_vm._v("Colors")]), _vm._v(" "), _vm.product.colors && _vm.product.colors.length ? _c("div", {
+    staticClass: "flex flex-wrap gap-3"
+  }, _vm._l(_vm.product.colors, function (color) {
+    return _c("div", {
+      key: color,
+      staticClass: "flex items-center gap-2"
+    }, [_c("div", {
+      staticClass: "w-5 h-5 rounded border border-slate-600",
+      style: {
+        backgroundColor: _vm.isColorHex(color) ? color : _vm.getColorHex(color)
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "text-sm text-slate-300"
+    }, [_vm._v(_vm._s(color))])]);
+  }), 0) : _c("p", {
+    staticClass: "text-slate-600"
+  }, [_vm._v("No colors specified")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-slate-900 rounded-xl border border-slate-800 p-6 space-y-4"
+  }, [_c("h2", {
+    staticClass: "text-white text-lg font-bold"
+  }, [_vm._v("Review & Approve")]), _vm._v(" "), _c("div", [_c("label", {
+    staticClass: "block text-slate-400 text-sm mb-2"
+  }, [_vm._v("Product Status")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.editStatus,
+      expression: "editStatus"
+    }],
+    staticClass: "w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-600",
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.editStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "active"
+    }
+  }, [_vm._v("Active")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "inactive"
+    }
+  }, [_vm._v("Inactive")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "draft"
+    }
+  }, [_vm._v("Draft")])]), _vm._v(" "), _c("p", {
+    staticClass: "text-xs text-slate-500 mt-1"
+  }, [_vm._v("Current: "), _c("span", {
+    staticClass: "px-2 py-0.5 rounded text-xs font-medium",
+    "class": {
+      "bg-green-900/50 text-green-400": _vm.product.status === "active",
+      "bg-red-900/50 text-red-400": _vm.product.status === "inactive",
+      "bg-slate-700/50 text-slate-400": _vm.product.status === "draft"
+    }
+  }, [_vm._v("\n          " + _vm._s(_vm.product.status))])])]), _vm._v(" "), _c("div", {
+    staticClass: "space-y-2 pt-4 border-t border-slate-700"
+  }, [_vm.editStatus !== _vm.product.status ? _c("button", {
+    staticClass: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed",
+    attrs: {
+      disabled: _vm.updating
+    },
+    on: {
+      click: _vm.updateStatus
+    }
+  }, [_vm._v("\n          " + _vm._s(_vm.updating ? "Updating..." : "Update Status") + "\n        ")]) : _c("button", {
+    staticClass: "w-full bg-slate-700 text-slate-400 font-semibold py-2 rounded-lg cursor-not-allowed",
+    attrs: {
+      disabled: ""
+    }
+  }, [_vm._v("\n          Status Unchanged\n        ")]), _vm._v(" "), _c("button", {
+    staticClass: "w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-lg transition",
+    on: {
+      click: function click($event) {
+        return _vm.$router.back();
+      }
+    }
+  }, [_vm._v("\n          Go Back\n        ")])]), _vm._v(" "), _vm._m(0)])]) : _vm._e()]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "bg-slate-800/50 rounded-lg p-3 border border-slate-700 text-xs text-slate-300 space-y-1"
+  }, [_c("p", [_c("strong", [_vm._v("Active:")]), _vm._v(" Product is visible to customers")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Inactive:")]), _vm._v(" Product is hidden from customers")]), _vm._v(" "), _c("p", [_c("strong", [_vm._v("Draft:")]), _vm._v(" Product is still being reviewed")])]);
+}];
 render._withStripped = true;
 
 

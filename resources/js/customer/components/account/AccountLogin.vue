@@ -20,18 +20,61 @@
     <div class="flex-1 flex items-center justify-center px-6 py-12">
       <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-3xl overflow-hidden shadow-2xl">
         
-        <!-- Left side: Image & Text -->
+        <!-- Left side: Image & Text or Role Selector -->
         <div class="hidden lg:flex relative bg-gradient-to-b from-black/40 to-black/60 items-center justify-center p-12" style="background-image: url('/images/auth/login-hero.jpg'); background-size: cover; background-position: center;">
           <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
           <div class="relative z-10 text-left max-w-sm">
-            <h1 class="text-5xl font-black text-white mb-4" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;">Welcome Back</h1>
-            <p class="text-xl text-stone-300">Sign in to your NurbanNxt account</p>
+            <h1 class="text-5xl font-black text-white mb-4" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;">
+              {{ loginType === 'customer' ? 'Welcome Back' : 'Admin Access' }}
+            </h1>
+            <p class="text-xl text-stone-300">
+              {{ loginType === 'customer' 
+                ? 'Sign in to your NurbanNxt account' 
+                : 'Administrator panel signin' }}
+            </p>
           </div>
         </div>
 
         <!-- Right side: Form Card -->
         <div class="bg-white p-12 flex flex-col justify-center">
-          <h2 class="text-3xl font-black text-black mb-8" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;">LOGIN</h2>
+          <!-- Role Selector Tabs -->
+          <div class="flex gap-2 mb-8 rounded-lg bg-stone-100 border border-stone-300 p-1">
+            <button
+              @click="loginType = 'customer'"
+              :class="[
+                'flex-1 py-2.5 px-3 rounded-lg font-semibold transition-all text-sm',
+                loginType === 'customer'
+                  ? 'bg-orange-500 text-white'
+                  : 'text-stone-600 hover:text-black'
+              ]"
+            >
+              <svg class="w-4 h-4 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              Customer
+            </button>
+            <button
+              @click="loginType = 'admin'"
+              :class="[
+                'flex-1 py-2.5 px-3 rounded-lg font-semibold transition-all text-sm',
+                loginType === 'admin'
+                  ? 'bg-orange-500 text-white'
+                  : 'text-stone-600 hover:text-black'
+              ]"
+            >
+              <svg class="w-4 h-4 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+              </svg>
+              Admin
+            </button>
+          </div>
+
+          <h2 class="text-3xl font-black text-black mb-2" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;">LOGIN</h2>
+          <p class="text-xs text-stone-500 mb-6">
+            {{ loginType === 'customer' 
+              ? 'Access your customer or seller account'
+              : 'Administrator access only' }}
+          </p>
 
           <!-- Error -->
           <div v-if="error" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium">
@@ -52,7 +95,7 @@
                   v-model="form.email" 
                   type="email" 
                   required 
-                  placeholder="you@example.com"
+                  :placeholder="loginType === 'customer' ? 'you@example.com' : 'admin@nurbannxt.com'"
                   class="w-full pl-12 pr-4 py-3 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors text-stone-800 font-medium"
                 />
               </div>
@@ -94,34 +137,38 @@
             </button>
           </form>
 
-          <!-- Forgot Password -->
-          <div class="text-center mt-6">
-            <a href="#" class="text-sm text-orange-500 font-semibold hover:text-orange-600 transition-colors">
-              Forgot password?
-            </a>
-          </div>
+          <!-- Customer Links -->
+          <template v-if="loginType === 'customer'">
+            <!-- Forgot Password -->
+            <div class="text-center mt-6">
+              <a href="#" class="text-sm text-orange-500 font-semibold hover:text-orange-600 transition-colors">
+                Forgot password?
+              </a>
+            </div>
 
-          <!-- Sign Up Link -->
-          <div class="text-center mt-5 pt-5 border-t border-stone-200">
-            <p class="text-sm text-stone-600">
-              Don't have an account?
-              <router-link :to="{ name: 'register' }" class="text-orange-500 font-bold hover:text-orange-600 transition-colors">
-                Create one
-              </router-link>
+            <!-- Sign Up Link -->
+            <div class="text-center mt-5 pt-5 border-t border-stone-200">
+              <p class="text-sm text-stone-600">
+                Don't have an account?
+                <router-link :to="{ name: 'register' }" class="text-orange-500 font-bold hover:text-orange-600 transition-colors">
+                  Create one
+                </router-link>
+              </p>
+            </div>
+
+            <!-- Seller Mode Info -->
+            <p class="text-center text-xs text-stone-500 mt-4 leading-relaxed">
+              Seller mode is available after login in your account dashboard.
             </p>
-          </div>
+          </template>
 
-          <!-- Seller Mode Info -->
-          <p class="text-center text-xs text-stone-500 mt-4 leading-relaxed">
-            Seller mode is available after login in your account dashboard.
-          </p>
-
-          <!-- Admin Login Link -->
-          <div class="mt-6 pt-4 border-t border-stone-200 text-center">
-            <a href="/admin" class="text-xs text-stone-400 font-medium hover:text-orange-500 transition-colors uppercase tracking-wider">
-              Login as Admin
-            </a>
-          </div>
+          <!-- Admin Info -->
+          <template v-else>
+            <div class="mt-6 p-3 bg-slate-100 rounded-lg border border-slate-300 text-xs text-slate-700">
+              <p><strong>Admin Portal</strong></p>
+              <p>Access restricted to administrators only. Unauthorized access attempts are logged.</p>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -132,7 +179,7 @@
         <div>
           <h3 class="text-white font-bold text-lg mb-4">NURBAN<span class="text-orange-500">NXT</span></h3>
           <p class="text-stone-400 text-sm leading-relaxed">
-            Aesthetic clothing for the culturally wired. We design for those who live ahead of the trend.
+            Aesthetic clothing for the culturally wired.
           </p>
         </div>
         <div>
@@ -140,14 +187,25 @@
           <ul class="space-y-2">
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">All Products</a></li>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Featured</a></li>
-            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">New Arrivals</a></li>
-            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Sale</a></li>
           </ul>
         </div>
         <div>
           <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">ACCOUNT</h4>
           <ul class="space-y-2">
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Seller Portal</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">LEGAL</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Privacy</a></li>
+            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </div>
+</template>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Create Account</a></li>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Order Tracking</a></li>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">My Profile</a></li>
@@ -176,29 +234,30 @@
 </template>
 
 <script>
-import CustomerLayout from '../layout/CustomerLayout.vue';
+import axios from 'axios';
 
 export default {
   name: 'AccountLogin',
-  components: { CustomerLayout },
   data() {
     return {
-      form:    { email: '', password: '' },
+      loginType: 'customer', // 'customer' or 'admin'
+      form: { email: '', password: '' },
       loading: false,
-      error:   null,
+      error: null,
     };
   },
   methods: {
     async handleLogin() {
-      this.error   = null;
+      this.error = null;
       this.loading = true;
+      
       try {
-        await this.$store.dispatch('auth/login', this.form);
-        const redirect = this.$route.query.redirect || '/account';
-        if (redirect.includes('/seller') || redirect.includes('/admin')) {
-          window.location.href = redirect;
+        if (this.loginType === 'admin') {
+          // Admin login
+          await this.handleAdminLogin();
         } else {
-          this.$router.push(redirect);
+          // Customer login
+          await this.handleCustomerLogin();
         }
       } catch (e) {
         const resp = e.response && e.response.data;
@@ -207,6 +266,67 @@ export default {
         this.loading = false;
       }
     },
+
+    async handleAdminLogin() {
+      try {
+        const { data } = await axios.post('/auth/login', this.form);
+        
+        // Verify user is admin
+        if (data.user.role !== 'admin') {
+          throw new Error('Access denied. Admin only.');
+        }
+        
+        // Store admin auth
+        localStorage.setItem('admin_token', data.token);
+        localStorage.setItem('admin_user', JSON.stringify(data.user));
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        
+        // Redirect to admin dashboard
+        window.location.href = '/admin/app/#/';
+      } catch (e) {
+        throw e;
+      }
+    },
+
+    async handleCustomerLogin() {
+      try {
+        const { data } = await axios.post('/auth/login', this.form);
+        
+        // Verify user is not admin
+        if (data.user.role === 'admin') {
+          throw new Error('Admin accounts must use the admin portal.');
+        }
+        
+        // Store customer auth (same logic as existing auth module)
+        localStorage.setItem('customer_token', data.token);
+        localStorage.setItem('customer_user', JSON.stringify(data.user));
+        localStorage.setItem('seller_token', data.token);
+        localStorage.setItem('seller_user', JSON.stringify(data.user));
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        
+        // Redirect to account or redirect path
+        const redirect = this.$route.query.redirect || '/account';
+        if (redirect.includes('/seller') || redirect.includes('/admin')) {
+          window.location.href = redirect;
+        } else {
+          this.$router.push(redirect);
+        }
+      } catch (e) {
+        throw e;
+      }
+    },
+  },
+
+  created() {
+    // If already logged in, redirect appropriately
+    const adminToken = localStorage.getItem('admin_token');
+    const customerToken = localStorage.getItem('customer_token');
+    
+    if (adminToken) {
+      window.location.href = '/admin/app/#/';
+    } else if (customerToken) {
+      this.$router.push({ name: 'account' });
+    }
   },
 };
 </script>
