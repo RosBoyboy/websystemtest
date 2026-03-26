@@ -1,0 +1,191 @@
+﻿+--------+----------+-------------------------------------+------------+---------------------------------------------------------------------+------------------------------------------+
+| Domain | Method   | URI                                 | Name       | Action                                                              | Middleware                               |
++--------+----------+-------------------------------------+------------+---------------------------------------------------------------------+------------------------------------------+
+|        | GET|HEAD | /                                   |            | Closure                                                             | web                                      |
+|        | GET|HEAD | account                             |            | Closure                                                             | web                                      |
+|        | GET|HEAD | admin                               |            | Closure                                                             | web                                      |
+|        | GET|HEAD | admin/app/{any?}                    | admin.spa  | Closure                                                             | web                                      |
+|        | GET|HEAD | api/account                         |            | App\Http\Controllers\Customer\CustomerAccountController@show        | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | PUT      | api/account                         |            | App\Http\Controllers\Customer\CustomerAccountController@update      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | POST     | api/account/checkout                |            | App\Http\Controllers\Customer\CustomerOrderController@store         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | api/account/messages/sellers        |            | App\Http\Controllers\Customer\CustomerMessageController@getSellers  | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | POST     | api/account/messages/{sellerId}     |            | App\Http\Controllers\Customer\CustomerMessageController@sendMessage | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | api/account/messages/{sellerId}     |            | App\Http\Controllers\Customer\CustomerMessageController@getMessages | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | api/account/orders                  |            | App\Http\Controllers\Customer\CustomerOrderController@index         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | api/account/orders/{id}             |            | App\Http\Controllers\Customer\CustomerOrderController@show          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | api/admin/dashboard/recent-orders   |            | App\Http\Controllers\Admin\AdminDashboardController@recentOrders    | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/dashboard/sales-chart     |            | App\Http\Controllers\Admin\AdminDashboardController@salesChart      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/dashboard/stats           |            | App\Http\Controllers\Admin\AdminDashboardController@stats           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/deliveries                |            | App\Http\Controllers\Admin\AdminDeliveryController@index            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/deliveries/{id}           |            | App\Http\Controllers\Admin\AdminDeliveryController@update           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/inventory                 |            | App\Http\Controllers\Admin\AdminInventoryController@index           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/inventory/low-stock       |            | App\Http\Controllers\Admin\AdminInventoryController@lowStock        | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/inventory/{product_id}    |            | App\Http\Controllers\Admin\AdminInventoryController@update          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/orders                    |            | App\Http\Controllers\Admin\AdminOrderController@index               | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/orders/{id}               |            | App\Http\Controllers\Admin\AdminOrderController@show                | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/products                  |            | App\Http\Controllers\Admin\AdminProductController@index             | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | DELETE   | api/admin/products/{id}             |            | App\Http\Controllers\Admin\AdminProductController@destroy           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/products/{id}/status      |            | App\Http\Controllers\Admin\AdminProductController@updateStatus      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/sellers                   |            | App\Http\Controllers\Admin\AdminSellerController@index              | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/sellers/{id}              |            | App\Http\Controllers\Admin\AdminSellerController@show               | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/sellers/{id}/approve      |            | App\Http\Controllers\Admin\AdminSellerController@approve            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/sellers/{id}/reject       |            | App\Http\Controllers\Admin\AdminSellerController@reject             | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/settings                  |            | App\Http\Controllers\Admin\AdminSettingsController@index            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/settings                  |            | App\Http\Controllers\Admin\AdminSettingsController@bulkUpdate       | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/users                     |            | App\Http\Controllers\Admin\AdminUserController@index                | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | DELETE   | api/admin/users/{id}                |            | App\Http\Controllers\Admin\AdminUserController@destroy              | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | GET|HEAD | api/admin/users/{id}                |            | App\Http\Controllers\Admin\AdminUserController@show                 | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | PUT      | api/admin/users/{id}/status         |            | App\Http\Controllers\Admin\AdminUserController@updateStatus         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\AdminMiddleware      |
+|        | POST     | api/auth/login                      |            | App\Http\Controllers\AuthController@login                           | api                                      |
+|        | POST     | api/logout                          |            | App\Http\Controllers\AuthController@logout                          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | POST     | api/register                        |            | App\Http\Controllers\AuthController@register                        | api                                      |
+|        | GET|HEAD | api/seller/dashboard/earnings-chart |            | App\Http\Controllers\Seller\SellerDashboardController@earningsChart | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/dashboard/recent-orders  |            | App\Http\Controllers\Seller\SellerDashboardController@recentOrders  | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/dashboard/stats          |            | App\Http\Controllers\Seller\SellerDashboardController@stats         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/earnings/by-product      |            | App\Http\Controllers\Seller\SellerEarningsController@byProduct      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/earnings/chart           |            | App\Http\Controllers\Seller\SellerEarningsController@chart          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/earnings/summary         |            | App\Http\Controllers\Seller\SellerEarningsController@summary        | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/inventory                |            | App\Http\Controllers\Seller\SellerInventoryController@index         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/inventory/low-stock      |            | App\Http\Controllers\Seller\SellerInventoryController@lowStock      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | PUT      | api/seller/inventory/{productId}    |            | App\Http\Controllers\Seller\SellerInventoryController@update        | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/messages/customers       |            | App\Http\Controllers\Seller\SellerMessageController@getCustomers    | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | POST     | api/seller/messages/{customerId}    |            | App\Http\Controllers\Seller\SellerMessageController@sendMessage     | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/messages/{customerId}    |            | App\Http\Controllers\Seller\SellerMessageController@getMessages     | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/orders                   |            | App\Http\Controllers\Seller\SellerOrderController@index             | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/orders/{id}              |            | App\Http\Controllers\Seller\SellerOrderController@show              | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | PUT      | api/seller/orders/{id}/fulfillment  |            | App\Http\Controllers\Seller\SellerOrderController@updateFulfillment | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/products                 |            | App\Http\Controllers\Seller\SellerProductController@index           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | POST     | api/seller/products                 |            | App\Http\Controllers\Seller\SellerProductController@store           | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/products/categories      |            | App\Http\Controllers\Seller\SellerProductController@categories      | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | POST     | api/seller/products/upload-image    |            | App\Http\Controllers\Seller\SellerProductController@uploadImage     | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | DELETE   | api/seller/products/{id}            |            | App\Http\Controllers\Seller\SellerProductController@destroy         | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | PUT      | api/seller/products/{id}            |            | App\Http\Controllers\Seller\SellerProductController@update          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/products/{id}            |            | App\Http\Controllers\Seller\SellerProductController@show            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | PUT      | api/seller/profile                  |            | App\Http\Controllers\Seller\SellerProfileController@update          | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | GET|HEAD | api/seller/profile                  |            | App\Http\Controllers\Seller\SellerProfileController@show            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\SellerMiddleware     |
+|        | POST     | api/seller/register                 |            | App\Http\Controllers\Seller\SellerAuthController@register           | api                                      |
+|        | GET|HEAD | api/shop/categories                 |            | App\Http\Controllers\Customer\CustomerProductController@categories  | api                                      |
+|        | GET|HEAD | api/shop/categories/{slug}          |            | App\Http\Controllers\Customer\CustomerProductController@byCategory  | api                                      |
+|        | GET|HEAD | api/shop/products                   |            | App\Http\Controllers\Customer\CustomerProductController@index       | api                                      |
+|        | GET|HEAD | api/shop/products/featured          |            | App\Http\Controllers\Customer\CustomerProductController@featured    | api                                      |
+|        | GET|HEAD | api/shop/products/{slug}            |            | App\Http\Controllers\Customer\CustomerProductController@show        | api                                      |
+|        | GET|HEAD | api/user                            |            | App\Http\Controllers\AuthController@user                            | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | PATCH    | api/user/become-seller              |            | App\Http\Controllers\AuthController@becomeSeller                    | api                                      |
+|        |          |                                     |            |                                                                     | App\Http\Middleware\Authenticate:sanctum |
+|        | GET|HEAD | cart                                |            | Closure                                                             | web                                      |
+|        | GET|HEAD | checkout                            |            | Closure                                                             | web                                      |
+|        | GET|HEAD | login                               |            | Closure                                                             | web                                      |
+|        | GET|HEAD | orders                              |            | Closure                                                             | web                                      |
+|        | GET|HEAD | orders/{id}                         |            | Closure                                                             | web                                      |
+|        | GET|HEAD | products                            |            | Closure                                                             | web                                      |
+|        | GET|HEAD | products/{slug}                     |            | Closure                                                             | web                                      |
+|        | GET|HEAD | register                            |            | Closure                                                             | web                                      |
+|        | GET|HEAD | sanctum/csrf-cookie                 |            | Laravel\Sanctum\Http\Controllers\CsrfCookieController@show          | web                                      |
+|        | GET|HEAD | seller                              |            | Closure                                                             | web                                      |
+|        | GET|HEAD | seller/app/{any?}                   | seller.spa | Closure                                                             | web                                      |
+|        | GET|HEAD | shop/{any?}                         | shop.spa   | Closure                                                             | web                                      |
++--------+----------+-------------------------------------+------------+---------------------------------------------------------------------+------------------------------------------+

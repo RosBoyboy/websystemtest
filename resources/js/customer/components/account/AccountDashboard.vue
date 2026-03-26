@@ -214,21 +214,24 @@ export default {
         : 'pending';
     },
   },
+  watch: {
+    currentUser: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.profileForm.name  = newVal.name;
+          this.profileForm.email = newVal.email;
+        }
+      }
+    }
+  },
   created() {
     if (this.$route.query.tab) {
       this.activeTab = this.$route.query.tab;
     }
-    this.loadProfile();
     this.loadOrders();
   },
   methods: {
-    loadProfile() {
-      const u = this.currentUser;
-      if (u) {
-        this.profileForm.name  = u.name;
-        this.profileForm.email = u.email;
-      }
-    },
     async loadOrders() {
       this.loadingOrders = true;
       try {

@@ -34,14 +34,14 @@
               <div class="flex flex-col items-center relative flex-1">
                 <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all',
                   isStepDone(step.key) ? 'bg-orange-500 text-black' :
-                  isCurrentStep(step.key) ? 'bg-white text-black ring-4 ring-white/20' :
+                  isCurrentStep(step.key) ? 'bg-orange-500 text-black ring-4 ring-orange-400/50 shadow-[0_0_20px_rgba(249,115,22,0.7)] animate-pulse' :
                   'bg-slate-800 text-slate-500']">
                   <svg v-if="isStepDone(step.key)" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                   <span v-else>{{ i + 1 }}</span>
                 </div>
-                <p class="text-xs text-slate-400 mt-2 text-center leading-tight hidden sm:block">{{ step.label }}</p>
+                <p :class="['text-xs mt-2 text-center leading-tight hidden sm:block', isCurrentStep(step.key) ? 'text-orange-400 font-bold drop-shadow-[0_0_5px_rgba(249,115,22,0.8)]' : 'text-slate-400']">{{ step.label }}</p>
               </div>
               <div v-if="i < trackingSteps.length - 1" :class="['h-0.5 flex-1 mx-1 transition-colors', isStepDone(step.key) ? 'bg-orange-500' : 'bg-slate-800']"></div>
             </div>

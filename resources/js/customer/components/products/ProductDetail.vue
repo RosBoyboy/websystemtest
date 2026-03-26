@@ -15,13 +15,7 @@
     <!-- Product -->
     <div v-else-if="product" class="w-full px-4 sm:px-6 lg:px-8 py-10" style="max-width:100%">
       <!-- Breadcrumb -->
-      <nav class="text-sm text-slate-400 mb-6 flex items-center gap-2">
-        <router-link :to="{ name: 'home' }" class="hover:text-slate-200 transition-colors">Home</router-link>
-        <span>/</span>
-        <router-link :to="{ name: 'products' }" class="hover:text-slate-200 transition-colors">Shop</router-link>
-        <span>/</span>
-        <span class="text-slate-200">{{ product.name }}</span>
-      </nav>
+      <Breadcrumb :breadcrumbs="breadcrumbs" />
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
         <!-- Image gallery -->
@@ -201,10 +195,11 @@
 <script>
 import axios from 'axios';
 import CustomerLayout from '../layout/CustomerLayout.vue';
+import Breadcrumb from '../common/Breadcrumb.vue';
 
 export default {
   name: 'ProductDetail',
-  components: { CustomerLayout },
+  components: { CustomerLayout, Breadcrumb },
   data() {
     return {
       product:       null,
@@ -227,6 +222,18 @@ export default {
     discountPct() {
       if (!this.hasDiscount) return 0;
       return Math.round((1 - parseFloat(this.price) / parseFloat(this.comparePrice)) * 100);
+    },
+    breadcrumbs() {
+      return [
+        {
+          label: this.product?.category?.name || 'Products',
+          route: this.product?.category ? { name: 'products', query: { category: this.product.category.id } } : null
+        },
+        {
+          label: this.product?.name,
+          route: null
+        }
+      ];
     },
   },
   watch: {

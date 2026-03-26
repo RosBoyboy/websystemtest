@@ -162,7 +162,7 @@ export default {
       
       this.updating = true;
       try {
-        const { data } = await this.$http.post(`/admin/products/${this.product.id}/status`, {
+        const { data } = await this.$http.put(`/admin/products/${this.product.id}/status`, {
           status: this.editStatus
         });
         

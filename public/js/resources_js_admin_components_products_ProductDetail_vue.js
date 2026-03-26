@@ -106,7 +106,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this2.updating = true;
               _context2.p = 2;
               _context2.n = 3;
-              return _this2.$http.post("/admin/products/".concat(_this2.product.id, "/status"), {
+              return _this2.$http.put("/admin/products/".concat(_this2.product.id, "/status"), {
                 status: _this2.editStatus
               });
             case 3:

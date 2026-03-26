@@ -193,19 +193,6 @@
           <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">ACCOUNT</h4>
           <ul class="space-y-2">
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Seller Portal</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-bold text-sm uppercase mb-4 tracking-wider">LEGAL</h4>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Privacy</a></li>
-            <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Terms</a></li>
-          </ul>
-        </div>
-      </div>
-    </footer>
-  </div>
-</template>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Create Account</a></li>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">Order Tracking</a></li>
             <li><a href="#" class="text-stone-400 text-sm hover:text-white transition-colors">My Profile</a></li>
@@ -291,19 +278,15 @@ export default {
     async handleCustomerLogin() {
       try {
         const { data } = await axios.post('/auth/login', this.form);
-        
+
         // Verify user is not admin
         if (data.user.role === 'admin') {
           throw new Error('Admin accounts must use the admin portal.');
         }
-        
-        // Store customer auth (same logic as existing auth module)
-        localStorage.setItem('customer_token', data.token);
-        localStorage.setItem('customer_user', JSON.stringify(data.user));
-        localStorage.setItem('seller_token', data.token);
-        localStorage.setItem('seller_user', JSON.stringify(data.user));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-        
+
+        // Commit to Vuex store (this updates both the state and local storage)
+        this.$store.commit('auth/SET_AUTH', { user: data.user, token: data.token });
+
         // Redirect to account or redirect path
         const redirect = this.$route.query.redirect || '/account';
         if (redirect.includes('/seller') || redirect.includes('/admin')) {

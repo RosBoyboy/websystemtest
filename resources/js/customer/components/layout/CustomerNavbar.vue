@@ -5,7 +5,7 @@
 
         <!-- Logo -->
         <router-link :to="{ name: 'home' }" style="text-decoration:none;flex-shrink:0;">
-          <span style="font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:0.12em;color:#f97316;">Nurban</span><span style="font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:0.12em;color:#f0ece3;">Nxt</span>
+          <span style="font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:0.08em;color:#f97316;font-weight:bold;">NurbanNext</span>
         </router-link>
 
         <!-- Desktop nav -->
@@ -36,30 +36,8 @@
             </span>
           </router-link>
 
-          <!-- Account dropdown -->
-          <div style="position:relative;" @mouseenter="accountOpen = true" @mouseleave="accountOpen = false">
-            <button class="nn-icon-btn" style="display:flex;align-items:center;gap:6px;padding:8px 12px;">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span class="hidden sm:inline" style="font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;">
-                {{ isAuthenticated ? firstName : 'Account' }}
-              </span>
-            </button>
-            <div v-if="accountOpen"
-              style="position:absolute;right:0;top:100%;background:#1a1a1a;border:1px solid rgba(240,236,227,0.1);padding:6px 0;min-width:152px;z-index:60;">
-              <template v-if="isAuthenticated">
-                <router-link :to="{ name: 'account' }" class="nn-dropdown-item">My Account</router-link>
-                <router-link :to="{ name: 'orders' }" class="nn-dropdown-item">My Orders</router-link>
-                <div style="height:1px;background:rgba(240,236,227,0.08);margin:4px 0;"></div>
-                <button @click="logout" class="nn-dropdown-item" style="width:100%;text-align:left;background:none;border:none;color:#e05c2a;cursor:pointer;">Sign Out</button>
-              </template>
-              <template v-else>
-                <router-link :to="{ name: 'login' }" class="nn-dropdown-item">Sign In</router-link>
-                <router-link :to="{ name: 'register' }" class="nn-dropdown-item">Create Account</router-link>
-              </template>
-            </div>
-          </div>
+          <!-- User state indicator -->
+          <UserStateIndicator />
 
           <!-- Mobile hamburger -->
           <button @click="mobileOpen = !mobileOpen" class="md:hidden nn-icon-btn">
@@ -153,13 +131,15 @@
 </style>
 
 <script>
+import UserStateIndicator from '../common/UserStateIndicator.vue';
+
 export default {
   name: 'CustomerNavbar',
+  components: { UserStateIndicator },
   data() {
     return {
       searchOpen:  false,
       searchQuery: '',
-      accountOpen: false,
       mobileOpen:  false,
     };
   },
@@ -181,8 +161,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('auth/logout');
-      this.accountOpen = false;
-      this.mobileOpen  = false;
+      this.mobileOpen = false;
       this.$router.push({ name: 'home' });
     },
   },
