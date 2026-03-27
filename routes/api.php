@@ -120,6 +120,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/orders',                  [SellerOrderController::class, 'index']);
         Route::get('/orders/{id}',             [SellerOrderController::class, 'show']);
         Route::put('/orders/{id}/fulfillment', [SellerOrderController::class, 'updateFulfillment']);
+        Route::patch('/orders/{id}/delivery',  [SellerOrderController::class, 'updateDelivery']);
 
         // Inventory
         Route::get('/inventory',             [SellerInventoryController::class, 'index']);
@@ -144,6 +145,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/',       [CustomerAccountController::class, 'update']);
         Route::get('/orders', [CustomerOrderController::class, 'index']);
         Route::get('/orders/{id}', [CustomerOrderController::class, 'show']);
+        Route::post('/orders/{id}/receive', [CustomerOrderController::class, 'markReceived']);
         Route::post('/checkout',   [CustomerOrderController::class, 'store']);
         // Messages
         Route::get('/messages/sellers', [\App\Http\Controllers\Customer\CustomerMessageController::class, 'getSellers']);

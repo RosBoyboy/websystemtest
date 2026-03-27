@@ -66,7 +66,7 @@ class SellerOrderController extends Controller
         $seller = $request->user()->seller;
 
         $request->validate([
-            'status' => 'required|in:confirmed,processing,shipped,delivered',
+            'status' => 'required|in:confirmed,processing,shipped,out_for_delivery,delivered',
         ]);
 
         // Find the order and verify it has items from this seller
@@ -81,6 +81,26 @@ class SellerOrderController extends Controller
             ->where('seller_id', $seller->id)
             ->update(['status' => $request->status]);
 
+        // Map fulfillment status to delivery tracking status
+        if ($order->delivery) {
+            $deliveryStatus = $order->delivery->status;
+            switch ($request->status) {
+                case 'processing':
+                    $deliveryStatus = 'picked_up';
+                    break;
+                case 'shipped':
+                    $deliveryStatus = 'in_transit';
+                    break;
+                case 'out_for_delivery':
+                    $deliveryStatus = 'out_for_delivery';
+                    break;
+                case 'delivered':
+                    $deliveryStatus = 'delivered';
+                    break;
+            }
+            $order->delivery->update(['status' => $deliveryStatus]);
+        }
+
         // Return the updated order with seller's items
         $updatedOrder = Order::with([
             'user:id,name,email',
@@ -91,5 +111,49 @@ class SellerOrderController extends Controller
         ])->findOrFail($id);
 
         return response()->json(['message' => 'Order status updated successfully.', 'order' => $updatedOrder]);
+    }
+
+    /**
+     * Update delivery status of an order.
+     */
+    public function updateDelivery(Request $request, $id)
+    {
+        $seller = $request->user()->seller;
+
+        $request->validate([
+            'status' => 'required|in:pending,picked_up,in_transit,out_for_delivery,delivered',
+        ]);
+
+        // Find the order 
+        $order = Order::whereHas('items', fn ($q) => $q->where('seller_id', $seller->id))
+            ->findOrFail($id);
+
+        // Always update order's status to reflect overall state 
+        // Also map some delivery statuses to order statuses if needed, 
+        // but since DeliveryTracker passes delivery.status, we can update both.
+        $order->update(['status' => $request->status]);
+
+        // Update the delivery record
+        if ($order->delivery) {
+            $order->delivery->update(['status' => $request->status]);
+        } else {
+            \App\Models\Delivery::create([
+                'order_id' => $order->id,
+                'status' => $request->status,
+                'tracking_number' => 'TRK-' . strtoupper(\Illuminate\Support\Str::random(10)),
+                'carrier' => 'Standard Delivery'
+            ]);
+        }
+
+        // Return updated order
+        $updatedOrder = Order::with([
+            'user:id,name,email',
+            'items' => fn ($q) => $q->where('seller_id', $seller->id)
+                ->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')
+                ->with('product:id,name,images,sku'),
+            'delivery',
+        ])->findOrFail($id);
+
+        return response()->json($updatedOrder);
     }
 }

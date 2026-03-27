@@ -18,34 +18,28 @@ class SellerEarningsController extends Controller
         $seller   = $request->user()->seller;
         $sellerId = $seller->id;
 
-        $cacheKey = "seller_{$sellerId}_earnings_summary";
-        
-        $data = Cache::remember($cacheKey, now()->addHour(), function () use ($sellerId) {
-            $all = OrderItem::where('seller_id', $sellerId)
-                ->whereHas('order', fn ($q) => $q->where('payment_status', 'paid'));
+        $all = OrderItem::where('seller_id', $sellerId)
+            ->whereHas('order', fn ($q) => $q->where('payment_status', 'paid'));
 
-            $total       = (float) (clone $all)->sum('total_price');
-            $thisMonth   = (float) (clone $all)->whereMonth('order_items.created_at', now()->month)
-                                ->whereYear('order_items.created_at', now()->year)->sum('total_price');
-            $lastMonth   = (float) (clone $all)->whereMonth('order_items.created_at', now()->subMonth()->month)
-                                ->whereYear('order_items.created_at', now()->subMonth()->year)->sum('total_price');
-            $thisWeek    = (float) (clone $all)->whereBetween('order_items.created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('total_price');
-            $unitsSold   = (int)   (clone $all)->sum('quantity');
+        $total       = (float) (clone $all)->sum('total_price');
+        $thisMonth   = (float) (clone $all)->whereMonth('order_items.created_at', now()->month)
+                            ->whereYear('order_items.created_at', now()->year)->sum('total_price');
+        $lastMonth   = (float) (clone $all)->whereMonth('order_items.created_at', now()->subMonth()->month)
+                            ->whereYear('order_items.created_at', now()->subMonth()->year)->sum('total_price');
+        $thisWeek    = (float) (clone $all)->whereBetween('order_items.created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('total_price');        
+        $unitsSold   = (int)   (clone $all)->sum('quantity');
 
-            return [
-                'total'       => $total,
-                'this_month'  => $thisMonth,
-                'last_month'  => $lastMonth,
-                'this_week'   => $thisWeek,
-                'units_sold'  => $unitsSold,
-            ];
-        });
-
+        $data = [
+            'total'       => $total,
+            'this_month'  => $thisMonth,
+            'last_month'  => $lastMonth,
+            'this_week'   => $thisWeek,
+            'units_sold'  => $unitsSold,
+        ];
         return response()->json($data);
     }
 
-    /**
-     * Chart data — earnings per day over a given period.
+    /**     * Chart data — earnings per day over a given period.
      * Query param: period = 7d | 30d | 90d | 1y
      */
     public function chart(Request $request)

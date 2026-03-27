@@ -149,7 +149,7 @@ export default {
     async submitUpdate() {
       this.updating = true;
       try {
-        const { data } = await axios.patch(`/seller/orders/${this.order.id}`, {
+        const { data } = await axios.patch(`/seller/orders/${this.order.id}/delivery`, {
           status: this.currentStatus,
           updated_at: new Date().toISOString()
         });

@@ -255,11 +255,30 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
       orders: [],
       activeOrder: null,
       loading: true,
+      confirmingReceipt: false,
       meta: {
         current_page: 1,
         last_page: 1
       },
-      trackingSteps: TRACKING_STEPS
+      trackingSteps: TRACKING_STEPS,
+      currentFilter: 'all',
+      searchQuery: '',
+      filters: [{
+        label: 'All',
+        value: 'all'
+      }, {
+        label: 'To Ship',
+        value: 'pending'
+      }, {
+        label: 'To Receive',
+        value: 'shipping'
+      }, {
+        label: 'Completed',
+        value: 'completed'
+      }, {
+        label: 'Cancelled/Refunded',
+        value: 'cancelled'
+      }]
     };
   },
   created: function created() {
@@ -269,7 +288,21 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
       this.fetchOrders();
     }
   },
+  watch: {
+    '$route': function $route(to) {
+      if (to.params.id) {
+        this.openOrder(to.params.id);
+      } else {
+        this.activeOrder = null;
+        this.fetchOrders();
+      }
+    }
+  },
   methods: {
+    setFilter: function setFilter(filter) {
+      this.currentFilter = filter;
+      this.fetchOrders(1);
+    },
     fetchOrders: function fetchOrders(page) {
       var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
@@ -282,7 +315,9 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
               _context.n = 2;
               return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/account/orders', {
                 params: {
-                  page: page || 1
+                  page: page || 1,
+                  filter: _this.currentFilter !== 'all' ? _this.currentFilter : null,
+                  search: _this.searchQuery || null
                 }
               });
             case 2:
@@ -376,6 +411,36 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
     isCurrentStep: function isCurrentStep(key) {
       if (!this.activeOrder || !this.activeOrder.delivery) return false;
       return this.activeOrder.delivery.status === key;
+    },
+    confirmOrderReceived: function confirmOrderReceived() {
+      var _this3 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+        var _t3;
+        return _regenerator().w(function (_context3) {
+          while (1) switch (_context3.p = _context3.n) {
+            case 0:
+              _this3.confirmingReceipt = true;
+              _context3.p = 1;
+              _context3.n = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post("/account/orders/".concat(_this3.activeOrder.id, "/receive"));
+            case 2:
+              _this3.activeOrder.status = 'completed';
+              alert('Thank you! Your order has been marked as received.');
+              _context3.n = 4;
+              break;
+            case 3:
+              _context3.p = 3;
+              _t3 = _context3.v;
+              alert('Could not update status. Please try again.');
+            case 4:
+              _context3.p = 4;
+              _this3.confirmingReceipt = false;
+              return _context3.f(4);
+            case 5:
+              return _context3.a(2);
+          }
+        }, _callee3, null, [[1, 3, 4, 5]]);
+      }))();
     }
   }
 });
@@ -1250,7 +1315,9 @@ var render = function render() {
     staticClass: "flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider",
     on: {
       click: function click($event) {
-        _vm.activeOrder = null;
+        return _vm.$router.push({
+          name: "orders"
+        });
       }
     }
   }, [_c("svg", {
@@ -1322,7 +1389,35 @@ var render = function render() {
     staticClass: "text-xs text-slate-400 mt-4"
   }, [_vm._v("\n          Estimated delivery: "), _c("span", {
     staticClass: "font-medium text-white"
-  }, [_vm._v(_vm._s(_vm.activeOrder.delivery.estimated_delivery))])]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.activeOrder.delivery.estimated_delivery))])]) : _vm._e(), _vm._v(" "), _vm.activeOrder.delivery.status === "delivered" || _vm.activeOrder.status === "delivered" ? _c("div", {
+    staticClass: "mt-6 p-5 bg-green-900/30 border border-green-800/50 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4"
+  }, [_c("div", [_c("h3", {
+    staticClass: "text-green-400 font-bold flex items-center gap-2"
+  }, [_c("svg", {
+    staticClass: "w-5 h-5",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("path", {
+    attrs: {
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-width": "2",
+      d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    }
+  })]), _vm._v("\n              Order Delivered!\n            ")]), _vm._v(" "), _c("p", {
+    staticClass: "text-green-200/70 text-sm mt-1"
+  }, [_vm._v("Has your package arrived safely? Let us know.")])]), _vm._v(" "), _c("button", {
+    staticClass: "px-6 py-2.5 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold text-sm uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap shadow-[0_0_15px_rgba(34,197,94,0.4)]",
+    attrs: {
+      disabled: _vm.confirmingReceipt
+    },
+    on: {
+      click: _vm.confirmOrderReceived
+    }
+  }, [_vm._v("\n            " + _vm._s(_vm.confirmingReceipt ? "Confirming..." : "Order Received") + "\n          ")])]) : _vm._e()]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "bg-slate-900 rounded-2xl border border-slate-700 p-6 mb-6"
   }, [_c("h2", {
     staticClass: "text-base font-bold text-white mb-4 uppercase tracking-wider"
@@ -1374,12 +1469,81 @@ var render = function render() {
   }, [_c("span", [_vm._v("Total")]), _vm._v(" "), _c("span", {
     staticClass: "text-orange-500"
   }, [_vm._v("$" + _vm._s(parseFloat(_vm.activeOrder.total).toFixed(2)))])])])])]) : _c("div", [_c("h1", {
-    staticClass: "text-4xl font-black text-white mb-8",
+    staticClass: "text-4xl font-black text-white mb-2",
     staticStyle: {
       "font-family": "'Bebas Neue',cursive",
       "letter-spacing": "0.02em"
     }
-  }, [_vm._v("My Orders")]), _vm._v(" "), _vm.loading ? _c("div", {
+  }, [_vm._v("My Orders")]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800"
+  }, [_c("div", {
+    staticClass: "flex overflow-x-auto hide-scrollbar gap-2"
+  }, _vm._l(_vm.filters, function (tab) {
+    return _c("button", {
+      key: tab.value,
+      "class": ["px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap", _vm.currentFilter === tab.value ? "bg-orange-500 text-black" : "text-slate-400 hover:bg-slate-800"],
+      on: {
+        click: function click($event) {
+          return _vm.setFilter(tab.value);
+        }
+      }
+    }, [_vm._v("\n            " + _vm._s(tab.label) + "\n          ")]);
+  }), 0), _vm._v(" "), _c("div", {
+    staticClass: "relative w-full md:w-64 flex-shrink-0"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.searchQuery,
+      expression: "searchQuery"
+    }],
+    staticClass: "w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-orange-500 transition-colors",
+    attrs: {
+      type: "text",
+      placeholder: "Search Order No..."
+    },
+    domProps: {
+      value: _vm.searchQuery
+    },
+    on: {
+      keyup: function keyup($event) {
+        if (!$event.type.indexOf("key") && _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")) return null;
+        return _vm.fetchOrders(1);
+      },
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.searchQuery = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _c("button", {
+    staticClass: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500",
+    on: {
+      click: function click($event) {
+        return _vm.fetchOrders(1);
+      }
+    }
+  }, [_c("svg", {
+    staticClass: "w-4 h-4",
+    attrs: {
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "2",
+      viewBox: "0 0 24 24"
+    }
+  }, [_c("circle", {
+    attrs: {
+      cx: "11",
+      cy: "11",
+      r: "8"
+    }
+  }), _vm._v(" "), _c("line", {
+    attrs: {
+      x1: "21",
+      y1: "21",
+      x2: "16.65",
+      y2: "16.65"
+    }
+  })])])])]), _vm._v(" "), _vm.loading ? _c("div", {
     staticClass: "space-y-4"
   }, _vm._l(4, function (n) {
     return _c("div", {
@@ -1428,7 +1592,12 @@ var render = function render() {
       staticClass: "bg-slate-900 rounded-2xl border border-slate-700 p-5 cursor-pointer hover:border-orange-500 transition-colors group",
       on: {
         click: function click($event) {
-          return _vm.openOrder(order.id);
+          return _vm.$router.push({
+            name: "order-detail",
+            params: {
+              id: order.id
+            }
+          });
         }
       }
     }, [_c("div", {

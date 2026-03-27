@@ -110,8 +110,8 @@
 
 <script>
 const STATUS_RANK = {
-  pending: 0, confirmed: 1, processing: 2, shipped: 3,
-  delivered: 4, completed: 5, cancelled: 6,
+  pending: 0, confirmed: 1, processing: 2, shipped: 3, out_for_delivery: 4,
+  delivered: 5, completed: 6, cancelled: 7,
 };
 
 export default {
@@ -130,7 +130,7 @@ export default {
     allowedTransitions() {
       if (!this.order) return [];
       const current = STATUS_RANK[this.order.status] ?? -1;
-      return ['confirmed', 'processing', 'shipped'].filter(s => STATUS_RANK[s] > current);
+      return ['confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'].filter(s => STATUS_RANK[s] > current);
     },
   },
   created() {

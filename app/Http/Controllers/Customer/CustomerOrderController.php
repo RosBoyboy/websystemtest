@@ -15,12 +15,29 @@ class CustomerOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with([
+        $query = Order::with([
                 'items' => fn ($q) => $q->select('id', 'order_id', 'product_id', 'seller_id', 'quantity', 'size', 'color', 'unit_price', 'total_price', 'status')->with('product:id,name,images,slug', 'seller:id,store_name'),
             ])
-            ->where('user_id', $request->user()->id)
-            ->latest()
-            ->paginate(10);
+            ->where('user_id', $request->user()->id);
+
+        if ($request->filled('filter')) {
+            $filter = $request->filter;
+            if ($filter === 'pending') {
+                $query->whereIn('status', ['pending', 'confirmed']);
+            } elseif ($filter === 'shipping') {
+                $query->whereIn('status', ['processing', 'shipped', 'out_for_delivery', 'delivered']);
+            } elseif ($filter === 'completed') {
+                $query->where('status', 'completed');
+            } elseif ($filter === 'cancelled') {
+                $query->whereIn('status', ['cancelled', 'refunded']);
+            }
+        }
+
+        if ($request->filled('search')) {
+            $query->where('order_number', 'like', '%' . $request->search . '%');
+        }
+
+        $orders = $query->latest()->paginate(10);
 
         return response()->json($orders);
     }
@@ -91,6 +108,8 @@ class CustomerOrderController extends Controller
         $total       = $subtotal + $shippingFee;
 
         $order = DB::transaction(function () use ($request, $subtotal, $shippingFee, $total, $lineItems) {
+            $paymentStatus = $request->payment_method === 'cod' ? 'pending' : 'paid';
+
             $order = Order::create([
                 'user_id'          => $request->user()->id,
                 'order_number'     => 'NN-' . strtoupper(Str::random(8)),
@@ -100,7 +119,7 @@ class CustomerOrderController extends Controller
                 'discount'         => 0,
                 'total'            => $total,
                 'payment_method'   => $request->payment_method,
-                'payment_status'   => 'pending',
+                'payment_status'   => $paymentStatus,
                 'notes'            => $request->notes,
             ]);
 
@@ -138,5 +157,22 @@ class CustomerOrderController extends Controller
             'message' => 'Order placed successfully!',
             'order'   => $order,
         ], 201);
+    }
+
+    public function markReceived(Request $request, $id)
+    {
+        $order = Order::where('user_id', $request->user()->id)->findOrFail($id);
+        
+        $order->update([
+            'status' => 'completed',
+            'payment_status' => 'paid'
+        ]);
+        
+        // Also update items
+        \App\Models\OrderItem::where('order_id', $order->id)->update([
+            'status' => 'completed'
+        ]);
+
+        return response()->json(['message' => 'Order marked as received.']);
     }
 }

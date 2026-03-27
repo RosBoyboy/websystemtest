@@ -4,7 +4,7 @@
 
       <!-- Order detail view -->
       <div v-if="activeOrder">
-        <button @click="activeOrder = null" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider">
+        <button @click="$router.push({ name: 'orders' })" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
@@ -50,6 +50,19 @@
           <p v-if="activeOrder.delivery.estimated_delivery" class="text-xs text-slate-400 mt-4">
             Estimated delivery: <span class="font-medium text-white">{{ activeOrder.delivery.estimated_delivery }}</span>
           </p>
+
+          <div v-if="activeOrder.delivery.status === 'delivered' || activeOrder.status === 'delivered'" class="mt-6 p-5 bg-green-900/30 border border-green-800/50 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 class="text-green-400 font-bold flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Order Delivered!
+              </h3>
+              <p class="text-green-200/70 text-sm mt-1">Has your package arrived safely? Let us know.</p>
+            </div>
+            <button @click="confirmOrderReceived" :disabled="confirmingReceipt" class="px-6 py-2.5 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold text-sm uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap shadow-[0_0_15px_rgba(34,197,94,0.4)]">
+              {{ confirmingReceipt ? 'Confirming...' : 'Order Received' }}
+            </button>
+          </div>
         </div>
 
         <!-- Order items -->
@@ -102,7 +115,35 @@
 
       <!-- Orders list -->
       <div v-else>
-        <h1 class="text-4xl font-black text-white mb-8" style="font-family:'Bebas Neue',cursive;letter-spacing:0.02em;">My Orders</h1>
+        <h1 class="text-4xl font-black text-white mb-2" style="font-family:'Bebas Neue',cursive;letter-spacing:0.02em;">My Orders</h1>
+
+        <!-- Categories Filter -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+          <div class="flex overflow-x-auto hide-scrollbar gap-2">
+            <button v-for="tab in filters" :key="tab.value"
+              @click="setFilter(tab.value)"
+              :class="['px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap',
+                currentFilter === tab.value ? 'bg-orange-500 text-black' : 'text-slate-400 hover:bg-slate-800']"
+            >
+              {{ tab.label }}
+            </button>
+          </div>
+          <div class="relative w-full md:w-64 flex-shrink-0">
+            <input 
+              v-model="searchQuery" 
+              @keyup.enter="fetchOrders(1)"
+              type="text" 
+              placeholder="Search Order No..." 
+              class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-orange-500 transition-colors"
+            />
+            <button @click="fetchOrders(1)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
 
         <div v-if="loading" class="space-y-4">
           <div v-for="n in 4" :key="n" class="h-24 bg-slate-900 rounded-2xl animate-pulse border border-slate-800"></div>
@@ -122,7 +163,7 @@
           <div
             v-for="order in orders"
             :key="order.id"
-            @click="openOrder(order.id)"
+            @click="$router.push({ name: 'order-detail', params: { id: order.id } })"
             class="bg-slate-900 rounded-2xl border border-slate-700 p-5 cursor-pointer hover:border-orange-500 transition-colors group"
           >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -189,8 +230,18 @@ export default {
       orders:       [],
       activeOrder:  null,
       loading:      true,
+      confirmingReceipt: false,
       meta:         { current_page: 1, last_page: 1 },
       trackingSteps: TRACKING_STEPS,
+      currentFilter: 'all',
+      searchQuery:  '',
+      filters: [
+        { label: 'All', value: 'all' },
+        { label: 'To Ship', value: 'pending' },
+        { label: 'To Receive', value: 'shipping' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Cancelled/Refunded', value: 'cancelled' }
+      ]
     };
   },
   created() {
@@ -200,11 +251,31 @@ export default {
       this.fetchOrders();
     }
   },
+  watch: {
+    '$route'(to) {
+      if (to.params.id) {
+        this.openOrder(to.params.id);
+      } else {
+        this.activeOrder = null;
+        this.fetchOrders();
+      }
+    }
+  },
   methods: {
+    setFilter(filter) {
+      this.currentFilter = filter;
+      this.fetchOrders(1);
+    },
     async fetchOrders(page) {
       this.loading = true;
       try {
-        const { data } = await axios.get('/account/orders', { params: { page: page || 1 } });
+        const { data } = await axios.get('/account/orders', { 
+          params: { 
+            page: page || 1,
+            filter: this.currentFilter !== 'all' ? this.currentFilter : null,
+            search: this.searchQuery || null
+          } 
+        });
         this.orders = data.data;
         this.meta   = { current_page: data.current_page, last_page: data.last_page };
       } catch (_) {}
@@ -258,6 +329,18 @@ export default {
       if (!this.activeOrder || !this.activeOrder.delivery) return false;
       return this.activeOrder.delivery.status === key;
     },
+    async confirmOrderReceived() {
+      this.confirmingReceipt = true;
+      try {
+        await axios.post(`/account/orders/${this.activeOrder.id}/receive`);
+        this.activeOrder.status = 'completed';
+        alert('Thank you! Your order has been marked as received.');
+      } catch (e) {
+        alert('Could not update status. Please try again.');
+      } finally {
+        this.confirmingReceipt = false;
+      }
+    }
   },
 };
 </script>

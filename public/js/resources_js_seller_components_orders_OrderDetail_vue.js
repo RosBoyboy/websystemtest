@@ -20,9 +20,10 @@ var STATUS_RANK = {
   confirmed: 1,
   processing: 2,
   shipped: 3,
-  delivered: 4,
-  completed: 5,
-  cancelled: 6
+  out_for_delivery: 4,
+  delivered: 5,
+  completed: 6,
+  cancelled: 7
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'OrderDetail',
@@ -41,7 +42,7 @@ var STATUS_RANK = {
       var _STATUS_RANK$this$ord;
       if (!this.order) return [];
       var current = (_STATUS_RANK$this$ord = STATUS_RANK[this.order.status]) !== null && _STATUS_RANK$this$ord !== void 0 ? _STATUS_RANK$this$ord : -1;
-      return ['confirmed', 'processing', 'shipped'].filter(function (s) {
+      return ['confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered'].filter(function (s) {
         return STATUS_RANK[s] > current;
       });
     }
