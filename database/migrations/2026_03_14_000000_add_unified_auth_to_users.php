@@ -24,8 +24,7 @@ return new class extends Migration
 			}
 		});
 
-		// Keep compatibility with existing logic that assigns role = "both".
-		DB::statement("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('admin', 'seller', 'customer', 'both') NOT NULL DEFAULT 'customer'");
+		$this->setRoleConstraint(true);
 	}
 
 	/**
@@ -45,6 +44,37 @@ return new class extends Migration
 			}
 		});
 
-		DB::statement("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('admin', 'seller', 'customer') NOT NULL DEFAULT 'customer'");
+		$this->setRoleConstraint(false);
+	}
+
+	/**
+	 * Update users.role allowed values across supported database drivers.
+	 *
+	 * @param bool $allowBoth
+	 * @return void
+	 */
+	private function setRoleConstraint(bool $allowBoth): void
+	{
+		$driver = Schema::getConnection()->getDriverName();
+
+		if ($driver === 'mysql') {
+			if ($allowBoth) {
+				DB::statement("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('admin', 'seller', 'customer', 'both') NOT NULL DEFAULT 'customer'");
+			} else {
+				DB::statement("ALTER TABLE `users` MODIFY COLUMN `role` ENUM('admin', 'seller', 'customer') NOT NULL DEFAULT 'customer'");
+			}
+
+			return;
+		}
+
+		if ($driver === 'pgsql') {
+			DB::statement('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check');
+
+			if ($allowBoth) {
+				DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('admin', 'seller', 'customer', 'both'))");
+			} else {
+				DB::statement("ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('admin', 'seller', 'customer'))");
+			}
+		}
 	}
 };

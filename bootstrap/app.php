@@ -15,6 +15,11 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// Allow local-only environment file without changing the primary .env file.
+if (file_exists($app->environmentPath().'/.env.local')) {
+    $app->loadEnvironmentFrom('.env.local');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
