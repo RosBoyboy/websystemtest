@@ -9,9 +9,11 @@ if (isset($_GET['path']) && is_string($_GET['path']) && $_GET['path'] !== '') {
 	unset($params['path']);
 	$query = http_build_query($params);
 
-	// Vercel runs this entrypoint under /api/index.php. Symfony strips the
-	// function base path (/api), so prefix once to preserve original routes.
-	$effectivePath = '/api'.$forwardedPath;
+	// Vercel runs this entrypoint under /api/index.php. For API routes we
+	// prefix once because Symfony may strip the function base path (/api).
+	// Keep non-API routes unchanged so SPA pages (e.g. /admin/app) still match.
+	$isApiPath = strpos($forwardedPath, '/api/') === 0 || $forwardedPath === '/api';
+	$effectivePath = $isApiPath ? '/api'.$forwardedPath : $forwardedPath;
 
 	$_SERVER['REQUEST_URI'] = $effectivePath.($query ? '?'.$query : '');
 	$_SERVER['PATH_INFO'] = $effectivePath;
