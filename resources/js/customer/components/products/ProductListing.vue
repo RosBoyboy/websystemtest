@@ -169,12 +169,12 @@ export default {
         if (this.filters.stock)    params.stock    = this.filters.stock;
 
         const { data } = await axios.get('/shop/products', { params });
-        this.products = data.data;
+        this.products = Array.isArray(data?.data) ? data.data : [];
         this.meta = {
-          total:        data.total,
-          current_page: data.current_page,
-          last_page:    data.last_page,
-          per_page:     data.per_page,
+          total:        Number.isFinite(data?.total) ? data.total : 0,
+          current_page: Number.isFinite(data?.current_page) ? data.current_page : 1,
+          last_page:    Number.isFinite(data?.last_page) ? data.last_page : 1,
+          per_page:     Number.isFinite(data?.per_page) ? data.per_page : this.meta.per_page,
         };
 
         if (this.filters.category) {
@@ -182,15 +182,20 @@ export default {
         } else {
           this.currentCategory = null;
         }
-      } catch (_) {}
+      } catch (_) {
+        this.products = [];
+        this.meta = { total: 0, current_page: 1, last_page: 1, per_page: this.meta.per_page };
+      }
       this.loading = false;
     },
 
     async fetchCategories() {
       try {
         const { data } = await axios.get('/shop/categories');
-        this.categories = data;
-      } catch (_) {}
+        this.categories = Array.isArray(data) ? data : [];
+      } catch (_) {
+        this.categories = [];
+      }
     },
 
     clearFilters()  {

@@ -493,12 +493,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 2:
               _yield$axios$get = _context.v;
               data = _yield$axios$get.data;
-              _this.products = data.data;
+              _this.products = Array.isArray(data === null || data === void 0 ? void 0 : data.data) ? data.data : [];
               _this.meta = {
-                total: data.total,
-                current_page: data.current_page,
-                last_page: data.last_page,
-                per_page: data.per_page
+                total: Number.isFinite(data === null || data === void 0 ? void 0 : data.total) ? data.total : 0,
+                current_page: Number.isFinite(data === null || data === void 0 ? void 0 : data.current_page) ? data.current_page : 1,
+                last_page: Number.isFinite(data === null || data === void 0 ? void 0 : data.last_page) ? data.last_page : 1,
+                per_page: Number.isFinite(data === null || data === void 0 ? void 0 : data.per_page) ? data.per_page : _this.meta.per_page
               };
               if (_this.filters.category) {
                 _this.currentCategory = _this.categories.find(function (c) {
@@ -512,6 +512,13 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 3:
               _context.p = 3;
               _t = _context.v;
+              _this.products = [];
+              _this.meta = {
+                total: 0,
+                current_page: 1,
+                last_page: 1,
+                per_page: _this.meta.per_page
+              };
             case 4:
               _this.loading = false;
             case 5:
@@ -533,12 +540,13 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 1:
               _yield$axios$get2 = _context2.v;
               data = _yield$axios$get2.data;
-              _this2.categories = data;
+              _this2.categories = Array.isArray(data) ? data : [];
               _context2.n = 3;
               break;
             case 2:
               _context2.p = 2;
               _t2 = _context2.v;
+              _this2.categories = [];
             case 3:
               return _context2.a(2);
           }
