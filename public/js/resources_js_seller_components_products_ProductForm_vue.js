@@ -121,7 +121,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     loadCategories: function loadCategories() {
       var _this2 = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-        var _yield$_this2$$http$g, data, _t;
+        var _yield$_this2$$http$g, data, _yield$_this2$$http$g2, _data, _t, _t2;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
@@ -131,23 +131,35 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 1:
               _yield$_this2$$http$g = _context2.v;
               data = _yield$_this2$$http$g.data;
-              _this2.categories = data;
-              _context2.n = 3;
+              _this2.categories = Array.isArray(data) ? data : [];
+              _context2.n = 6;
               break;
             case 2:
               _context2.p = 2;
               _t = _context2.v;
-              console.error(_t);
-            case 3:
+              _context2.p = 3;
+              _context2.n = 4;
+              return _this2.$http.get('/shop/categories');
+            case 4:
+              _yield$_this2$$http$g2 = _context2.v;
+              _data = _yield$_this2$$http$g2.data;
+              _this2.categories = Array.isArray(_data) ? _data : [];
+              _context2.n = 6;
+              break;
+            case 5:
+              _context2.p = 5;
+              _t2 = _context2.v;
+              _this2.categories = [];
+            case 6:
               return _context2.a(2);
           }
-        }, _callee2, null, [[0, 2]]);
+        }, _callee2, null, [[3, 5], [0, 2]]);
       }))();
     },
     loadProduct: function loadProduct() {
       var _this3 = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-        var _yield$_this3$$http$g, data, _t2;
+        var _yield$_this3$$http$g, data, _t3;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
@@ -187,7 +199,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               break;
             case 3:
               _context3.p = 3;
-              _t2 = _context3.v;
+              _t3 = _context3.v;
               _this3.error = 'Failed to load product.';
             case 4:
               _context3.p = 4;
@@ -283,7 +295,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     uploadFile: function uploadFile(idx, file) {
       var _this5 = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-        var fd, _yield$_this5$$http$p, data, _e$response, msg, _t3;
+        var fd, _yield$_this5$$http$p, data, _e$response, msg, _t4;
         return _regenerator().w(function (_context4) {
           while (1) switch (_context4.p = _context4.n) {
             case 0:
@@ -305,8 +317,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               break;
             case 3:
               _context4.p = 3;
-              _t3 = _context4.v;
-              msg = ((_e$response = _t3.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Upload failed';
+              _t4 = _context4.v;
+              msg = ((_e$response = _t4.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message) || 'Upload failed';
               _this5.imageEntries[idx].error = msg;
               _this5.imageEntries[idx].uploading = false;
             case 4:
@@ -345,7 +357,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     submit: function submit() {
       var _this7 = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-        var failedUploads, _e$response2, err, _t4;
+        var failedUploads, _e$response2, err, _t5;
         return _regenerator().w(function (_context6) {
           while (1) switch (_context6.p = _context6.n) {
             case 0:
@@ -395,8 +407,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               break;
             case 7:
               _context6.p = 7;
-              _t4 = _context6.v;
-              err = (_e$response2 = _t4.response) === null || _e$response2 === void 0 ? void 0 : _e$response2.data;
+              _t5 = _context6.v;
+              err = (_e$response2 = _t5.response) === null || _e$response2 === void 0 ? void 0 : _e$response2.data;
               if (err !== null && err !== void 0 && err.errors) {
                 _this7.error = Object.values(err.errors).flat().join(' ');
               } else {

@@ -135,7 +135,17 @@ class SellerProductController extends Controller
      */
     public function categories()
     {
-        $categories = Category::where('is_active', true)->get(['id', 'name', 'parent_id']);
+        $categories = Category::where('is_active', true)
+            ->orderBy('parent_id')
+            ->orderBy('name')
+            ->get(['id', 'name', 'parent_id']);
+
+        if ($categories->isEmpty()) {
+            $categories = Category::orderBy('parent_id')
+                ->orderBy('name')
+                ->get(['id', 'name', 'parent_id']);
+        }
+
         return response()->json($categories);
     }
 

@@ -306,9 +306,14 @@ export default {
     async loadCategories() {
       try {
         const { data } = await this.$http.get('/seller/products/categories');
-        this.categories = data;
+        this.categories = Array.isArray(data) ? data : [];
       } catch (e) {
-        console.error(e);
+        try {
+          const { data } = await this.$http.get('/shop/categories');
+          this.categories = Array.isArray(data) ? data : [];
+        } catch (_) {
+          this.categories = [];
+        }
       }
     },
     async loadProduct() {
