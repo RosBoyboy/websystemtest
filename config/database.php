@@ -2,6 +2,19 @@
 
 use Illuminate\Support\Str;
 
+$databaseUrl = env('DATABASE_URL');
+$defaultConnection = env('DB_CONNECTION');
+
+if (! $defaultConnection && is_string($databaseUrl) && $databaseUrl !== '') {
+    $scheme = strtolower((string) parse_url($databaseUrl, PHP_URL_SCHEME));
+
+    if (in_array($scheme, ['pgsql', 'postgres', 'postgresql'], true)) {
+        $defaultConnection = 'pgsql';
+    } elseif (in_array($scheme, ['mysql', 'mariadb'], true)) {
+        $defaultConnection = 'mysql';
+    }
+}
+
 return [
 
     /*
@@ -15,7 +28,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => $defaultConnection ?: 'mysql',
 
     /*
     |--------------------------------------------------------------------------
