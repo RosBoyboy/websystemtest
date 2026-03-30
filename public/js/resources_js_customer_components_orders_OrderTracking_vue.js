@@ -282,6 +282,7 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
     };
   },
   created: function created() {
+    this.currentFilter = this.$route.params.status || 'all';
     if (this.$route.params.id) {
       this.openOrder(this.$route.params.id);
     } else {
@@ -290,18 +291,33 @@ var STEP_ORDER = TRACKING_STEPS.map(function (s) {
   },
   watch: {
     '$route': function $route(to) {
-      if (to.params.id) {
+      if (to.name === 'order-detail' && to.params.id) {
         this.openOrder(to.params.id);
       } else {
         this.activeOrder = null;
+        this.currentFilter = to.params.status || 'all';
         this.fetchOrders();
       }
     }
   },
   methods: {
     setFilter: function setFilter(filter) {
-      this.currentFilter = filter;
-      this.fetchOrders(1);
+      if (this.currentFilter !== filter) {
+        if (filter === 'all') {
+          this.$router.push({
+            name: 'orders',
+            query: this.$route.query
+          })["catch"](function () {});
+        } else {
+          this.$router.push({
+            name: 'orders-status',
+            params: {
+              status: filter
+            },
+            query: this.$route.query
+          })["catch"](function () {});
+        }
+      }
     },
     fetchOrders: function fetchOrders(page) {
       var _this = this;
@@ -576,7 +592,12 @@ var render = function render() {
         _vm.open = false;
       }
     }
-  }, [_vm._v("💬 Messages")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("💬 Messages")]), _vm._v(" "), _vm.user && (_vm.user.role === "seller" || _vm.user.role === "both" || _vm.user.role === "admin") ? _c("a", {
+    staticClass: "nn-dropdown-item",
+    attrs: {
+      href: "/seller/app"
+    }
+  }, [_vm._v("🏪 Seller Center")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticStyle: {
       height: "1px",
       background: "rgba(240,236,227,0.08)",
@@ -1247,7 +1268,16 @@ var render = function render() {
         _vm.mobileOpen = false;
       }
     }
-  }, [_vm._v("My Orders")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("My Orders")]), _vm._v(" "), _vm.currentUser && (_vm.currentUser.role === "seller" || _vm.currentUser.role === "both" || _vm.currentUser.role === "admin") ? _c("a", {
+    staticClass: "nn-mobile-link",
+    staticStyle: {
+      display: "block",
+      "text-decoration": "none"
+    },
+    attrs: {
+      href: "/seller/app"
+    }
+  }, [_vm._v("Seller Center")]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "nn-mobile-link",
     staticStyle: {
       background: "none",
@@ -1315,9 +1345,16 @@ var render = function render() {
     staticClass: "flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider",
     on: {
       click: function click($event) {
-        return _vm.$router.push({
-          name: "orders"
-        });
+        _vm.currentFilter === "all" ? _vm.$router.push({
+          name: "orders",
+          query: _vm.$route.query
+        })["catch"](function () {}) : _vm.$router.push({
+          name: "orders-status",
+          params: {
+            status: _vm.currentFilter
+          },
+          query: _vm.$route.query
+        })["catch"](function () {});
       }
     }
   }, [_c("svg", {
@@ -1596,7 +1633,8 @@ var render = function render() {
             name: "order-detail",
             params: {
               id: order.id
-            }
+            },
+            query: _vm.$route.query
           });
         }
       }

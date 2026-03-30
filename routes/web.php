@@ -18,7 +18,8 @@ foreach (['/products', '/cart', '/checkout', '/orders', '/login', '/register', '
     Route::get($path, function () { return view('shop'); });
 }
 Route::get('/products/{slug}', function () { return view('shop'); });
-Route::get('/orders/{id}',     function () { return view('shop'); });
+Route::get('/orders/{id}',     function () { return view('shop'); })->where('id', '[0-9]+');
+Route::get('/orders/status/{status}', function () { return view('shop'); });
 Route::get('/shop/{any?}',     function () { return view('shop'); })->where('any', '.*')->name('shop.spa');
 
 // Admin authentication gate — shown when visiting /admin directly without being logged in

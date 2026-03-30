@@ -23,9 +23,9 @@ class CustomerOrderController extends Controller
         if ($request->filled('filter')) {
             $filter = $request->filter;
             if ($filter === 'pending') {
-                $query->whereIn('status', ['pending', 'confirmed']);
+                $query->whereIn('status', ['pending', 'confirmed', 'processing', 'in_transit', 'shipped', 'picked_up', 'out_for_delivery']);
             } elseif ($filter === 'shipping') {
-                $query->whereIn('status', ['processing', 'shipped', 'out_for_delivery', 'delivered']);
+                $query->whereIn('status', ['shipped', 'picked_up', 'in_transit', 'out_for_delivery', 'delivered']);
             } elseif ($filter === 'completed') {
                 $query->where('status', 'completed');
             } elseif ($filter === 'cancelled') {

@@ -66,8 +66,7 @@
         <div style="height:1px;background:rgba(240,236,227,0.07);margin:8px 0;"></div>
         <template v-if="isAuthenticated">
           <router-link @click.native="mobileOpen=false" :to="{ name: 'account' }" class="nn-mobile-link">My Account</router-link>
-          <router-link @click.native="mobileOpen=false" :to="{ name: 'orders' }" class="nn-mobile-link">My Orders</router-link>
-          <button @click="logout" class="nn-mobile-link" style="background:none;border:none;text-align:left;color:#e05c2a;cursor:pointer;width:100%;">Sign Out</button>
+          <router-link @click.native="mobileOpen=false" :to="{ name: 'orders' }" class="nn-mobile-link">My Orders</router-link>            <a v-if="currentUser && (currentUser.role === 'seller' || currentUser.role === 'both' || currentUser.role === 'admin')" href="/seller/app" class="nn-mobile-link" style="display:block;text-decoration:none;">Seller Center</a>          <button @click="logout" class="nn-mobile-link" style="background:none;border:none;text-align:left;color:#e05c2a;cursor:pointer;width:100%;">Sign Out</button>
         </template>
         <template v-else>
           <router-link @click.native="mobileOpen=false" :to="{ name: 'login' }" class="nn-mobile-link">Sign In</router-link>

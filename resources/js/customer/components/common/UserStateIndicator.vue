@@ -34,7 +34,8 @@
       <template v-if="isAuthenticated">
         <router-link :to="{ name: 'account' }" @click.native="open = false" class="nn-dropdown-item">📋 My Account</router-link>
         <router-link :to="{ name: 'orders' }" @click.native="open = false" class="nn-dropdown-item">📦 My Orders</router-link>
-        <router-link :to="{ name: 'account', query: { tab: 'messages' } }" @click.native="open = false" class="nn-dropdown-item">💬 Messages</router-link>
+        <router-link :to="{ name: 'account', query: { tab: 'messages' } }" @click.native="open = false" class="nn-dropdown-item">💬 Messages</router-link>    
+        <a v-if="user && (user.role === 'seller' || user.role === 'both' || user.role === 'admin')" href="/seller/app" class="nn-dropdown-item">🏪 Seller Center</a>
         <div style="height:1px;background:rgba(240,236,227,0.08);margin:4px 0;"></div>
         <button @click="logout" class="nn-dropdown-item" style="width:100%;text-align:left;background:none;border:none;color:#e05c2a;cursor:pointer;">🚪 Sign Out</button>
       </template>

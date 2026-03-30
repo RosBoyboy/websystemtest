@@ -4,7 +4,7 @@
 
       <!-- Order detail view -->
       <div v-if="activeOrder">
-        <button @click="$router.push({ name: 'orders' })" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider">
+        <button @click="currentFilter === 'all' ? $router.push({ name: 'orders', query: $route.query }).catch(()=>{}) : $router.push({ name: 'orders-status', params: { status: currentFilter }, query: $route.query }).catch(()=>{})" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-6 font-bold uppercase tracking-wider">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6"/>
           </svg>
@@ -163,7 +163,7 @@
           <div
             v-for="order in orders"
             :key="order.id"
-            @click="$router.push({ name: 'order-detail', params: { id: order.id } })"
+            @click="$router.push({ name: 'order-detail', params: { id: order.id }, query: $route.query })"
             class="bg-slate-900 rounded-2xl border border-slate-700 p-5 cursor-pointer hover:border-orange-500 transition-colors group"
           >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -245,6 +245,7 @@ export default {
     };
   },
   created() {
+    this.currentFilter = this.$route.params.status || 'all';
     if (this.$route.params.id) {
       this.openOrder(this.$route.params.id);
     } else {
@@ -253,18 +254,24 @@ export default {
   },
   watch: {
     '$route'(to) {
-      if (to.params.id) {
+      if (to.name === 'order-detail' && to.params.id) {
         this.openOrder(to.params.id);
       } else {
         this.activeOrder = null;
+        this.currentFilter = to.params.status || 'all';
         this.fetchOrders();
       }
     }
   },
   methods: {
     setFilter(filter) {
-      this.currentFilter = filter;
-      this.fetchOrders(1);
+      if (this.currentFilter !== filter) {
+        if (filter === 'all') {
+          this.$router.push({ name: 'orders', query: this.$route.query }).catch(()=>{});
+        } else {
+          this.$router.push({ name: 'orders-status', params: { status: filter }, query: this.$route.query }).catch(()=>{});
+        }
+      }
     },
     async fetchOrders(page) {
       this.loading = true;

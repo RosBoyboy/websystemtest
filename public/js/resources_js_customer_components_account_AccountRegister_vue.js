@@ -578,7 +578,12 @@ var render = function render() {
         _vm.open = false;
       }
     }
-  }, [_vm._v("💬 Messages")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("💬 Messages")]), _vm._v(" "), _vm.user && (_vm.user.role === "seller" || _vm.user.role === "both" || _vm.user.role === "admin") ? _c("a", {
+    staticClass: "nn-dropdown-item",
+    attrs: {
+      href: "/seller/app"
+    }
+  }, [_vm._v("🏪 Seller Center")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticStyle: {
       height: "1px",
       background: "rgba(240,236,227,0.08)",
@@ -1249,7 +1254,16 @@ var render = function render() {
         _vm.mobileOpen = false;
       }
     }
-  }, [_vm._v("My Orders")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("My Orders")]), _vm._v(" "), _vm.currentUser && (_vm.currentUser.role === "seller" || _vm.currentUser.role === "both" || _vm.currentUser.role === "admin") ? _c("a", {
+    staticClass: "nn-mobile-link",
+    staticStyle: {
+      display: "block",
+      "text-decoration": "none"
+    },
+    attrs: {
+      href: "/seller/app"
+    }
+  }, [_vm._v("Seller Center")]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "nn-mobile-link",
     staticStyle: {
       background: "none",

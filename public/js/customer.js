@@ -119,6 +119,13 @@ var routes = [{
     auth: true
   }
 }, {
+  path: '/orders/status/:status',
+  name: 'orders-status',
+  component: OrderTracking,
+  meta: {
+    auth: true
+  }
+}, {
   path: '/orders/:id',
   name: 'order-detail',
   component: OrderTracking,
