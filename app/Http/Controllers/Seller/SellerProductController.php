@@ -162,10 +162,13 @@ class SellerProductController extends Controller
             'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
         ]);
 
-        $path = $request->file('image')->store('products', 'public');
+        $file = $request->file('image');
+        $base64 = base64_encode(file_get_contents($file->path()));
+        $mime = $file->getMimeType();
+        $dataUri = 'data:' . $mime . ';base64,' . $base64;
 
         return response()->json([
-            'url' => asset('storage/' . $path),
+            'url' => $dataUri,
         ], 201);
     }
 }

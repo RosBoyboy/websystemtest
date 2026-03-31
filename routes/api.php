@@ -47,6 +47,12 @@ Route::get('/images', function (Request $request) {
     }
     
     // Debug info
+    // Fallback placeholder image
+    $placeholder = base_path('public/images/placeholder.png');
+    if (file_exists($placeholder)) {
+        return response()->file($placeholder, ['Content-Type' => 'image/png']);
+    }
+
     return response()->json([
         'error' => 'not_found',
         'path' => $path,
