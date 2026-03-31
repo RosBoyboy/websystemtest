@@ -1,0 +1,1 @@
+<?php require "vendor/autoload.php"; $app = require_once "bootstrap/app.php"; $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class); $kernel->bootstrap(); echo public_path("storage/products/tm8MzdfhQeRjNduZkqu06fTNFtslJ4aewPMGHWTm.png") . PHP_EOL; echo file_exists(public_path("storage/products/tm8MzdfhQeRjNduZkqu06fTNFtslJ4aewPMGHWTm.png")) ? "EXISTS" : "NOT FOUND";

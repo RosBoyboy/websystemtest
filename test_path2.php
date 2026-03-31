@@ -1,0 +1,1 @@
+<?php require "vendor/autoload.php"; $app = require_once "bootstrap/app.php"; $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class); $kernel->bootstrap(); $req = Illuminate\Http\Request::create("/api/images?path=products/tm8MzdfhQeRjNduZkqu06fTNFtslJ4aewPMGHWTm.png", "GET"); $res = $kernel->handle($req); echo "Status: " . $res->getStatusCode();
