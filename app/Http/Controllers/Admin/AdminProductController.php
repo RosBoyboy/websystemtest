@@ -10,39 +10,41 @@ class AdminProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['seller:id,store_name', 'category:id,name']);
+        $cacheKey = 'admin_products_' . md5(json_encode($request->all()));
 
-        if ($request->filled('search') && is_string($request->search)) {
-            $query->where('name', 'like', "%{$request->search}%");
-        }
+        $products = \Illuminate\Support\Facades\Cache::remember($cacheKey, 30, function () use ($request) {
+            $query = Product::with(['seller:id,store_name', 'category:id,name']);
 
-        if ($request->filled('status')) {
-            if (is_array($request->status)) {
-                $query->whereIn('status', $request->status);
-            } else {
-                $query->where('status', $request->status);
+            if ($request->filled('search') && is_string($request->search)) {
+                $query->where('name', 'like', "%{$request->search}%");
             }
-        }
 
-        if ($request->filled('category_id')) {
-            if (is_array($request->category_id)) {
-                $query->whereIn('category_id', $request->category_id);
-            } else {
-                $query->where('category_id', $request->category_id);
+            if ($request->filled('status')) {
+                if (is_array($request->status)) {
+                    $query->whereIn('status', $request->status);
+                } else {
+                    $query->where('status', $request->status);
+                }
             }
-        }
 
-        if ($request->filled('seller_id')) {
-             if (is_array($request->seller_id)) {
-                $query->whereIn('seller_id', $request->seller_id);
-            } else {
-                $query->where('seller_id', $request->seller_id);
+            if ($request->filled('category_id')) {
+                if (is_array($request->category_id)) {
+                    $query->whereIn('category_id', $request->category_id);
+                } else {
+                    $query->where('category_id', $request->category_id);
+                }
             }
-        }
 
-        $products = $query->latest()->paginate(20);
+            if ($request->filled('seller_id')) {
+                 if (is_array($request->seller_id)) {
+                    $query->whereIn('seller_id', $request->seller_id);
+                } else {
+                    $query->where('seller_id', $request->seller_id);
+                }
+            }
 
-        return response()->json($products);
+            return $query->latest()->paginate(20);
+        });
     }
 
     public function updateStatus(Request $request, $id)

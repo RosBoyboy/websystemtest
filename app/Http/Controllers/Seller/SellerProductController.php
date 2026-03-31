@@ -18,22 +18,26 @@ class SellerProductController extends Controller
     {
         $seller = $request->user()->seller;
 
-        $query = Product::where('seller_id', $seller->id)
-            ->with('category:id,name');
+        $cacheKey = 'seller_products_' . $seller->id . '_' . md5(json_encode($request->all()));
 
-        if ($request->filled('search')) {
-            $query->where('name', 'like', "%{$request->search}%");
-        }
+        $products = \Illuminate\Support\Facades\Cache::remember($cacheKey, 30, function () use ($request, $seller) {
+            $query = Product::where('seller_id', $seller->id)
+                ->with('category:id,name');
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+            if ($request->filled('search')) {
+                $query->where('name', 'like', "%{$request->search}%");
+            }
 
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
 
-        $products = $query->latest()->paginate(20);
+            if ($request->filled('category_id')) {
+                $query->where('category_id', $request->category_id);
+            }
+
+            return $query->latest()->paginate(20);
+        });
 
         return response()->json($products);
     }
