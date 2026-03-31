@@ -1,5 +1,9 @@
 <?php
 
+// Suppress deprecation warnings on newer PHP versions (like PHP 8.4 on Vercel)
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+ini_set('display_errors', '0');
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

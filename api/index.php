@@ -1,4 +1,7 @@
 <?php
+// Suppress deprecation warnings on newer PHP versions (like PHP 8.4 on Vercel)
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+ini_set('display_errors', '0');
 if (isset($_GET['path']) && is_string($_GET['path']) && $_GET['path'] !== '') {
 	$forwardedPath = parse_url($_GET['path'], PHP_URL_PATH) ?: '/';
 	$forwardedPath = '/'.ltrim($forwardedPath, '/');
