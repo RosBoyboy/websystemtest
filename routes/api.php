@@ -40,13 +40,24 @@ Route::get('/images', function (Request $request) {
     }
     
     // Check public storage next (Git tracked)
-    $publicPath = public_path('storage/' . $path);
+    $publicPath = base_path('public/storage/' . $path);
     if (file_exists($publicPath)) {
         $mime = mime_content_type($publicPath);
         return response()->file($publicPath, ['Content-Type' => $mime]);
     }
     
-    abort(404);
+    // Debug info
+    return response()->json([
+        'error' => 'not_found',
+        'path' => $path,
+        'tmpPath' => $tmpPath,
+        'tmpExists' => file_exists($tmpPath),
+        'publicPath' => $publicPath,
+        'publicExists' => file_exists($publicPath),
+        'base_path' => base_path(),
+        'files_in_base_public' => is_dir(base_path('public')) ? scandir(base_path('public')) : 'no public dir',
+        'files_in_base_public_storage' => is_dir(base_path('public/storage')) ? scandir(base_path('public/storage')) : 'no storage dir'
+    ]);
 });
 
 // Auth routes (public)
