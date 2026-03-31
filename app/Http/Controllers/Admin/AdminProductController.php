@@ -45,6 +45,8 @@ class AdminProductController extends Controller
 
             return $query->latest()->paginate(20);
         });
+
+        return response()->json($products);
     }
 
     public function updateStatus(Request $request, $id)

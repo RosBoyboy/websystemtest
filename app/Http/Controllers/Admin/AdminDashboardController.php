@@ -63,6 +63,8 @@ class AdminDashboardController extends Controller
         });
 
         return response()->json($stats);
+    }
+
     /**
      * Return sales chart data.
      * Query param: period = 7d | 30d | 90d | 1y
