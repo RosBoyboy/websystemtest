@@ -36,6 +36,23 @@ class Product extends Model
         'is_featured' => 'boolean',
     ];
 
+    public function getImagesAttribute($value)
+    {
+        if (is_string($value)) {
+            $value = json_decode($value, true) ?: [];
+        }
+
+        $images = is_array($value) ? $value : [];
+
+        return array_map(function ($url) {
+            // Force dynamic image routing so Vercel does not block local/ephemeral uploads
+            if (preg_match('/products\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $url, $matches)) {
+                return '/api/images?path=' . $matches[0];
+            }
+            return $url;
+        }, $images);
+    }
+
     // Relationships
     public function seller()
     {

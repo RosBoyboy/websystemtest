@@ -17,6 +17,15 @@ class Seller extends Model
         'status',
     ];
 
+    public function getLogoAttribute($value)
+    {
+        if (!$value) return null;
+        if (preg_match('/(sellers|logos)\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $value, $matches)) {
+            return '/api/images?path=' . $matches[0];
+        }
+        return preg_replace('/^(https?:\/\/[^\/]+)?(\/api)?\/storage\//', '/storage/', $value);
+    }
+
     // Relationships
     public function user()
     {

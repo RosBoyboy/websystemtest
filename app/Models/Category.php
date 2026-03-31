@@ -22,6 +22,15 @@ class Category extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getImageAttribute($value)
+    {
+        if (!$value) return null;
+        if (preg_match('/(categories|products)\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $value, $matches)) {
+            return '/api/images?path=' . $matches[0];
+        }
+        return preg_replace('/^(https?:\/\/[^\/]+)?(\/api)?\/storage\//', '/storage/', $value);
+    }
+
     // Relationships
     public function parent()
     {

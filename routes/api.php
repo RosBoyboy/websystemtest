@@ -28,6 +28,27 @@ use App\Http\Controllers\Customer\CustomerAccountController;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/images', function (Request $request) {
+    if (!$request->has('path')) abort(404);
+    $path = $request->query('path');
+    
+    // Check tmp first (Vercel runtime uploads)
+    $tmpPath = '/tmp/storage/app/public/' . $path;
+    if (file_exists($tmpPath)) {
+        $mime = mime_content_type($tmpPath);
+        return response()->file($tmpPath, ['Content-Type' => $mime]);
+    }
+    
+    // Check public storage next (Git tracked)
+    $publicPath = public_path('storage/' . $path);
+    if (file_exists($publicPath)) {
+        $mime = mime_content_type($publicPath);
+        return response()->file($publicPath, ['Content-Type' => $mime]);
+    }
+    
+    abort(404);
+});
+
 // Auth routes (public)
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
