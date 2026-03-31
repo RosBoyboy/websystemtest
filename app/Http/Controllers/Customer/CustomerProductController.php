@@ -62,6 +62,8 @@ class CustomerProductController extends Controller
 
             return $query->paginate($request->get('per_page', 16));
         });
+
+        return response()->json($products);
     }
 
     public function show($slug)
