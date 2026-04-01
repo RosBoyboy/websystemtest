@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Str;
 
-$databaseUrl = env('DATABASE_URL');
+// Vercel Native Postgres Injection
+$databaseUrl = env('DATABASE_URL', env('POSTGRES_URL'));
 $defaultConnection = env('DB_CONNECTION');
 
 if (! $defaultConnection && is_string($databaseUrl) && $databaseUrl !== '') {
@@ -78,7 +79,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
+            'url' => env('DATABASE_URL', env('POSTGRES_URL')),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
