@@ -15,6 +15,41 @@ class Seller extends Model
         'store_description',
         'logo',
         'status',
+        // Personal Information
+        'full_name',
+        'contact_number',
+        // Shop Details
+        'shop_address',
+        'business_type',
+        // Payment Information
+        'bank_name',
+        'account_name',
+        'account_number',
+        'ewallet_type',
+        'ewallet_number',
+        // Shipping / Delivery
+        'pickup_address',
+        'delivery_methods',
+        'shipping_fee',
+        'enable_tracking',
+        // Verification Documents
+        'valid_id_path',
+        'selfie_path',
+        'business_permit_path',
+        // Terms & Agreements
+        'terms_accepted',
+        'terms_accepted_at',
+        // Onboarding Status
+        'onboarding_status',
+        'onboarding_completed_at',
+    ];
+
+    protected $casts = [
+        'delivery_methods' => 'array',
+        'terms_accepted' => 'boolean',
+        'enable_tracking' => 'boolean',
+        'terms_accepted_at' => 'datetime',
+        'onboarding_completed_at' => 'datetime',
     ];
 
     public function getLogoAttribute($value)

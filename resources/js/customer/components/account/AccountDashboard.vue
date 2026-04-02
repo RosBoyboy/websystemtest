@@ -136,7 +136,7 @@
                 <textarea v-model="sellerForm.shop_description" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-orange-500 transition-colors resize-none" placeholder="Tell customers about your shop"></textarea>
               </div>
               <button type="submit" :disabled="activatingSeller" class="btn-primary py-2.5 px-6 disabled:opacity-50">
-                <span v-if="activatingSeller">Activating…</span>
+                <span v-if="activatingSeller">Redirecting…</span>
                 <span v-else>Yes, I want to be a seller</span>
               </button>
               <p class="text-xs text-slate-500">Seller access may require admin approval before all tools are enabled.</p>
@@ -271,12 +271,17 @@ export default {
       this.sellerSuccess = null;
       this.activatingSeller = true;
       try {
+        // First activate seller mode
         const data = await this.$store.dispatch('auth/becomeSeller', this.sellerForm);
-        this.sellerSuccess = data.message || 'Seller mode activated.';
+        this.sellerSuccess = 'Redirecting to onboarding...';
+        
+        // Redirect to seller onboarding after a short delay
+        setTimeout(() => {
+          window.location.href = '/seller/app#/onboarding';
+        }, 500);
       } catch (e) {
         const resp = e.response && e.response.data;
         this.sellerError = (resp && resp.message) ? resp.message : 'Failed to activate seller mode.';
-      } finally {
         this.activatingSeller = false;
       }
     },

@@ -13,8 +13,15 @@ const InventoryManager = () => import('../components/inventory/InventoryManager.
 const EarningsAnalytics = () => import('../components/earnings/EarningsAnalytics.vue');
 const SellerProfile   = () => import('../components/profile/SellerProfile.vue');
 const SellerChat      = () => import('../components/chat/SellerChat.vue');
+const SellerOnboarding = () => import('../pages/SellerOnboarding.vue');
 
 const routes = [
+    {
+        path: '/onboarding',
+        name: 'seller.onboarding',
+        component: SellerOnboarding,
+        meta: { requiresAuth: true },
+    },
     {
         path: '/',
         component: SellerLayout,

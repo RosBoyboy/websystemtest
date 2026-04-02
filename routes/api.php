@@ -28,44 +28,6 @@ use App\Http\Controllers\Customer\CustomerAccountController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/images', function (Request $request) {
-    if (!$request->has('path')) abort(404);
-    $path = $request->query('path');
-    
-    // Check tmp first (Vercel runtime uploads)
-    $tmpPath = '/tmp/storage/app/public/' . $path;
-    if (file_exists($tmpPath)) {
-        $mime = mime_content_type($tmpPath);
-        return response()->file($tmpPath, ['Content-Type' => $mime]);
-    }
-    
-    // Check public storage next (Git tracked)
-    $publicPath = base_path('public/storage/' . $path);
-    if (file_exists($publicPath)) {
-        $mime = mime_content_type($publicPath);
-        return response()->file($publicPath, ['Content-Type' => $mime]);
-    }
-    
-    // Debug info
-    // Fallback placeholder image
-    $placeholder = base_path('public/images/placeholder.png');
-    if (file_exists($placeholder)) {
-        return response()->file($placeholder, ['Content-Type' => 'image/png']);
-    }
-
-    return response()->json([
-        'error' => 'not_found',
-        'path' => $path,
-        'tmpPath' => $tmpPath,
-        'tmpExists' => file_exists($tmpPath),
-        'publicPath' => $publicPath,
-        'publicExists' => file_exists($publicPath),
-        'base_path' => base_path(),
-        'files_in_base_public' => is_dir(base_path('public')) ? scandir(base_path('public')) : 'no public dir',
-        'files_in_base_public_storage' => is_dir(base_path('public/storage')) ? scandir(base_path('public/storage')) : 'no storage dir'
-    ]);
-});
-
 // Auth routes (public)
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -84,6 +46,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::patch('/user/become-seller', [AuthController::class, 'becomeSeller']);
+
+    // Seller profile & onboarding - accessible by users with seller role (pending or approved)
+    Route::get('/seller/profile', [SellerProfileController::class, 'show']);
+    Route::post('/seller/onboarding/submit', [SellerProfileController::class, 'submitOnboarding']);
 
     // -------------------------------------------------------
     // ADMIN routes
@@ -136,8 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // -------------------------------------------------------
     Route::prefix('seller')->middleware('seller')->group(function () {
 
-        // Profile
-        Route::get('/profile', [SellerProfileController::class, 'show']);
+        // Profile - only update for approved sellers
         Route::put('/profile', [SellerProfileController::class, 'update']);
 
         // Dashboard
@@ -158,7 +123,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/orders',                  [SellerOrderController::class, 'index']);
         Route::get('/orders/{id}',             [SellerOrderController::class, 'show']);
         Route::put('/orders/{id}/fulfillment', [SellerOrderController::class, 'updateFulfillment']);
-        Route::patch('/orders/{id}/delivery',  [SellerOrderController::class, 'updateDelivery']);
 
         // Inventory
         Route::get('/inventory',             [SellerInventoryController::class, 'index']);
@@ -183,7 +147,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/',       [CustomerAccountController::class, 'update']);
         Route::get('/orders', [CustomerOrderController::class, 'index']);
         Route::get('/orders/{id}', [CustomerOrderController::class, 'show']);
-        Route::post('/orders/{id}/receive', [CustomerOrderController::class, 'markReceived']);
         Route::post('/checkout',   [CustomerOrderController::class, 'store']);
         // Messages
         Route::get('/messages/sellers', [\App\Http\Controllers\Customer\CustomerMessageController::class, 'getSellers']);
