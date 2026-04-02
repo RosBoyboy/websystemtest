@@ -23,7 +23,38 @@
             </span>
           </div>
         </div>
-        <div class="flex gap-2 pt-2" v-if="seller.status === 'pending'">
+        <div class="space-y-4 text-sm mt-4 border-t border-slate-800 pt-4">
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Full Name</span>
+            <span class="text-white">{{ seller.full_name || '—' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Contact Number</span>
+            <span class="text-white">{{ seller.contact_number || '—' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Business Type</span>
+            <span class="text-white capitalize">{{ seller.business_type || '—' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Shop Address</span>
+            <span class="text-white">{{ seller.shop_address || '—' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Bank Details</span>
+            <span class="text-white">{{ seller.bank_name ? `${seller.bank_name} - ${seller.account_number}` : '—' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">E-Wallet</span>
+            <span class="text-white uppercase">{{ seller.ewallet_type && seller.ewallet_type !== 'none' ? `${seller.ewallet_type} - ${seller.ewallet_number}` : 'None' }}</span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-slate-500 font-medium">Delivery Methods</span>
+            <span class="text-white">{{ seller.delivery_methods ? seller.delivery_methods.join(', ') : '—' }}</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-4" v-if="seller.status === 'pending'">
           <button @click="approve" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs py-2 rounded-lg">Approve</button>
           <button @click="reject"  class="flex-1 bg-red-600/30 hover:bg-red-600/50 text-red-400 text-xs py-2 rounded-lg">Reject</button>
         </div>

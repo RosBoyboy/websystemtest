@@ -142,8 +142,52 @@ var render = function render() {
       "text-yellow-400": _vm.seller.status === "pending",
       "text-red-400": _vm.seller.status === "rejected"
     }
-  }, [_vm._v("\n            " + _vm._s(_vm.seller.status) + "\n          ")])])]), _vm._v(" "), _vm.seller.status === "pending" ? _c("div", {
-    staticClass: "flex gap-2 pt-2"
+  }, [_vm._v("\n            " + _vm._s(_vm.seller.status) + "\n          ")])])]), _vm._v(" "), _c("div", {
+    staticClass: "space-y-4 text-sm mt-4 border-t border-slate-800 pt-4"
+  }, [_c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Full Name")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.seller.full_name || "—"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Contact Number")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.seller.contact_number || "—"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Business Type")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white capitalize"
+  }, [_vm._v(_vm._s(_vm.seller.business_type || "—"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Shop Address")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.seller.shop_address || "—"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Bank Details")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.seller.bank_name ? "".concat(_vm.seller.bank_name, " - ").concat(_vm.seller.account_number) : "—"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("E-Wallet")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white uppercase"
+  }, [_vm._v(_vm._s(_vm.seller.ewallet_type && _vm.seller.ewallet_type !== "none" ? "".concat(_vm.seller.ewallet_type, " - ").concat(_vm.seller.ewallet_number) : "None"))])]), _vm._v(" "), _c("div", {
+    staticClass: "flex flex-col gap-1"
+  }, [_c("span", {
+    staticClass: "text-slate-500 font-medium"
+  }, [_vm._v("Delivery Methods")]), _vm._v(" "), _c("span", {
+    staticClass: "text-white"
+  }, [_vm._v(_vm._s(_vm.seller.delivery_methods ? _vm.seller.delivery_methods.join(", ") : "—"))])])]), _vm._v(" "), _vm.seller.status === "pending" ? _c("div", {
+    staticClass: "flex gap-2 pt-4"
   }, [_c("button", {
     staticClass: "flex-1 bg-green-600 hover:bg-green-700 text-white text-xs py-2 rounded-lg",
     on: {
