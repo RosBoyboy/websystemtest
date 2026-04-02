@@ -87,7 +87,17 @@ var SellerProfile = function SellerProfile() {
 var SellerChat = function SellerChat() {
   return __webpack_require__.e(/*! import() */ "resources_js_seller_components_chat_SellerChat_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../components/chat/SellerChat.vue */ "./resources/js/seller/components/chat/SellerChat.vue"));
 };
+var SellerOnboarding = function SellerOnboarding() {
+  return __webpack_require__.e(/*! import() */ "resources_js_seller_pages_SellerOnboarding_vue").then(__webpack_require__.bind(__webpack_require__, /*! ../pages/SellerOnboarding.vue */ "./resources/js/seller/pages/SellerOnboarding.vue"));
+};
 var routes = [{
+  path: '/onboarding',
+  name: 'seller.onboarding',
+  component: SellerOnboarding,
+  meta: {
+    requiresAuth: true
+  }
+}, {
   path: '/',
   component: SellerLayout,
   meta: {
@@ -24654,7 +24664,7 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -24676,6 +24686,18 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 	__webpack_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -24706,7 +24728,7 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_seller_components_layout_SellerLayout_vue":1,"resources_js_seller_components_dashboard_Dashboard_vue":1,"resources_js_seller_components_products_ProductList_vue":1,"resources_js_seller_components_products_ProductForm_vue":1,"resources_js_seller_components_orders_OrderList_vue":1,"resources_js_seller_components_orders_OrderDetail_vue":1,"resources_js_seller_components_inventory_InventoryManager_vue":1,"resources_js_seller_components_earnings_EarningsAnalytics_vue":1,"resources_js_seller_components_profile_SellerProfile_vue":1,"resources_js_seller_components_chat_SellerChat_vue":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_seller_components_layout_SellerLayout_vue":1,"resources_js_seller_components_dashboard_Dashboard_vue":1,"resources_js_seller_components_products_ProductList_vue":1,"resources_js_seller_components_products_ProductForm_vue":1,"resources_js_seller_components_orders_OrderList_vue":1,"resources_js_seller_components_orders_OrderDetail_vue":1,"resources_js_seller_components_inventory_InventoryManager_vue":1,"resources_js_seller_components_earnings_EarningsAnalytics_vue":1,"resources_js_seller_components_profile_SellerProfile_vue":1,"resources_js_seller_components_chat_SellerChat_vue":1,"resources_js_seller_pages_SellerOnboarding_vue":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
@@ -24887,6 +24909,11 @@ const isIterable = (thing) => thing != null && isFunction(thing[iterator]);
 /******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/nonce */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nc = undefined;
 /******/ 	})();
 /******/ 	
 /************************************************************************/

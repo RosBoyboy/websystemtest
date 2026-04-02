@@ -214,7 +214,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               return _this4.$store.dispatch('auth/becomeSeller', _this4.sellerForm);
             case 2:
               data = _context4.v;
-              _this4.sellerSuccess = data.message || 'Seller mode activated.';
+              _this4.sellerSuccess = 'Redirecting to onboarding...';
+
+              // Redirect to seller onboarding after a short delay
+              setTimeout(function () {
+                window.location.href = '/seller/app#/onboarding';
+              }, 500);
               _context4.n = 4;
               break;
             case 3:
@@ -222,14 +227,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _t3 = _context4.v;
               resp = _t3.response && _t3.response.data;
               _this4.sellerError = resp && resp.message ? resp.message : 'Failed to activate seller mode.';
-            case 4:
-              _context4.p = 4;
               _this4.activatingSeller = false;
-              return _context4.f(4);
-            case 5:
+            case 4:
               return _context4.a(2);
           }
-        }, _callee4, null, [[1, 3, 4, 5]]);
+        }, _callee4, null, [[1, 3]]);
       }))();
     },
     formatDate: function formatDate(d) {
@@ -1070,7 +1072,7 @@ var render = function render() {
       type: "submit",
       disabled: _vm.activatingSeller
     }
-  }, [_vm.activatingSeller ? _c("span", [_vm._v("Activating…")]) : _c("span", [_vm._v("Yes, I want to be a seller")])]), _vm._v(" "), _c("p", {
+  }, [_vm.activatingSeller ? _c("span", [_vm._v("Redirecting…")]) : _c("span", [_vm._v("Yes, I want to be a seller")])]), _vm._v(" "), _c("p", {
     staticClass: "text-xs text-slate-500"
   }, [_vm._v("Seller access may require admin approval before all tools are enabled.")])])]) : _vm._e(), _vm._v(" "), _vm.activeTab === "overview" ? _c("div", {
     staticClass: "space-y-4"
