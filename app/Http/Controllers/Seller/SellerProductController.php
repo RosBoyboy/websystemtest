@@ -163,8 +163,54 @@ class SellerProductController extends Controller
         ]);
 
         $file = $request->file('image');
-        $base64 = base64_encode(file_get_contents($file->path()));
         $mime = $file->getMimeType();
+        $path = $file->path();
+        
+        // Compress and resize image before converting to base64
+        $data = file_get_contents($path);
+        if (in_array($mime, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'])) {
+            $img = @imagecreatefromstring($data);
+            if ($img !== false) {
+                $width = imagesx($img);
+                $height = imagesy($img);
+                
+                $maxWidth = 800;
+                $maxHeight = 800;
+                
+                if ($width > $maxWidth || $height > $maxHeight) {
+                    $ratio = min($maxWidth / $width, $maxHeight / $height);
+                    $newWidth = round($width * $ratio);
+                    $newHeight = round($height * $ratio);
+                    $newImg = imagecreatetruecolor($newWidth, $newHeight);
+                    
+                    if ($mime === 'image/png' || $mime === 'image/webp') {
+                        imagealphablending($newImg, false);
+                        imagesavealpha($newImg, true);
+                        $transparency = imagecolorallocatealpha($newImg, 255, 255, 255, 127);
+                        imagefilledrectangle($newImg, 0, 0, $newWidth, $newHeight, $transparency);
+                    }
+                    
+                    imagecopyresampled($newImg, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                    imagedestroy($img);
+                    $img = $newImg;
+                }
+                
+                ob_start();
+                if ($mime === 'image/png') {
+                    imagepng($img, null, 6);
+                } elseif ($mime === 'image/webp') {
+                    imagewebp($img, null, 70);
+                } else {
+                    // Fallback to jpeg to save space
+                    $mime = 'image/jpeg';
+                    imagejpeg($img, null, 70);
+                }
+                $data = ob_get_clean();
+                imagedestroy($img);
+            }
+        }
+
+        $base64 = base64_encode($data);
         $dataUri = 'data:' . $mime . ';base64,' . $base64;
 
         return response()->json([
