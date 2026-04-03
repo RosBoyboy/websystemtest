@@ -25,6 +25,8 @@ class Category extends Model
     public function getImageAttribute($value)
     {
         if (!$value) return null;
+        if (!is_string($value)) return $value;
+        
         if (preg_match('/(categories|products)\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $value, $matches)) {
             return '/api/images?path=' . $matches[0];
         }

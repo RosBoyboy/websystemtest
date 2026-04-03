@@ -46,7 +46,7 @@ class Product extends Model
 
         return array_map(function ($url) {
             // Force dynamic image routing so Vercel does not block local/ephemeral uploads
-            if (preg_match('/products\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $url, $matches)) {
+            if (is_string($url) && preg_match('/products\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $url, $matches)) {
                 return '/api/images?path=' . $matches[0];
             }
             return $url;

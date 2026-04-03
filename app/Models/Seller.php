@@ -55,6 +55,8 @@ class Seller extends Model
     public function getLogoAttribute($value)
     {
         if (!$value) return null;
+        if (!is_string($value)) return $value;
+        
         if (preg_match('/(sellers|logos)\/[a-zA-Z0-9_-]+\.(png|jpg|jpeg|gif|webp)/i', $value, $matches)) {
             return '/api/images?path=' . $matches[0];
         }
