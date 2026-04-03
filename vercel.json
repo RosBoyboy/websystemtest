@@ -18,7 +18,7 @@
         "APP_KEY": "base64:rHRUr0pvuYeOm5Of20TjNqWVIoi50fgM3w/TEi6RQAY=",
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "websystemtest-dbs9.vercel.app",
+        "APP_URL": "https://nurbannxt.com",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
