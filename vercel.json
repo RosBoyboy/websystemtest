@@ -27,7 +27,7 @@
         "VIEW_COMPILED_PATH": "/tmp",
         "DB_CONNECTION": "pgsql",
         "DB_SSLMODE": "require",
-        "CACHE_DRIVER": "file",
+        "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie"
     }
