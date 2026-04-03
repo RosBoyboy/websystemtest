@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Seller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerMessageController extends Controller
@@ -17,7 +18,9 @@ class CustomerMessageController extends Controller
         
         // Get sellers this user has ordered from OR has messages with
         $messageSellerIds = Message::where('customer_id', $userId)->pluck('seller_id')->toArray();
-        $orderSellerIds = Order::where('user_id', $userId)->pluck('seller_id')->toArray();
+        $orderSellerIds = OrderItem::whereHas('order', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->pluck('seller_id')->toArray();
         $sellerIds = array_unique(array_merge($messageSellerIds, $orderSellerIds));
         
         // If a specific seller_id is requested, always include it
@@ -28,9 +31,10 @@ class CustomerMessageController extends Controller
             }
         }
 
-        // If empty, return approved sellers to start a chat
+        // If empty, return approved sellers to start a chat (excluding their own store if they are a seller)
         if (empty($sellerIds)) {
             return response()->json(Seller::where('status', 'approved')
+                ->where('user_id', '!=', $userId)
                 ->select('id', 'store_name', 'store_description', 'status')
                 ->limit(10)
                 ->get());
