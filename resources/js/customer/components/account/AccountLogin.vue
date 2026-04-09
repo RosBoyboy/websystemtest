@@ -81,7 +81,25 @@
             {{ error }}
           </div>
 
-          <form @submit.prevent="handleLogin" class="space-y-5">
+          <!-- Unverified User OTP Submission -->
+          <div v-if="requiresOtp">
+            <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium text-center">
+              Please check your email. Your account is unverified, an ongoing OTP has just been sent to your email.
+            </div>
+
+            <form @submit.prevent="verifyRegistrationOtp" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Enter 6-Digit OTP</label>
+                <input v-model="otpCode" type="text" required minlength="6" maxlength="6" class="w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900 text-center tracking-[0.5em] font-bold text-lg" placeholder="123456" />
+              </div>
+              <button type="submit" :disabled="verifying" class="btn-orange w-full py-3 mt-2 disabled:opacity-50">
+                <span v-if="verifying">Verifying…</span>
+                <span v-else>Verify Account</span>
+              </button>
+            </form>
+          </div>
+
+          <form v-if="!requiresOtp && !requiresTwoFactor" @submit.prevent="handleLogin" class="space-y-5">
             <!-- Email -->
             <div>
               <label class="block text-xs font-bold text-stone-600 uppercase mb-2 tracking-wider">Email</label>
@@ -231,6 +249,15 @@ export default {
       form: { email: '', password: '' },
       loading: false,
       error: null,
+      
+      // Registration Verification states
+      requiresOtp: false,
+      verifying: false,
+      otpCode: '',
+
+      // 2FA login states
+      requiresTwoFactor: false,
+      twoFactorCode: ''
     };
   },
   methods: {
@@ -275,29 +302,60 @@ export default {
       }
     },
 
+    // Customer login
     async handleCustomerLogin() {
       try {
         const { data } = await axios.post('/auth/login', this.form);
+        
+        // Handle unverified email
+        if (data.email_unverified) {
+           this.requiresOtp = true;
+           return;
+        }
 
-        // Verify user is not admin
+        // Handle 2FA
+        if (data.two_factor_required) {
+          this.requiresTwoFactor = true;
+          return;
+        }
+
+        // Must not be admin
         if (data.user.role === 'admin') {
-          throw new Error('Admin accounts must use the admin portal.');
+          throw new Error('Admins must use the admin portal.');
         }
 
-        // Commit to Vuex store (this updates both the state and local storage)
-        this.$store.commit('auth/SET_AUTH', { user: data.user, token: data.token });
-
-        // Redirect to account or redirect path
-        const redirect = this.$route.query.redirect || '/account';
-        if (redirect.includes('/seller') || redirect.includes('/admin')) {
-          window.location.href = redirect;
-        } else {
-          this.$router.push(redirect);
-        }
+        // Store customer auth -> Dispatching via custom implementation since we don't have access to Vuex here immediately in the original code, but we do!
+        await this.$store.dispatch('auth/login', this.form);
+        this.$router.push({ name: 'account' });
+        
       } catch (e) {
+        if (e.response && e.response.status === 403 && e.response.data && e.response.data.email_unverified) {
+           this.requiresOtp = true;
+           return;
+        }
         throw e;
       }
     },
+    
+    // Verifying Registration OTP within the login screen
+    async verifyRegistrationOtp() {
+      this.error = null;
+      this.verifying = true;
+      try {
+        await this.$store.dispatch('auth/verifyRegistrationOtp', {
+          email: this.form.email,
+          otp: this.otpCode
+        });
+        
+        // Once verified, they receive an auth token and transition into the system
+        this.$router.push({ name: 'account' });
+      } catch (e) {
+        const resp = e.response && e.response.data;
+        this.error = (resp && resp.message) ? resp.message : 'Invalid or expired OTP.';
+      } finally {
+        this.verifying = false;
+      }
+    }
   },
 
   created() {

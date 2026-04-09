@@ -39,18 +39,32 @@ const mutations = {
 
 const actions = {
     async login({ commit }, credentials) {
-        const { data } = await axios.post('/auth/login', credentials);
-        if (data.user.role === 'admin') {
-            throw new Error('Admin accounts must use the admin portal.');
+        try {
+            const { data } = await axios.post('/auth/login', credentials);
+            if (data.user.role === 'admin') {
+                throw new Error('Admin accounts must use the admin portal.');
+            }
+            commit('SET_AUTH', { user: data.user, token: data.token });
+            return data;
+        } catch (error) {
+            if (error.response && error.response.status === 403 && error.response.data.email_unverified) {
+                throw error; // Re-throw to be caught by login UI
+            }
+            throw error;
         }
-        commit('SET_AUTH', { user: data.user, token: data.token });
+    },
+
+    async verifyRegistrationOtp({ commit }, payload) {
+        const { data } = await axios.post('/auth/verify-otp', payload);
+        if (data.token) {
+            commit('SET_AUTH', { user: data.user, token: data.token });
+        }
         return data;
     },
 
     async register({ commit }, payload) {
         const { data } = await axios.post('/register', payload);
-        commit('SET_AUTH', { user: data.user, token: data.token });
-        return data;
+        return data; // Do not commit SET_AUTH yet, wait for OTP
     },
 
     async logout({ commit }) {

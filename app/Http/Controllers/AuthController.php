@@ -27,6 +27,21 @@ class AuthController extends Controller
             return response()->json(['message' => 'Your account has been banned.'], 403);
         }
 
+        if (! $user->email_verified_at) {
+            // Generate and send a new OTP if it is expired or missing.
+            if (! $user->email_otp_expires_at || now()->greaterThan($user->email_otp_expires_at)) {
+                $otp = sprintf('%06d', random_int(100000, 999999));
+                $user->update(['email_otp' => $otp, 'email_otp_expires_at' => now()->addMinutes(10)]);
+                $user->notify(new \App\Notifications\SendRegistrationOTP());
+            }
+
+            return response()->json([
+                'message' => 'Please verify your email address to log in.',
+                'email_unverified' => true,
+                'email' => $user->email
+            ], 403);
+        }
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
@@ -44,17 +59,59 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        $otp = sprintf('%06d', random_int(100000, 999999));
+
         $user = \App\Models\User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => 'customer',
             'status'   => 'active',
+            'email_otp' => $otp,
+            'email_otp_expires_at' => now()->addMinutes(10)
+        ]);
+
+        $user->notify(new \App\Notifications\SendRegistrationOTP());
+
+        return response()->json(['message' => 'OTP sent to your email. Please verify to continue.', 'email' => $user->email], 201);     
+    }
+
+    public function verifyRegistrationOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp'   => 'required|string|size:6',
+        ]);
+
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if ($user->email_verified_at) {
+            return response()->json(['message' => 'Email is already verified.'], 400);
+        }
+
+        if ($user->email_otp !== $request->otp || !$user->email_otp_expires_at || now()->greaterThan($user->email_otp_expires_at)) {
+            return response()->json(['message' => 'Invalid or expired OTP code.'], 400);
+        }
+
+        // Verify user
+        $user->update([
+            'email_verified_at' => now(),
+            'email_otp' => null,
+            'email_otp_expires_at' => null,
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        return response()->json([
+            'message' => 'Email verified successfully!',
+            'user'  => $user->load('seller'),
+            'token' => $token,
+            'role'  => $user->role,
+        ], 200);
     }
 
     public function logout(Request $request)

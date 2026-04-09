@@ -31,6 +31,7 @@ use App\Http\Controllers\Customer\CustomerAccountController;
 // Auth routes (public)
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyRegistrationOtp']);
 Route::post('/seller/register', [SellerAuthController::class, 'register']);
 
 // -------------------------------------------------------

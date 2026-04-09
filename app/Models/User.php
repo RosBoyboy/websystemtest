@@ -20,6 +20,8 @@ class User extends Authenticatable
         'status',
         'shop_name',
         'shop_description',
+        'email_otp',
+        'email_otp_expires_at',
     ];
 
     protected $hidden = [
