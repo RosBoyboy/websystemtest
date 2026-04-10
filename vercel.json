@@ -7,7 +7,10 @@
     "routes": [
         {
             "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|mp4|webm|webp))",
-            "dest": "/public/$1"
+            "dest": "/public/$1",
+            "headers": {
+                "cache-control": "public, max-age=31536000, immutable"
+            }
         },
         {
             "src": "/(.*)",
@@ -27,8 +30,8 @@
         "VIEW_COMPILED_PATH": "/tmp",
         "DB_CONNECTION": "pgsql",
         "DB_SSLMODE": "require",
-        "CACHE_DRIVER": "array",
-        "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+        "CACHE_DRIVER": "file",
+        "LOG_CHANNEL": "stderr"
     }
 }

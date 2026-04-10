@@ -31,14 +31,17 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         password_confirmation: ''
       },
       loading: false,
-      error: null
+      error: null,
+      requiresOtp: false,
+      otpCode: '',
+      verifying: false
     };
   },
   methods: {
     handleRegister: function handleRegister() {
       var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var resp, _t;
+        var response, resp, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
@@ -55,9 +58,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _context.n = 3;
               return _this.$store.dispatch('auth/register', _this.form);
             case 3:
-              _this.$router.push({
-                name: 'account'
-              });
+              response = _context.v;
+              // Switch to OTP state after successful API call
+              _this.requiresOtp = true;
               _context.n = 5;
               break;
             case 4:
@@ -79,6 +82,43 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               return _context.a(2);
           }
         }, _callee, null, [[2, 4, 5, 6]]);
+      }))();
+    },
+    verifyOtp: function verifyOtp() {
+      var _this2 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var resp, _t2;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _this2.error = null;
+              _this2.verifying = true;
+              _context2.p = 1;
+              _context2.n = 2;
+              return _this2.$store.dispatch('auth/verifyRegistrationOtp', {
+                email: _this2.form.email,
+                otp: _this2.otpCode
+              });
+            case 2:
+              // Once verified, they get an auth token and user object back, pushing them into their account dashboard
+              _this2.$router.push({
+                name: 'account'
+              });
+              _context2.n = 4;
+              break;
+            case 3:
+              _context2.p = 3;
+              _t2 = _context2.v;
+              resp = _t2.response && _t2.response.data;
+              _this2.error = resp && resp.message ? resp.message : 'Invalid or expired OTP.';
+            case 4:
+              _context2.p = 4;
+              _this2.verifying = false;
+              return _context2.f(4);
+            case 5:
+              return _context2.a(2);
+          }
+        }, _callee2, null, [[1, 3, 4, 5]]);
       }))();
     }
   }
@@ -321,7 +361,49 @@ var render = function render() {
     staticClass: "bg-white rounded-2xl border border-stone-100 p-8 shadow-sm"
   }, [_vm.error ? _c("div", {
     staticClass: "mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
-  }, [_vm._v(_vm._s(_vm.error))]) : _vm._e(), _vm._v(" "), _c("form", {
+  }, [_vm._v(_vm._s(_vm.error))]) : _vm._e(), _vm._v(" "), _vm.requiresOtp ? _c("div", [_c("div", {
+    staticClass: "mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium text-center"
+  }, [_vm._v("\n            Please check your email. We sent an OTP to verify your account.\n          ")]), _vm._v(" "), _c("form", {
+    staticClass: "space-y-4",
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.verifyOtp.apply(null, arguments);
+      }
+    }
+  }, [_c("div", [_c("label", {
+    staticClass: "block text-xs font-semibold text-slate-700 uppercase mb-1"
+  }, [_vm._v("Enter 6-Digit OTP")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.otpCode,
+      expression: "otpCode"
+    }],
+    staticClass: "w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900 text-center tracking-[0.5em] font-bold text-lg",
+    attrs: {
+      type: "text",
+      required: "",
+      minlength: "6",
+      maxlength: "6",
+      placeholder: "123456"
+    },
+    domProps: {
+      value: _vm.otpCode
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.otpCode = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("button", {
+    staticClass: "btn-orange w-full py-3 mt-2 disabled:opacity-50",
+    attrs: {
+      type: "submit",
+      disabled: _vm.verifying
+    }
+  }, [_vm.verifying ? _c("span", [_vm._v("Verifying…")]) : _c("span", [_vm._v("Verify Account")])])])]) : _vm._e(), _vm._v(" "), !_vm.requiresOtp ? _c("form", {
     staticClass: "space-y-4",
     on: {
       submit: function submit($event) {
@@ -432,7 +514,7 @@ var render = function render() {
       type: "submit",
       disabled: _vm.loading
     }
-  }, [_vm.loading ? _c("span", [_vm._v("Creating account…")]) : _c("span", [_vm._v("Create Account")])])]), _vm._v(" "), _c("p", {
+  }, [_vm.loading ? _c("span", [_vm._v("Creating account…")]) : _c("span", [_vm._v("Create Account")])])]) : _vm._e(), _vm._v(" "), _c("p", {
     staticClass: "text-center text-sm text-stone-500 mt-6"
   }, [_vm._v("\n          Already have an account?\n          "), _c("router-link", {
     staticClass: "text-orange-500 font-semibold hover:text-orange-600",

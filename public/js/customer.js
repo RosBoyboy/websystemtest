@@ -269,32 +269,45 @@ var mutations = {
 var actions = {
   login: function login(_ref2, credentials) {
     return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var commit, _yield$axios$post, data;
+      var commit, _yield$axios$post, data, _t;
       return _regenerator().w(function (_context) {
-        while (1) switch (_context.n) {
+        while (1) switch (_context.p = _context.n) {
           case 0:
             commit = _ref2.commit;
-            _context.n = 1;
+            _context.p = 1;
+            _context.n = 2;
             return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/auth/login', credentials);
-          case 1:
+          case 2:
             _yield$axios$post = _context.v;
             data = _yield$axios$post.data;
             if (!(data.user.role === 'admin')) {
-              _context.n = 2;
+              _context.n = 3;
               break;
             }
             throw new Error('Admin accounts must use the admin portal.');
-          case 2:
+          case 3:
             commit('SET_AUTH', {
               user: data.user,
               token: data.token
             });
             return _context.a(2, data);
+          case 4:
+            _context.p = 4;
+            _t = _context.v;
+            if (!(_t.response && _t.response.status === 403 && _t.response.data.email_unverified)) {
+              _context.n = 5;
+              break;
+            }
+            throw _t;
+          case 5:
+            throw _t;
+          case 6:
+            return _context.a(2);
         }
-      }, _callee);
+      }, _callee, null, [[1, 4]]);
     }))();
   },
-  register: function register(_ref3, payload) {
+  verifyRegistrationOtp: function verifyRegistrationOtp(_ref3, payload) {
     return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
       var commit, _yield$axios$post2, data;
       return _regenerator().w(function (_context2) {
@@ -302,89 +315,108 @@ var actions = {
           case 0:
             commit = _ref3.commit;
             _context2.n = 1;
-            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/register', payload);
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/auth/verify-otp', payload);
           case 1:
             _yield$axios$post2 = _context2.v;
             data = _yield$axios$post2.data;
-            commit('SET_AUTH', {
-              user: data.user,
-              token: data.token
-            });
+            if (data.token) {
+              commit('SET_AUTH', {
+                user: data.user,
+                token: data.token
+              });
+            }
             return _context2.a(2, data);
         }
       }, _callee2);
     }))();
   },
-  logout: function logout(_ref4) {
+  register: function register(_ref4, payload) {
     return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-      var commit, _t;
+      var commit, _yield$axios$post3, data;
       return _regenerator().w(function (_context3) {
-        while (1) switch (_context3.p = _context3.n) {
+        while (1) switch (_context3.n) {
           case 0:
             commit = _ref4.commit;
-            _context3.p = 1;
-            _context3.n = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/logout');
-          case 2:
-            _context3.n = 4;
-            break;
-          case 3:
-            _context3.p = 3;
-            _t = _context3.v;
-          case 4:
-            commit('CLEAR_AUTH');
-
-            // Redirect to home page after logout
-            window.location.href = '/';
-          case 5:
-            return _context3.a(2);
+            _context3.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/register', payload);
+          case 1:
+            _yield$axios$post3 = _context3.v;
+            data = _yield$axios$post3.data;
+            return _context3.a(2, data);
         }
-      }, _callee3, null, [[1, 3]]);
+      }, _callee3);
     }))();
   },
-  refreshUser: function refreshUser(_ref5) {
+  logout: function logout(_ref5) {
     return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var commit, _yield$axios$get, data, _t2;
+      var commit, _t2;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
             commit = _ref5.commit;
             _context4.p = 1;
             _context4.n = 2;
-            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/user');
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/logout');
           case 2:
-            _yield$axios$get = _context4.v;
-            data = _yield$axios$get.data;
-            commit('UPDATE_USER', data);
             _context4.n = 4;
             break;
           case 3:
             _context4.p = 3;
             _t2 = _context4.v;
           case 4:
+            commit('CLEAR_AUTH');
+
+            // Redirect to home page after logout
+            window.location.href = '/';
+          case 5:
             return _context4.a(2);
         }
       }, _callee4, null, [[1, 3]]);
     }))();
   },
-  becomeSeller: function becomeSeller(_ref6, payload) {
+  refreshUser: function refreshUser(_ref6) {
     return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-      var commit, _yield$axios$patch, data;
+      var commit, _yield$axios$get, data, _t3;
       return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.n) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
             commit = _ref6.commit;
-            _context5.n = 1;
+            _context5.p = 1;
+            _context5.n = 2;
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/user');
+          case 2:
+            _yield$axios$get = _context5.v;
+            data = _yield$axios$get.data;
+            commit('UPDATE_USER', data);
+            _context5.n = 4;
+            break;
+          case 3:
+            _context5.p = 3;
+            _t3 = _context5.v;
+          case 4:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[1, 3]]);
+    }))();
+  },
+  becomeSeller: function becomeSeller(_ref7, payload) {
+    return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var commit, _yield$axios$patch, data;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.n) {
+          case 0:
+            commit = _ref7.commit;
+            _context6.n = 1;
             return axios__WEBPACK_IMPORTED_MODULE_0__["default"].patch('/user/become-seller', payload);
           case 1:
-            _yield$axios$patch = _context5.v;
+            _yield$axios$patch = _context6.v;
             data = _yield$axios$patch.data;
             if (data.user) {
               commit('UPDATE_USER', data.user);
             }
-            return _context5.a(2, data);
+            return _context6.a(2, data);
         }
-      }, _callee5);
+      }, _callee6);
     }))();
   }
 };

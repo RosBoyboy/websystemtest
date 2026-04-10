@@ -28,7 +28,14 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         password: ''
       },
       loading: false,
-      error: null
+      error: null,
+      // Registration Verification states
+      requiresOtp: false,
+      verifying: false,
+      otpCode: '',
+      // 2FA login states
+      requiresTwoFactor: false,
+      twoFactorCode: ''
     };
   },
   methods: {
@@ -110,10 +117,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         }, _callee2, null, [[0, 3]]);
       }))();
     },
+    // Customer login
     handleCustomerLogin: function handleCustomerLogin() {
       var _this3 = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-        var _yield$axios$post2, data, redirect, _t3;
+        var _yield$axios$post2, data, _t3;
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.p = _context3.n) {
             case 0:
@@ -123,35 +131,87 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 1:
               _yield$axios$post2 = _context3.v;
               data = _yield$axios$post2.data;
-              if (!(data.user.role === 'admin')) {
+              if (!data.email_unverified) {
                 _context3.n = 2;
                 break;
               }
-              throw new Error('Admin accounts must use the admin portal.');
+              _this3.requiresOtp = true;
+              return _context3.a(2);
             case 2:
-              // Commit to Vuex store (this updates both the state and local storage)
-              _this3.$store.commit('auth/SET_AUTH', {
-                user: data.user,
-                token: data.token
-              });
-
-              // Redirect to account or redirect path
-              redirect = _this3.$route.query.redirect || '/account';
-              if (redirect.includes('/seller') || redirect.includes('/admin')) {
-                window.location.href = redirect;
-              } else {
-                _this3.$router.push(redirect);
+              if (!data.two_factor_required) {
+                _context3.n = 3;
+                break;
               }
-              _context3.n = 4;
-              break;
+              _this3.requiresTwoFactor = true;
+              return _context3.a(2);
             case 3:
-              _context3.p = 3;
-              _t3 = _context3.v;
-              throw _t3;
+              if (!(data.user.role === 'admin')) {
+                _context3.n = 4;
+                break;
+              }
+              throw new Error('Admins must use the admin portal.');
             case 4:
+              _context3.n = 5;
+              return _this3.$store.dispatch('auth/login', _this3.form);
+            case 5:
+              _this3.$router.push({
+                name: 'account'
+              });
+              _context3.n = 8;
+              break;
+            case 6:
+              _context3.p = 6;
+              _t3 = _context3.v;
+              if (!(_t3.response && _t3.response.status === 403 && _t3.response.data && _t3.response.data.email_unverified)) {
+                _context3.n = 7;
+                break;
+              }
+              _this3.requiresOtp = true;
+              return _context3.a(2);
+            case 7:
+              throw _t3;
+            case 8:
               return _context3.a(2);
           }
-        }, _callee3, null, [[0, 3]]);
+        }, _callee3, null, [[0, 6]]);
+      }))();
+    },
+    // Verifying Registration OTP within the login screen
+    verifyRegistrationOtp: function verifyRegistrationOtp() {
+      var _this4 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+        var resp, _t4;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.p = _context4.n) {
+            case 0:
+              _this4.error = null;
+              _this4.verifying = true;
+              _context4.p = 1;
+              _context4.n = 2;
+              return _this4.$store.dispatch('auth/verifyRegistrationOtp', {
+                email: _this4.form.email,
+                otp: _this4.otpCode
+              });
+            case 2:
+              // Once verified, they receive an auth token and transition into the system
+              _this4.$router.push({
+                name: 'account'
+              });
+              _context4.n = 4;
+              break;
+            case 3:
+              _context4.p = 3;
+              _t4 = _context4.v;
+              resp = _t4.response && _t4.response.data;
+              _this4.error = resp && resp.message ? resp.message : 'Invalid or expired OTP.';
+            case 4:
+              _context4.p = 4;
+              _this4.verifying = false;
+              return _context4.f(4);
+            case 5:
+              return _context4.a(2);
+          }
+        }, _callee4, null, [[1, 3, 4, 5]]);
       }))();
     }
   },
@@ -326,7 +386,49 @@ var render = function render() {
     staticClass: "text-xs text-stone-500 mb-6"
   }, [_vm._v("\n          " + _vm._s(_vm.loginType === "customer" ? "Access your customer or seller account" : "Administrator access only") + "\n        ")]), _vm._v(" "), _vm.error ? _c("div", {
     staticClass: "mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium"
-  }, [_vm._v("\n          " + _vm._s(_vm.error) + "\n        ")]) : _vm._e(), _vm._v(" "), _c("form", {
+  }, [_vm._v("\n          " + _vm._s(_vm.error) + "\n        ")]) : _vm._e(), _vm._v(" "), _vm.requiresOtp ? _c("div", [_c("div", {
+    staticClass: "mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium text-center"
+  }, [_vm._v("\n            Please check your email. Your account is unverified, an ongoing OTP has just been sent to your email.\n          ")]), _vm._v(" "), _c("form", {
+    staticClass: "space-y-4",
+    on: {
+      submit: function submit($event) {
+        $event.preventDefault();
+        return _vm.verifyRegistrationOtp.apply(null, arguments);
+      }
+    }
+  }, [_c("div", [_c("label", {
+    staticClass: "block text-xs font-semibold text-slate-700 uppercase mb-1"
+  }, [_vm._v("Enter 6-Digit OTP")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.otpCode,
+      expression: "otpCode"
+    }],
+    staticClass: "w-full px-4 py-2.5 border-2 border-stone-200 rounded-lg focus:outline-none focus:border-orange-500 transition-colors bg-white text-stone-900 text-center tracking-[0.5em] font-bold text-lg",
+    attrs: {
+      type: "text",
+      required: "",
+      minlength: "6",
+      maxlength: "6",
+      placeholder: "123456"
+    },
+    domProps: {
+      value: _vm.otpCode
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.otpCode = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("button", {
+    staticClass: "btn-orange w-full py-3 mt-2 disabled:opacity-50",
+    attrs: {
+      type: "submit",
+      disabled: _vm.verifying
+    }
+  }, [_vm.verifying ? _c("span", [_vm._v("Verifying…")]) : _c("span", [_vm._v("Verify Account")])])])]) : _vm._e(), _vm._v(" "), !_vm.requiresOtp && !_vm.requiresTwoFactor ? _c("form", {
     staticClass: "space-y-5",
     on: {
       submit: function submit($event) {
@@ -453,7 +555,7 @@ var render = function render() {
       fill: "currentColor",
       d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
     }
-  })]), _vm._v("\n              Signing in…\n            ")]) : _c("span", [_vm._v("Sign In")])])]), _vm._v(" "), _vm.loginType === "customer" ? [_vm._m(0), _vm._v(" "), _c("div", {
+  })]), _vm._v("\n              Signing in…\n            ")]) : _c("span", [_vm._v("Sign In")])])]) : _vm._e(), _vm._v(" "), _vm.loginType === "customer" ? [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "text-center mt-5 pt-5 border-t border-stone-200"
   }, [_c("p", {
     staticClass: "text-sm text-stone-600"

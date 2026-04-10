@@ -2112,6 +2112,9 @@ input:where([type='file']):focus {
 .leading-tight {
   line-height: 1.25;
 }
+.tracking-\[0\.5em\] {
+  letter-spacing: 0.5em;
+}
 .tracking-wide {
   letter-spacing: 0.025em;
 }
